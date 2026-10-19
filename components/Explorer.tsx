@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import ActionDrawer from '@/components/ActionDrawer';
 import EditorialFeed from '@/components/EditorialFeed';
@@ -34,6 +34,24 @@ export default function Explorer({ photos }: ExplorerProps) {
   const [activeCategories, setActiveCategories] = useState<Set<CategoryId>>(ALL_CATEGORIES);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [itineraryId, setItineraryId] = useState<string | null>(null);
+
+  // Deep links from the landing page: /explore?trip=<itinerary id>&place=<place id>
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const trip = params.get('trip');
+    const place = params.get('place');
+    if (trip && ITINERARIES.some((i) => i.id === trip)) setItineraryId(trip);
+    if (place && PLACE_BY_ID[place]) setSelectedId(place);
+  }, []);
+
+  // Keep the chosen road trip in the address bar so the view can be shared.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (itineraryId) url.searchParams.set('trip', itineraryId);
+    else url.searchParams.delete('trip');
+    url.searchParams.delete('place');
+    window.history.replaceState(null, '', url);
+  }, [itineraryId]);
 
   const itinerary = ITINERARIES.find((i) => i.id === itineraryId) ?? null;
   const selectedPlace = selectedId ? PLACE_BY_ID[selectedId] ?? null : null;
