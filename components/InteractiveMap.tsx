@@ -8,6 +8,7 @@ import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'reac
 
 import { PLACE_BY_ID, TUNISIA_CENTER } from '@/data/tunisiaData';
 import type { CategoryId, Itinerary, LatLng, Place } from '@/data/types';
+import { TILE_URL } from '@/lib/tiles';
 
 export interface InteractiveMapProps {
   places: Place[];
@@ -38,12 +39,6 @@ function pinIcon({ active, dim, stopNumber }: PinOptions): L.DivIcon {
     tooltipAnchor: [0, -size / 2 - 4],
   });
 }
-
-const CARTO_KEY = process.env.NEXT_PUBLIC_CARTO_API_KEY ?? '';
-// CARTO "Positron": a quiet, light basemap. The key removes the "API key required" watermark.
-const TILE_URL = `https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png${
-  CARTO_KEY ? `?key=${encodeURIComponent(CARTO_KEY)}` : ''
-}`;
 
 /** Imperative camera moves: fly to the selected place, fit an itinerary, react to resizes. */
 function MapController({

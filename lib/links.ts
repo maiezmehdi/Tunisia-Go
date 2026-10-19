@@ -83,3 +83,16 @@ export function googleMapsRouteUrl(places: Place[]): string {
     travelmode: 'driving',
   });
 }
+
+/** 4x4 with a driver for the desert pistes, through the transfer partner. */
+export function rental4x4WhatsAppUrl(): string {
+  return waLink(
+    TRANSFER_WHATSAPP || GUIDE_WHATSAPP || '21600000000',
+    'Bonjour, je cherche un 4x4 pour le Sud (Tozeur, Douz, Ksar Ghilane). Avec ou sans chauffeur : … · Dates : … · Passagers : …',
+  );
+}
+
+/** Fallback when no webhook is configured: the suggestion goes to the team over WhatsApp. */
+export function secretSpotWhatsAppUrl(text: string): string {
+  return waLink(GUIDE_WHATSAPP || TRANSFER_WHATSAPP || '21600000000', text);
+}

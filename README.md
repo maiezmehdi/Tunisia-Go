@@ -39,6 +39,10 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 | `lib/geo.ts` | Distance and driving-time estimates |
 | `lib/links.ts` | Outbound links (affiliates, wa.me, tel:, Google Maps, Waze) |
 | `lib/photos.ts` | Fetches up to 4 photos per place from the Wikipedia article named in `wiki`, refreshed daily |
+| `data/seasons.ts` | Best months per place (best / fine / better avoided), used by the month filter and the "When to go" strip |
+| `app/pratique/page.tsx` | "Logistique & Pratique": 4x4 rental, driving, money, SIM cards, health, customs |
+| `app/spot-secret/page.tsx`, `app/api/spot-secret/route.ts` | "Ajouter un spot secret" form and the route that forwards suggestions |
+| `public/sw.js`, `lib/offline.ts`, `lib/tiles.ts` | Offline mode: service worker, and saving a road trip's map tiles and photos |
 
 ## Mock data to replace before launch
 
@@ -53,5 +57,17 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 - **Photos** come from the English Wikipedia article in each place's `wiki` field.
   Change that title to get different photos. A place with no usable photo shows a
   plain panel with its caption.
+- **Secret spot suggestions** go to `SECRET_SPOT_WEBHOOK_URL` (a Slack, Discord,
+  Make or Zapier webhook). Without it, the form opens WhatsApp with the
+  suggestion already written, sent to the guide number.
 - **Driving times** are estimates (straight-line distance × 1.3 at 70 km/h).
   A routing service such as OSRM could replace them later.
+
+## Offline mode
+
+The app is installable (manifest in `app/manifest.ts`) and registers `public/sw.js`
+in production builds. Pages and scripts are cached as they are visited. In the
+road trips panel, "Save for offline use" downloads the map tiles along the route
+(zooms 5 to 14 around the stops), the photos of every stop and the app itself, so
+the trip stays usable where the network drops. Bump `VERSION` in `public/sw.js`
+when the cache layout changes.
