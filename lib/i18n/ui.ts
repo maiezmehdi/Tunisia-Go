@@ -46,6 +46,8 @@ const en = {
   shareSecretSpot: 'Share a secret spot',
   // Drawer
   close: 'Close',
+  menu: 'Menu',
+  roadTripsCount: (n: number) => `Road trips · ${n}`,
   planYourVisit: 'Plan your visit',
   findAStay: 'Find a place to stay',
   contactGuide: 'Message the local guide on WhatsApp',
@@ -144,6 +146,8 @@ const fr: UiStrings = {
   knowAPlaceHint: 'Un café, une crique cachée, un point de vue que seuls les habitués connaissent.',
   shareSecretSpot: 'Partager un spot secret',
   close: 'Fermer',
+  menu: 'Menu',
+  roadTripsCount: (n: number) => `Road trips · ${n}`,
   planYourVisit: 'Préparer la visite',
   findAStay: 'Trouver un logement',
   contactGuide: 'Contacter le guide local sur WhatsApp',
