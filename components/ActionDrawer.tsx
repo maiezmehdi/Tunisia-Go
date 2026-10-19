@@ -1,24 +1,12 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  BedDouble,
-  Car,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  ExternalLink,
-  MapPin,
-  MessageCircle,
-  Navigation,
-  Phone,
-  X,
-} from 'lucide-react';
-import { useEffect, useState, type ComponentType, type ReactNode } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import CultureCard from '@/components/CultureCard';
 import { CATEGORY_BY_ID, PLACE_BY_ID } from '@/data/tunisiaData';
-import type { Itinerary, Place, PlaceImage } from '@/data/types';
+import type { Itinerary, Photo, Place } from '@/data/types';
 import {
   airbnbUrl,
   bookingUrl,
@@ -31,13 +19,14 @@ import {
 
 export interface ActionDrawerProps {
   place: Place | null;
+  photos: Photo[];
   /** When the place is a stop of the active itinerary, enables previous/next navigation. */
   itinerary: Itinerary | null;
   onClose: () => void;
   onNavigate: (placeId: string) => void;
 }
 
-export default function ActionDrawer({ place, itinerary, onClose, onNavigate }: ActionDrawerProps) {
+export default function ActionDrawer({ place, photos, itinerary, onClose, onNavigate }: ActionDrawerProps) {
   useEffect(() => {
     if (!place) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -57,7 +46,7 @@ export default function ActionDrawer({ place, itinerary, onClose, onNavigate }: 
           animate={{ x: 0 }}
           exit={{ x: '105%' }}
           transition={{ type: 'spring', stiffness: 260, damping: 32 }}
-          className="absolute inset-y-0 right-0 z-[1100] flex w-full flex-col overflow-hidden bg-cream shadow-lift sm:inset-y-3 sm:right-3 sm:w-[440px] sm:rounded-4xl"
+          className="absolute inset-y-0 right-0 z-[1100] flex w-full flex-col overflow-hidden border-sand-200 bg-cream shadow-lift sm:inset-y-3 sm:right-3 sm:w-[440px] sm:rounded-4xl sm:border"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -68,7 +57,13 @@ export default function ActionDrawer({ place, itinerary, onClose, onNavigate }: 
               transition={{ duration: 0.15 }}
               className="no-scrollbar flex-1 overflow-y-auto"
             >
-              <DrawerContent place={place} itinerary={itinerary} onClose={onClose} onNavigate={onNavigate} />
+              <DrawerContent
+                place={place}
+                photos={photos}
+                itinerary={itinerary}
+                onClose={onClose}
+                onNavigate={onNavigate}
+              />
             </motion.div>
           </AnimatePresence>
         </motion.aside>
@@ -79,107 +74,96 @@ export default function ActionDrawer({ place, itinerary, onClose, onNavigate }: 
 
 function DrawerContent({
   place,
+  photos,
   itinerary,
   onClose,
   onNavigate,
 }: {
   place: Place;
+  photos: Photo[];
   itinerary: Itinerary | null;
   onClose: () => void;
   onNavigate: (placeId: string) => void;
 }) {
   const category = CATEGORY_BY_ID[place.category];
   const stopIndex = itinerary ? itinerary.stops.indexOf(place.id) : -1;
-  const prevId = stopIndex > 0 ? itinerary!.stops[stopIndex - 1] : null;
-  const nextId = itinerary && stopIndex >= 0 && stopIndex < itinerary.stops.length - 1 ? itinerary.stops[stopIndex + 1] : null;
+  const prevId = itinerary && stopIndex > 0 ? itinerary.stops[stopIndex - 1] : null;
+  const nextId =
+    itinerary && stopIndex >= 0 && stopIndex < itinerary.stops.length - 1 ? itinerary.stops[stopIndex + 1] : null;
   const phone = phoneUrl(place);
 
   return (
     <>
       <div className="relative">
-        <PhotoCarousel images={place.images} emoji={category.emoji} />
+        <PhotoCarousel photos={photos} fallbackCaptions={place.images.map((i) => i.caption)} />
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-cream/90 text-charcoal shadow-soft backdrop-blur transition hover:bg-cream"
+          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-cream/90 text-charcoal backdrop-blur transition hover:bg-cream"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" strokeWidth={1.75} />
         </button>
       </div>
 
-      <div className="space-y-6 px-6 pb-8 pt-5">
+      <div className="space-y-8 px-6 pb-10 pt-6">
         {/* Header */}
         <header>
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className="inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-semibold"
-              style={{ background: category.tint, color: category.color }}
-            >
-              {category.emoji} {category.label}
-            </span>
-            {place.unesco && (
-              <span className="rounded-pill bg-sage px-3 py-1 text-xs font-semibold text-sage-500">UNESCO</span>
-            )}
-            <span className="inline-flex items-center gap-1 rounded-pill bg-sand px-3 py-1 text-xs font-medium text-charcoal-500">
-              <Clock className="h-3 w-3" /> {place.visitDuration}
-            </span>
-          </div>
-          <h2 className="mt-3 font-serif text-[32px] leading-[1.05] text-charcoal">{place.name}</h2>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-charcoal-500">
-            <MapPin className="h-3.5 w-3.5" /> {place.region}
+          <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
+            {category.label}
+            {place.unesco && ' · UNESCO'} · {place.visitDuration}
+          </p>
+          <div className="mt-2 flex items-baseline justify-between gap-4">
+            <h2 className="font-serif text-[32px] leading-[1.05] tracking-tight text-charcoal">{place.name}</h2>
             {place.nameAr && (
-              <span lang="ar" dir="rtl" className="ml-auto font-serif text-base text-charcoal-300">
+              <span lang="ar" dir="rtl" className="shrink-0 font-serif text-lg text-charcoal-300">
                 {place.nameAr}
               </span>
             )}
-          </p>
-          <p className="mt-3 font-serif text-lg italic text-terracotta-700">{place.tagline}</p>
+          </div>
+          <p className="mt-1 text-sm text-charcoal-500">{place.region}</p>
+          <p className="mt-4 font-serif text-lg italic text-charcoal-700">{place.tagline}</p>
           <p className="mt-2 text-[15px] leading-relaxed text-charcoal-700">{place.description}</p>
         </header>
 
         {/* Action hub */}
-        <section aria-label="Plan your visit" className="space-y-2.5">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-charcoal-500">Plan your visit</h3>
+        <section aria-label="Plan your visit">
+          <SectionTitle>Plan your visit</SectionTitle>
 
-          <div className="rounded-3xl bg-sand p-3">
-            <div className="flex items-center gap-2 px-1 pb-2.5 text-sm font-semibold text-charcoal">
-              <BedDouble className="h-4 w-4 text-terracotta" /> Trouver un logement
-              <span className="font-normal text-charcoal-500">· Find a stay</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <ExternalPill href={bookingUrl(place)} className="bg-[#003580] text-white hover:bg-[#00224f]">
-                Booking.com
-              </ExternalPill>
-              <ExternalPill href={airbnbUrl(place)} className="bg-[#FF385C] text-white hover:bg-[#e0314f]">
-                Airbnb
-              </ExternalPill>
+          <div className="mt-3">
+            <p className="text-sm font-medium text-charcoal">Trouver un logement</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Pill href={bookingUrl(place)}>Booking.com</Pill>
+              <Pill href={airbnbUrl(place)}>Airbnb</Pill>
             </div>
           </div>
 
-          <ActionRow
-            href={transferWhatsAppUrl(place)}
-            icon={Car}
-            title="Réserver un transfert / transport"
-            subtitle="Airport pickup, private driver or 4x4"
-          />
-          <ActionRow
-            href={guideWhatsAppUrl(place)}
-            icon={MessageCircle}
-            title="Contacter le guide local sur WhatsApp"
-            subtitle={place.contact.guideName ? `${place.contact.guideName}, local guide in ${place.region}` : 'Local guide'}
-            accent
-          />
-          {phone && (
-            <ActionRow href={phone} icon={Phone} title="Appeler le lieu / prestataire" subtitle={place.contact.phone} external={false} />
-          )}
-          <div className="grid grid-cols-2 gap-2">
-            <ExternalPill href={googleMapsUrl(place)} className="bg-charcoal text-cream hover:bg-charcoal-700">
-              <Navigation className="h-4 w-4" /> Google Maps
-            </ExternalPill>
-            <ExternalPill href={wazeUrl(place)} className="bg-[#33CCFF] text-charcoal hover:bg-[#1fb8eb]">
-              <Navigation className="h-4 w-4" /> Waze
-            </ExternalPill>
+          <ul className="mt-5 divide-y divide-sand-200 border-y border-sand-200">
+            <ActionRow
+              href={guideWhatsAppUrl(place)}
+              title="Contacter le guide local sur WhatsApp"
+              subtitle={place.contact.guideName ? `${place.contact.guideName}, guide à ${place.region}` : 'Guide local'}
+            />
+            <ActionRow
+              href={transferWhatsAppUrl(place)}
+              title="Réserver un transfert / transport"
+              subtitle="Aéroport, chauffeur privé ou 4x4"
+            />
+            {phone && (
+              <ActionRow
+                href={phone}
+                title="Appeler le lieu / prestataire"
+                subtitle={place.contact.phone}
+                external={false}
+              />
+            )}
+          </ul>
+
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <Pill href={googleMapsUrl(place)} primary>
+              Google Maps
+            </Pill>
+            <Pill href={wazeUrl(place)}>Waze</Pill>
           </div>
         </section>
 
@@ -187,13 +171,10 @@ function DrawerContent({
 
         {/* Itinerary navigation */}
         {itinerary && stopIndex >= 0 && (
-          <nav
-            aria-label="Itinerary stops"
-            className="flex items-center justify-between gap-2 rounded-3xl border border-sand-200 p-2"
-          >
+          <nav aria-label="Itinerary stops" className="flex items-center justify-between gap-2 border-t border-sand-200 pt-4">
             <StopButton id={prevId} dir="prev" onNavigate={onNavigate} />
-            <span className="text-center text-xs text-charcoal-500">
-              {itinerary.emoji} Stop {stopIndex + 1} of {itinerary.stops.length}
+            <span className="text-center text-xs text-charcoal-300">
+              Stop {stopIndex + 1} of {itinerary.stops.length}
             </span>
             <StopButton id={nextId} dir="next" onNavigate={onNavigate} />
           </nav>
@@ -201,6 +182,10 @@ function DrawerContent({
       </div>
     </>
   );
+}
+
+function SectionTitle({ children }: { children: ReactNode }) {
+  return <h3 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{children}</h3>;
 }
 
 function StopButton({
@@ -213,29 +198,33 @@ function StopButton({
   onNavigate: (placeId: string) => void;
 }) {
   const target = id ? PLACE_BY_ID[id] : null;
-  if (!target) return <span className="w-28" />;
+  if (!target) return <span className="w-32" />;
   return (
     <button
       type="button"
       onClick={() => onNavigate(target.id)}
-      className={`flex w-28 items-center gap-1 rounded-pill px-3 py-2 text-sm font-medium text-charcoal transition hover:bg-sand ${
+      className={`flex w-32 items-center gap-1 text-sm text-charcoal-700 transition hover:text-charcoal ${
         dir === 'next' ? 'justify-end text-right' : ''
       }`}
     >
-      {dir === 'prev' && <ChevronLeft className="h-4 w-4 shrink-0" />}
+      {dir === 'prev' && <ChevronLeft className="h-4 w-4 shrink-0" strokeWidth={1.5} />}
       <span className="truncate">{target.name}</span>
-      {dir === 'next' && <ChevronRight className="h-4 w-4 shrink-0" />}
+      {dir === 'next' && <ChevronRight className="h-4 w-4 shrink-0" strokeWidth={1.5} />}
     </button>
   );
 }
 
-function ExternalPill({ href, className, children }: { href: string; className: string; children: ReactNode }) {
+function Pill({ href, primary, children }: { href: string; primary?: boolean; children: ReactNode }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
-      className={`inline-flex items-center justify-center gap-2 rounded-pill px-4 py-3 text-sm font-semibold transition ${className}`}
+      className={`inline-flex items-center justify-center rounded-pill px-4 py-2.5 text-sm transition ${
+        primary
+          ? 'bg-charcoal text-cream hover:bg-charcoal-700'
+          : 'border border-sand-300 text-charcoal hover:border-charcoal'
+      }`}
     >
       {children}
     </a>
@@ -244,63 +233,56 @@ function ExternalPill({ href, className, children }: { href: string; className: 
 
 function ActionRow({
   href,
-  icon: Icon,
   title,
   subtitle,
-  accent,
   external = true,
 }: {
   href: string;
-  icon: ComponentType<{ className?: string }>;
   title: string;
   subtitle?: string;
-  accent?: boolean;
   external?: boolean;
 }) {
   return (
-    <a
-      href={href}
-      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className={`group flex items-center gap-3 rounded-3xl p-3 pr-4 transition ${
-        accent ? 'bg-[#25D366]/15 hover:bg-[#25D366]/25' : 'bg-sand hover:bg-sand-200'
-      }`}
-    >
-      <span
-        className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${
-          accent ? 'bg-[#25D366] text-white' : 'bg-cream text-terracotta'
-        }`}
+    <li>
+      <a
+        href={href}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        className="group flex items-center justify-between gap-4 py-3.5"
       >
-        <Icon className="h-[18px] w-[18px]" />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold text-charcoal">{title}</span>
-        {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}
-      </span>
-      {external && <ExternalLink className="h-4 w-4 text-charcoal-300 transition group-hover:text-charcoal" />}
-    </a>
+        <span className="min-w-0">
+          <span className="block text-sm font-medium text-charcoal group-hover:text-terracotta-700">{title}</span>
+          {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}
+        </span>
+        <span aria-hidden className="text-charcoal-300 transition group-hover:translate-x-0.5 group-hover:text-charcoal">
+          →
+        </span>
+      </a>
+    </li>
   );
 }
 
-/** Swipeable photo carousel. Falls back to an illustrated postcard when no photo is available. */
-function PhotoCarousel({ images, emoji }: { images: PlaceImage[]; emoji: string }) {
+/** Swipeable photo carousel with credits. Falls back to a plain panel when no photo is available. */
+function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallbackCaptions: string[] }) {
   const [index, setIndex] = useState(0);
   const [failed, setFailed] = useState<Record<number, boolean>>({});
-  const count = images.length;
+  const usable = photos.filter((_, i) => !failed[i]);
+  const hasPhotos = usable.length > 0;
+  const count = hasPhotos ? photos.length : 1;
   const go = (delta: number) => setIndex((i) => (i + delta + count) % count);
-  const image = images[index];
-  const showPhoto = image.src && !failed[index];
+  const photo = hasPhotos ? photos[index] : null;
+  const showPhoto = photo && !failed[index];
 
   return (
-    <div className="relative h-64 overflow-hidden sm:h-72">
+    <div className="relative h-64 overflow-hidden bg-sand sm:h-72">
       <AnimatePresence initial={false} mode="popLayout">
         <motion.div
           key={index}
           className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          drag="x"
+          drag={count > 1 ? 'x' : false}
           dragConstraints={{ left: 0, right: 0 }}
           onDragEnd={(_, info) => {
             if (info.offset.x < -50) go(1);
@@ -310,48 +292,44 @@ function PhotoCarousel({ images, emoji }: { images: PlaceImage[]; emoji: string 
           {showPhoto ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={image.src}
-              alt={image.caption}
+              src={photo.src}
+              alt={photo.title}
               className="h-full w-full object-cover"
               draggable={false}
               onError={() => setFailed((f) => ({ ...f, [index]: true }))}
             />
           ) : (
-            <div
-              className="relative h-full w-full"
-              style={{ background: `linear-gradient(135deg, ${image.palette[0]}, ${image.palette[1]})` }}
-              role="img"
-              aria-label={image.caption}
-            >
-              <div
-                aria-hidden
-                className="absolute inset-0 opacity-25 mix-blend-overlay"
-                style={{
-                  backgroundImage:
-                    'radial-gradient(circle at 20% 30%, white 0 2px, transparent 3px), radial-gradient(circle at 70% 60%, white 0 1.5px, transparent 2.5px)',
-                  backgroundSize: '38px 38px, 54px 54px',
-                }}
-              />
-              <span aria-hidden className="absolute -bottom-6 right-4 select-none text-[150px] leading-none opacity-30">
-                {emoji}
-              </span>
+            <div className="grid h-full w-full place-items-center px-10 text-center">
+              <p className="font-serif text-lg italic text-charcoal-300">{fallbackCaptions[0]}</p>
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-charcoal/60 to-transparent" />
-          <p className="absolute bottom-4 left-6 right-24 font-serif text-lg text-cream drop-shadow">{image.caption}</p>
+          {showPhoto && (
+            <>
+              <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-charcoal/55 to-transparent" />
+              <a
+                href={photo.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-3 left-5 right-20 truncate text-[10px] text-cream/80 hover:text-cream"
+                title={`${photo.author} · ${photo.license}`}
+              >
+                {photo.author} · {photo.license} · Wikimedia Commons
+              </a>
+            </>
+          )}
         </motion.div>
       </AnimatePresence>
 
       {count > 1 && (
         <>
-          <div className="absolute bottom-5 right-6 flex gap-1.5">
-            {images.map((_, i) => (
+          <div className="absolute bottom-4 right-5 flex gap-1.5">
+            {photos.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 aria-label={`Photo ${i + 1}`}
                 onClick={() => setIndex(i)}
-                className={`h-1.5 rounded-full transition-all ${i === index ? 'w-5 bg-cream' : 'w-1.5 bg-cream/50'}`}
+                className={`h-1 rounded-full transition-all ${i === index ? 'w-4 bg-cream' : 'w-1 bg-cream/50'}`}
               />
             ))}
           </div>
@@ -359,17 +337,17 @@ function PhotoCarousel({ images, emoji }: { images: PlaceImage[]; emoji: string 
             type="button"
             aria-label="Previous photo"
             onClick={() => go(-1)}
-            className="absolute left-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-cream/70 text-charcoal backdrop-blur transition hover:bg-cream"
+            className="absolute left-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-cream/80 text-charcoal backdrop-blur transition hover:bg-cream"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-4 w-4" strokeWidth={1.75} />
           </button>
           <button
             type="button"
             aria-label="Next photo"
             onClick={() => go(1)}
-            className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-cream/70 text-charcoal backdrop-blur transition hover:bg-cream"
+            className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-cream/80 text-charcoal backdrop-blur transition hover:bg-cream"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
           </button>
         </>
       )}
