@@ -4,6 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { useRef } from 'react';
 
 import LanguageSwitch from '@/components/LanguageSwitch';
+import MadeBy from '@/components/MadeBy';
 import { ATLAS, HERO_CANDIDATES, LANDING_COPY, TRIP_STORIES, type TripStory } from '@/components/landing/content';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { formatKm, summarizeRoute } from '@/lib/geo';
@@ -481,6 +482,7 @@ function Footer({ photos }: { photos: Photo[] }) {
           </details>
         )}
       </div>
+      <MadeBy tone="light" className="mx-auto mt-6 max-w-6xl" />
     </footer>
   );
 }
