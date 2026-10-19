@@ -4,6 +4,7 @@ import type { Locale } from '@/lib/i18n/config';
 /** Interface strings for the map app (pages have their own copy files). */
 const en = {
   language: 'Language',
+  madeBy: 'Created with love by',
   // Header
   explorer: 'Explorer',
   loadingMap: 'Loading the map…',
@@ -104,6 +105,7 @@ export type UiStrings = typeof en;
 
 const fr: UiStrings = {
   language: 'Langue',
+  madeBy: 'Créé avec amour par',
   explorer: 'Explorer',
   loadingMap: 'Chargement de la carte…',
   mapLayers: 'Calques de la carte',

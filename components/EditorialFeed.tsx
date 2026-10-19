@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 
+import MadeBy from '@/components/MadeBy';
 import { bestMonthsLabel, seasonFor } from '@/data/seasons';
 import type { Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
@@ -106,6 +107,8 @@ export default function EditorialFeed({ places, photos, selectedId, onSelect, mo
           {t.shareSecretSpot}
         </a>
       </div>
+
+      <MadeBy className="mt-10 border-t border-sand-200 pt-5" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import LanguageSwitch from '@/components/LanguageSwitch';
+import MadeBy from '@/components/MadeBy';
 import SecretSpotForm from '@/components/SecretSpotForm';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
@@ -74,6 +75,9 @@ export default async function SpotSecretPage({ params }: Params) {
         </p>
         <SecretSpotForm />
       </div>
+      <footer className="border-t border-sand-200">
+        <MadeBy className="mx-auto max-w-3xl px-4 py-6 sm:px-6" />
+      </footer>
     </main>
   );
 }
