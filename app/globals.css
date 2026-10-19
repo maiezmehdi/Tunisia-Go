@@ -15,7 +15,7 @@ body {
 
 /* Leaflet surface tuned to the cream palette */
 .leaflet-container {
-  background: #f2ece1;
+  background: #f4f1ec;
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 .leaflet-control-attribution {
@@ -36,76 +36,60 @@ body {
   border-color: #f2ece1 !important;
 }
 
-/* Custom markers */
+/* Custom markers: small, quiet dots */
 .tg-marker {
   background: transparent;
   border: none;
 }
 .tg-pin {
   position: relative;
+  width: 100%;
+  height: 100%;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
   border-radius: 9999px;
-  border: 3px solid #faf6f0;
-  font-size: 17px;
-  line-height: 1;
-  box-shadow: 0 6px 16px -6px rgba(26, 26, 26, 0.5);
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  background: #1a1a1a;
+  border: 2.5px solid #faf6f0;
+  color: #faf6f0;
+  font: 600 11px/1 var(--font-sans), system-ui, sans-serif;
+  box-shadow: 0 2px 6px rgba(26, 26, 26, 0.25);
+  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
 }
 .tg-pin::after {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: -7px;
   border-radius: 9999px;
+  border: 1px solid #e87a5d;
   opacity: 0;
-  transition: opacity 180ms ease;
-  box-shadow: 0 0 0 4px rgba(232, 122, 93, 0.25), 0 0 22px 6px rgba(232, 122, 93, 0.55);
+  transition: opacity 160ms ease;
 }
-.tg-marker:hover .tg-pin,
+.tg-marker:hover .tg-pin {
+  transform: scale(1.2);
+}
 .tg-pin.is-active {
-  transform: scale(1.18) translateY(-2px);
-  z-index: 1000;
+  background: #e87a5d;
+  transform: scale(1.25);
 }
-.tg-marker:hover .tg-pin::after,
 .tg-pin.is-active::after {
   opacity: 1;
-}
-.tg-pin.is-active::after {
-  animation: tg-pulse 1.6s ease-out infinite;
+  animation: tg-pulse 1.8s ease-out infinite;
 }
 .tg-pin.is-dim {
-  opacity: 0.35;
-}
-.tg-stop {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: 9999px;
-  background: #1a1a1a;
-  color: #faf6f0;
-  font-size: 11px;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-  border: 2px solid #faf6f0;
+  opacity: 0.25;
 }
 @keyframes tg-pulse {
-  0% { transform: scale(0.9); opacity: 1; }
-  100% { transform: scale(1.5); opacity: 0; }
+  0% { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
 
 .leaflet-tooltip.tg-tooltip {
-  background: #1a1a1a;
-  color: #faf6f0;
-  border: none;
+  background: #faf6f0;
+  color: #1a1a1a;
+  border: 1px solid #e8decd;
   border-radius: 9999px;
-  padding: 4px 12px;
-  font-weight: 600;
+  padding: 3px 10px;
+  font-weight: 500;
   font-size: 12px;
   box-shadow: 0 8px 30px -12px rgba(26, 26, 26, 0.4);
 }

@@ -10,8 +10,8 @@ estimates, and a location drawer that turns inspiration into bookings
 - Next.js 15 (App Router), React 19, TypeScript
 - Tailwind CSS 3 with a custom palette and radii (`tailwind.config.js`)
 - Framer Motion for drawers, tabs and transitions
-- Leaflet + react-leaflet, CARTO Voyager tiles on OpenStreetMap data
-- Lucide icons
+- Leaflet + react-leaflet, CARTO Positron tiles on OpenStreetMap data
+- Photos from Wikimedia Commons, with author and licence credits
 
 ## Getting started
 
@@ -27,7 +27,8 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 
 | Path | What it does |
 | --- | --- |
-| `app/page.tsx` | Main layout: top bar with layer filters, Map / Split toggle, editorial feed, map, circuits panel and drawer |
+| `app/page.tsx` | Server page: loads the photos, then renders the explorer |
+| `components/Explorer.tsx` | Main layout: top bar with layer filters, Map / Split toggle, editorial feed, map, road trips panel and drawer |
 | `components/InteractiveMap.tsx` | Leaflet map with category markers, glowing hover/active states, itinerary route lines and camera moves |
 | `components/ActionDrawer.tsx` | Place inspector: photo carousel, story, action hub (Booking, Airbnb, transfer, WhatsApp guide, call, Google Maps, Waze) |
 | `components/ItinerarySelector.tsx` | Circuit picker with stops, leg distances and driving times, and a Google Maps link for the full route |
@@ -37,6 +38,7 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 | `data/types.ts` | TypeScript interfaces for places, categories and itineraries |
 | `lib/geo.ts` | Distance and driving-time estimates |
 | `lib/links.ts` | Outbound links (affiliates, wa.me, tel:, Google Maps, Waze) |
+| `lib/photos.ts` | Fetches up to 4 photos per place from the Wikipedia article named in `wiki`, refreshed daily |
 
 ## Mock data to replace before launch
 
@@ -46,8 +48,10 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 - **Affiliate ids** for Booking.com and Airbnb are read from
   `NEXT_PUBLIC_BOOKING_AID` and `NEXT_PUBLIC_AIRBNB_AFFILIATE`. Without them the
   buttons open plain searches for the place.
-- **Photos**: each place has three captioned slides. Add a `src` to any slide in
-  `data/tunisiaData.ts` to show a real photo; until then an illustrated postcard
-  is drawn.
+- **Map key**: set `NEXT_PUBLIC_CARTO_API_KEY` (in Vercel: Settings → Environment
+  Variables, then redeploy). Without it CARTO shows an "API key required" watermark.
+- **Photos** come from the English Wikipedia article in each place's `wiki` field.
+  Change that title to get different photos. A place with no usable photo shows a
+  plain panel with its caption.
 - **Driving times** are estimates (straight-line distance × 1.3 at 70 km/h).
   A routing service such as OSRM could replace them later.

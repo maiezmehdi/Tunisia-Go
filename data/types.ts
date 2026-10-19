@@ -3,21 +3,24 @@ export type CategoryId = 'heritage' | 'sahara' | 'beach' | 'culture' | 'culinary
 export interface Category {
   id: CategoryId;
   label: string;
-  emoji: string;
-  /** Marker fill colour */
-  color: string;
-  /** Soft tag background */
-  tint: string;
 }
 
 export type LatLng = [number, number];
 
+/** Caption for a placeholder slide, shown when no photo could be loaded. */
 export interface PlaceImage {
-  /** Optional photo URL. When missing or broken, an illustrated postcard is shown. */
-  src?: string;
   caption: string;
-  /** Gradient used for the illustrated fallback, as two CSS colours */
-  palette: [string, string];
+}
+
+/** A real photo, loaded from Wikimedia Commons with its credit. */
+export interface Photo {
+  src: string;
+  width?: number;
+  height?: number;
+  title: string;
+  author: string;
+  license: string;
+  sourceUrl: string;
 }
 
 export interface CultureInsights {
@@ -37,6 +40,8 @@ export interface PlaceContact {
 
 export interface Place {
   id: string;
+  /** English Wikipedia article used to find photos */
+  wiki?: string;
   name: string;
   nameAr?: string;
   region: string;
@@ -57,11 +62,9 @@ export interface Place {
 export interface Itinerary {
   id: string;
   name: string;
-  emoji: string;
   tagline: string;
   description: string;
   days: number;
   /** Ordered place ids */
   stops: string[];
-  color: string;
 }

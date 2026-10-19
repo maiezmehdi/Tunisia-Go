@@ -9,50 +9,19 @@ import type { Category, CategoryId, Itinerary, Place, PlaceImage } from './types
  */
 
 export const CATEGORIES: Category[] = [
-  { id: 'heritage', label: 'UNESCO & History', emoji: '🏛️', color: '#C9673F', tint: '#F5E1D6' },
-  { id: 'sahara', label: 'Sahara & Nature', emoji: '🏜️', color: '#D9A441', tint: '#F6EBCF' },
-  { id: 'beach', label: 'Beaches', emoji: '🏖️', color: '#3E8FA8', tint: '#DCEDF1' },
-  { id: 'culture', label: 'Culture & Craft', emoji: '🎭', color: '#8E5B9E', tint: '#EEE2F1' },
-  { id: 'culinary', label: 'Culinary Spots', emoji: '🍽️', color: '#6E8B5E', tint: '#E2E8DF' },
+  { id: 'heritage', label: 'UNESCO & History' },
+  { id: 'sahara', label: 'Sahara & Nature' },
+  { id: 'beach', label: 'Beaches' },
+  { id: 'culture', label: 'Culture & Craft' },
+  { id: 'culinary', label: 'Culinary Spots' },
 ];
 
 export const CATEGORY_BY_ID: Record<CategoryId, Category> = Object.fromEntries(
   CATEGORIES.map((c) => [c.id, c]),
 ) as Record<CategoryId, Category>;
 
-const PALETTES: Record<CategoryId, [string, string][]> = {
-  heritage: [
-    ['#E8B48F', '#B5563A'],
-    ['#F2D3B3', '#C9673F'],
-    ['#D9A88A', '#7A3E2A'],
-  ],
-  sahara: [
-    ['#F6D79A', '#D9853B'],
-    ['#F2C57C', '#A8542E'],
-    ['#FBE6B8', '#C98B3C'],
-  ],
-  beach: [
-    ['#BFE3EA', '#3E8FA8'],
-    ['#E6F2F0', '#5BA7B5'],
-    ['#9CD3DC', '#2C6E86'],
-  ],
-  culture: [
-    ['#E6D3EC', '#8E5B9E'],
-    ['#F3E1D0', '#9E5B6C'],
-    ['#D7E3F2', '#3F66A0'],
-  ],
-  culinary: [
-    ['#E2E8DF', '#6E8B5E'],
-    ['#F5D2B8', '#D35E40'],
-    ['#F2E5B5', '#A0802E'],
-  ],
-};
-
-function postcards(category: CategoryId, captions: string[]): PlaceImage[] {
-  return captions.map((caption, i) => ({
-    caption,
-    palette: PALETTES[category][i % PALETTES[category].length],
-  }));
+function postcards(_category: CategoryId, captions: string[]): PlaceImage[] {
+  return captions.map((caption) => ({ caption }));
 }
 
 const PLACEHOLDER_PHONE = '+21600000000';
@@ -68,6 +37,7 @@ export const PLACES: Place[] = [
   // ── Tunis & Carthage ───────────────────────────────────────────────
   {
     id: 'carthage',
+    wiki: 'Carthage',
     name: 'Carthage',
     nameAr: 'قرطاج',
     region: 'Tunis',
@@ -94,6 +64,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'sidi-bou-said',
+    wiki: 'Sidi Bou Said',
     name: 'Sidi Bou Saïd',
     nameAr: 'سيدي بو سعيد',
     region: 'Tunis',
@@ -119,6 +90,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'medina-tunis',
+    wiki: 'Medina of Tunis',
     name: 'Medina of Tunis',
     nameAr: 'مدينة تونس',
     region: 'Tunis',
@@ -145,6 +117,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'bardo',
+    wiki: 'Bardo National Museum (Tunis)',
     name: 'Bardo National Museum',
     nameAr: 'متحف باردو',
     region: 'Tunis',
@@ -169,6 +142,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'marche-central',
+    wiki: 'Central Market of Tunis',
     name: 'Marché Central',
     nameAr: 'السوق المركزي',
     region: 'Tunis',
@@ -194,6 +168,7 @@ export const PLACES: Place[] = [
   // ── North-west ─────────────────────────────────────────────────────
   {
     id: 'dougga',
+    wiki: 'Dougga',
     name: 'Dougga',
     nameAr: 'دقة',
     region: 'Béja',
@@ -219,6 +194,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'bulla-regia',
+    wiki: 'Bulla Regia',
     name: 'Bulla Regia',
     nameAr: 'بولا ريجيا',
     region: 'Jendouba',
@@ -242,6 +218,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'tabarka',
+    wiki: 'Tabarka',
     name: 'Tabarka',
     nameAr: 'طبرقة',
     region: 'Jendouba',
@@ -267,6 +244,7 @@ export const PLACES: Place[] = [
   // ── Sahel & centre ─────────────────────────────────────────────────
   {
     id: 'kairouan',
+    wiki: 'Great Mosque of Kairouan',
     name: 'Kairouan',
     nameAr: 'القيروان',
     region: 'Kairouan',
@@ -293,6 +271,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'sbeitla',
+    wiki: 'Sbeitla',
     name: 'Sbeitla',
     nameAr: 'سبيطلة',
     region: 'Kasserine',
@@ -316,6 +295,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'el-jem',
+    wiki: 'Amphitheatre of El Jem',
     name: 'El Jem Amphitheatre',
     nameAr: 'قصر الجم',
     region: 'Mahdia',
@@ -341,6 +321,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'sousse-medina',
+    wiki: 'Medina of Sousse',
     name: 'Medina of Sousse',
     nameAr: 'مدينة سوسة',
     region: 'Sousse',
@@ -365,6 +346,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'monastir',
+    wiki: 'Ribat of Monastir',
     name: 'Ribat of Monastir',
     nameAr: 'رباط المنستير',
     region: 'Monastir',
@@ -388,6 +370,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'mahdia',
+    wiki: 'Mahdia',
     name: 'Mahdia',
     nameAr: 'المهدية',
     region: 'Mahdia',
@@ -411,6 +394,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'sfax-medina',
+    wiki: 'Medina of Sfax',
     name: 'Sfax Medina',
     nameAr: 'مدينة صفاقس',
     region: 'Sfax',
@@ -436,6 +420,7 @@ export const PLACES: Place[] = [
   // ── Cap Bon ────────────────────────────────────────────────────────
   {
     id: 'hammamet',
+    wiki: 'Hammamet',
     name: 'Hammamet',
     nameAr: 'الحمامات',
     region: 'Nabeul',
@@ -459,6 +444,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'nabeul',
+    wiki: 'Nabeul',
     name: 'Nabeul',
     nameAr: 'نابل',
     region: 'Nabeul',
@@ -482,6 +468,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'kelibia',
+    wiki: 'Kelibia',
     name: 'Kélibia',
     nameAr: 'قليبية',
     region: 'Nabeul',
@@ -505,6 +492,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'el-haouaria',
+    wiki: 'El Haouaria',
     name: 'El Haouaria',
     nameAr: 'الهوارية',
     region: 'Nabeul',
@@ -530,6 +518,7 @@ export const PLACES: Place[] = [
   // ── South-west: Jerid & Sahara ─────────────────────────────────────
   {
     id: 'tozeur',
+    wiki: 'Tozeur',
     name: 'Tozeur',
     nameAr: 'توزر',
     region: 'Tozeur',
@@ -553,6 +542,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'mos-espa',
+    wiki: 'Mos Espa',
     name: 'Mos Espa (Ong Jemel)',
     region: 'Tozeur',
     stayQuery: 'Tozeur, Tunisia',
@@ -575,6 +565,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'chebika',
+    wiki: 'Chebika',
     name: 'Chebika Mountain Oasis',
     nameAr: 'الشبيكة',
     region: 'Tozeur',
@@ -598,6 +589,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'chott-el-jerid',
+    wiki: 'Chott el Djerid',
     name: 'Chott el Jerid',
     nameAr: 'شط الجريد',
     region: 'Kebili',
@@ -621,6 +613,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'douz',
+    wiki: 'Douz',
     name: 'Douz',
     nameAr: 'دوز',
     region: 'Kebili',
@@ -646,6 +639,7 @@ export const PLACES: Place[] = [
   // ── South-east: Matmata, Tataouine, Djerba ─────────────────────────
   {
     id: 'matmata',
+    wiki: 'Matmata, Tunisia',
     name: 'Matmata',
     nameAr: 'مطماطة',
     region: 'Gabès',
@@ -669,6 +663,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'ksar-ouled-soltane',
+    wiki: 'Ksar Ouled Soltane',
     name: 'Ksar Ouled Soltane',
     nameAr: 'قصر أولاد سلطان',
     region: 'Tataouine',
@@ -692,6 +687,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'djerba',
+    wiki: 'Djerba',
     name: 'Djerba',
     nameAr: 'جربة',
     region: 'Médenine',
@@ -717,6 +713,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'el-ghriba',
+    wiki: 'El Ghriba synagogue',
     name: 'El Ghriba Synagogue',
     nameAr: 'كنيس الغريبة',
     region: 'Médenine',
@@ -740,6 +737,7 @@ export const PLACES: Place[] = [
   },
   {
     id: 'guellala',
+    wiki: 'Guellala',
     name: 'Guellala Potters',
     nameAr: 'قلالة',
     region: 'Médenine',
@@ -769,46 +767,38 @@ export const ITINERARIES: Itinerary[] = [
   {
     id: 'roman-heritage',
     name: 'The Roman Heritage Trail',
-    emoji: '🏛️',
     tagline: 'Five cities of Africa Proconsularis',
     description:
       'From the ports of Carthage to the colossal arena of El Jem, through the hilltop forums of the Tell. A road trip through the breadbasket of Rome.',
     days: 4,
     stops: ['carthage', 'dougga', 'bulla-regia', 'sbeitla', 'el-jem'],
-    color: '#C9673F',
   },
   {
     id: 'star-wars',
     name: 'Star Wars Desert Route',
-    emoji: '🌌',
     tagline: 'Tatooine was here all along',
     description:
       'Follow the film crews across the Jerid and the Dahar: the Mos Espa set, Luke\'s homestead on the salt lake, the Lars family home in Matmata and the slave quarters at Ksar Ouled Soltane.',
     days: 3,
     stops: ['tozeur', 'mos-espa', 'chott-el-jerid', 'matmata', 'ksar-ouled-soltane'],
-    color: '#D9A441',
   },
   {
     id: 'cap-bon',
     name: 'Cap Bon Coastal Escapes',
-    emoji: '🌊',
     tagline: 'Jasmine, harissa and turquoise coves',
     description:
       'A slow coastal loop around the Cap Bon peninsula: the beaches of Hammamet, the potters of Nabeul, the fort of Kélibia and the falcon cliffs of El Haouaria.',
     days: 2,
     stops: ['hammamet', 'nabeul', 'kelibia', 'el-haouaria'],
-    color: '#3E8FA8',
   },
   {
     id: 'sacred-medinas',
     name: 'Medinas & Sacred Cities',
-    emoji: '🕌',
     tagline: 'Thirteen centuries of Islamic architecture',
     description:
       'From the souks of Tunis to the holy city of Kairouan and the fortified ports of the Sahel, ending on the white peninsula of Mahdia.',
     days: 4,
     stops: ['medina-tunis', 'kairouan', 'sousse-medina', 'monastir', 'mahdia'],
-    color: '#8E5B9E',
   },
 ];
 

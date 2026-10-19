@@ -6,7 +6,7 @@ import L from 'leaflet';
 import { useEffect, useMemo, useRef } from 'react';
 import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
 
-import { CATEGORY_BY_ID, PLACE_BY_ID, TUNISIA_CENTER } from '@/data/tunisiaData';
+import { PLACE_BY_ID, TUNISIA_CENTER } from '@/data/tunisiaData';
 import type { CategoryId, Itinerary, LatLng, Place } from '@/data/types';
 
 export interface InteractiveMapProps {
@@ -20,24 +20,30 @@ export interface InteractiveMapProps {
 }
 
 interface PinOptions {
-  emoji: string;
-  color: string;
   active: boolean;
   dim: boolean;
   stopNumber?: number;
 }
 
-function pinIcon({ emoji, color, active, dim, stopNumber }: PinOptions): L.DivIcon {
-  const classes = ['tg-pin', active && 'is-active', dim && 'is-dim'].filter(Boolean).join(' ');
-  const badge = stopNumber ? `<span class="tg-stop">${stopNumber}</span>` : '';
+function pinIcon({ active, dim, stopNumber }: PinOptions): L.DivIcon {
+  const classes = ['tg-pin', stopNumber && 'is-stop', active && 'is-active', dim && 'is-dim']
+    .filter(Boolean)
+    .join(' ');
+  const size = stopNumber ? 26 : 16;
   return L.divIcon({
     className: 'tg-marker',
-    html: `<div class="${classes}" style="background:${color}">${emoji}${badge}</div>`,
-    iconSize: [38, 38],
-    iconAnchor: [19, 19],
-    tooltipAnchor: [0, -22],
+    html: `<div class="${classes}">${stopNumber ?? ''}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    tooltipAnchor: [0, -size / 2 - 4],
   });
 }
+
+const CARTO_KEY = process.env.NEXT_PUBLIC_CARTO_API_KEY ?? '';
+// CARTO "Positron": a quiet, light basemap. The key removes the "API key required" watermark.
+const TILE_URL = `https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png${
+  CARTO_KEY ? `?key=${encodeURIComponent(CARTO_KEY)}` : ''
+}`;
 
 /** Imperative camera moves: fly to the selected place, fit an itinerary, react to resizes. */
 function MapController({
@@ -140,8 +146,7 @@ export default function InteractiveMap({
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        subdomains={['a', 'b', 'c', 'd']}
+        url={TILE_URL}
       />
       <ZoomControlBottomRight />
 
@@ -149,36 +154,18 @@ export default function InteractiveMap({
         <>
           <Polyline
             positions={routeCoords}
-            pathOptions={{ color: itinerary.color, weight: 12, opacity: 0.18, lineCap: 'round' }}
-          />
-          <Polyline
-            positions={routeCoords}
-            pathOptions={{
-              color: itinerary.color,
-              weight: 3.5,
-              opacity: 0.95,
-              dashArray: '2 10',
-              lineCap: 'round',
-            }}
+            pathOptions={{ color: '#1A1A1A', weight: 2, opacity: 0.85, dashArray: '1 7', lineCap: 'round' }}
           />
         </>
       )}
 
       {visible.map((place) => {
-        const category = CATEGORY_BY_ID[place.category];
         const stopNumber = stopOrder.get(place.id);
-        const dim = !!itinerary && !stopNumber;
         return (
           <Marker
             key={place.id}
             position={place.coords}
-            icon={pinIcon({
-              emoji: category.emoji,
-              color: itinerary && stopNumber ? itinerary.color : category.color,
-              active: place.id === selectedId,
-              dim,
-              stopNumber,
-            })}
+            icon={pinIcon({ active: place.id === selectedId, dim: !!itinerary && !stopNumber, stopNumber })}
             zIndexOffset={place.id === selectedId ? 1000 : stopNumber ? 500 : 0}
             eventHandlers={{ click: () => onSelect(place.id) }}
             keyboard

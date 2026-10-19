@@ -1,0 +1,211 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+import { useCallback, useMemo, useState } from 'react';
+
+import ActionDrawer from '@/components/ActionDrawer';
+import EditorialFeed from '@/components/EditorialFeed';
+import ItinerarySelector from '@/components/ItinerarySelector';
+import { CATEGORIES, ITINERARIES, PLACES, PLACE_BY_ID } from '@/data/tunisiaData';
+import type { CategoryId, Photo, Place } from '@/data/types';
+
+// Leaflet touches `window`, so the map only renders in the browser.
+const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-full w-full place-items-center bg-sand-50">
+      <p className="font-serif text-lg italic text-charcoal-300">Loading the map…</p>
+    </div>
+  ),
+});
+
+type ViewMode = 'map' | 'split';
+
+const ALL_CATEGORIES = new Set<CategoryId>(CATEGORIES.map((c) => c.id));
+
+export interface ExplorerProps {
+  /** Photos per place id, loaded on the server */
+  photos: Record<string, Photo[]>;
+}
+
+export default function Explorer({ photos }: ExplorerProps) {
+  const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const [activeCategories, setActiveCategories] = useState<Set<CategoryId>>(ALL_CATEGORIES);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [itineraryId, setItineraryId] = useState<string | null>(null);
+
+  const itinerary = ITINERARIES.find((i) => i.id === itineraryId) ?? null;
+  const selectedPlace = selectedId ? PLACE_BY_ID[selectedId] ?? null : null;
+
+  const feedPlaces = useMemo(() => {
+    if (itinerary) return itinerary.stops.map((id) => PLACE_BY_ID[id]).filter((p): p is Place => !!p);
+    return PLACES.filter((p) => activeCategories.has(p.category));
+  }, [activeCategories, itinerary]);
+
+  const counts = useMemo(() => {
+    const c = {} as Record<CategoryId, number>;
+    for (const p of PLACES) c[p.category] = (c[p.category] ?? 0) + 1;
+    return c;
+  }, []);
+
+  const allOn = activeCategories.size === ALL_CATEGORIES.size;
+
+  const toggleCategory = (id: CategoryId) =>
+    setActiveCategories((prev) => {
+      // First click while everything is on isolates that category, like a map legend.
+      if (prev.size === ALL_CATEGORIES.size) return new Set([id]);
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next.size === 0 ? new Set(ALL_CATEGORIES) : next;
+    });
+
+  const handleSelect = useCallback((id: string) => setSelectedId(id), []);
+  const handleClose = useCallback(() => setSelectedId(null), []);
+  const handleItinerary = (id: string | null) => {
+    setItineraryId(id);
+    setSelectedId(null);
+  };
+
+  return (
+    <main className="flex h-dvh flex-col overflow-hidden bg-cream">
+      {/* Top bar */}
+      <header className="z-[1200] flex flex-col gap-3 border-b border-sand-200 bg-cream px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-8">
+        <div className="flex items-center justify-between gap-4">
+          <a href="/" className="leading-none">
+            <span className="block font-serif text-2xl tracking-tight text-charcoal">Tunisia Go</span>
+            <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300">
+              Explorer
+            </span>
+          </a>
+          <ViewToggle mode={viewMode} onChange={setViewMode} className="lg:hidden" />
+        </div>
+
+        <nav aria-label="Map layers" className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-1 lg:px-0">
+          <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
+            All <Count>{PLACES.length}</Count>
+          </FilterPill>
+          {CATEGORIES.map((c) => (
+            <FilterPill key={c.id} active={!allOn && activeCategories.has(c.id)} onClick={() => toggleCategory(c.id)}>
+              {c.label} <Count>{counts[c.id]}</Count>
+            </FilterPill>
+          ))}
+        </nav>
+
+        <ViewToggle mode={viewMode} onChange={setViewMode} className="hidden lg:flex" />
+      </header>
+
+      {/* Body */}
+      <div className="relative flex min-h-0 flex-1 flex-col-reverse md:flex-row">
+        {viewMode === 'split' && (
+          <motion.aside
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="h-[45%] shrink-0 border-t border-sand-200 bg-cream md:h-auto md:w-[420px] md:border-r md:border-t-0"
+          >
+            <EditorialFeed places={feedPlaces} photos={photos} selectedId={selectedId} onSelect={handleSelect} />
+          </motion.aside>
+        )}
+
+        <section className="relative min-h-0 flex-1">
+          <InteractiveMap
+            places={PLACES}
+            activeCategories={activeCategories}
+            selectedId={selectedId}
+            itinerary={itinerary}
+            onSelect={handleSelect}
+            layoutKey={viewMode}
+          />
+
+          <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-[1000] flex sm:right-auto">
+            <ItinerarySelector
+              itineraries={ITINERARIES}
+              activeId={itineraryId}
+              selectedPlaceId={selectedId}
+              onChange={handleItinerary}
+              onSelectStop={handleSelect}
+            />
+          </div>
+        </section>
+
+        <ActionDrawer
+          place={selectedPlace}
+          photos={selectedPlace ? photos[selectedPlace.id] ?? [] : []}
+          itinerary={itinerary}
+          onClose={handleClose}
+          onNavigate={handleSelect}
+        />
+      </div>
+    </main>
+  );
+}
+
+function Count({ children }: { children: React.ReactNode }) {
+  return <span className="tabular-nums opacity-50">{children}</span>;
+}
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill border px-4 py-1.5 text-sm transition ${
+        active
+          ? 'border-charcoal bg-charcoal text-cream'
+          : 'border-sand-200 text-charcoal-700 hover:border-charcoal-300 hover:text-charcoal'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ViewToggle({
+  mode,
+  onChange,
+  className = '',
+}: {
+  mode: ViewMode;
+  onChange: (m: ViewMode) => void;
+  className?: string;
+}) {
+  const options: { id: ViewMode; label: string }[] = [
+    { id: 'map', label: 'Map' },
+    { id: 'split', label: 'Split' },
+  ];
+  return (
+    <div
+      role="radiogroup"
+      aria-label="View mode"
+      className={`flex shrink-0 rounded-pill border border-sand-200 p-0.5 ${className}`}
+    >
+      {options.map(({ id, label }) => {
+        const active = mode === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(id)}
+            className={`rounded-pill px-4 py-1 text-sm transition ${
+              active ? 'bg-charcoal text-cream' : 'text-charcoal-500 hover:text-charcoal'
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}

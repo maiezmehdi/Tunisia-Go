@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { CalendarDays, Car, ChevronDown, Clock, Navigation, Route, X } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { PLACE_BY_ID } from '@/data/tunisiaData';
@@ -39,35 +39,26 @@ export default function ItinerarySelector({
   const route = useMemo(() => summarizeRoute(stops), [stops]);
 
   return (
-    <div className="pointer-events-auto w-full max-w-[400px] overflow-hidden rounded-4xl bg-cream/95 shadow-lift ring-1 ring-sand-200 backdrop-blur-md">
-      {/* Chooser */}
+    <div className="pointer-events-auto w-full max-w-[400px] overflow-hidden rounded-3xl border border-sand-200 bg-cream/95 shadow-soft backdrop-blur-md">
       <div className="flex items-center justify-between px-5 pt-4">
-        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-charcoal-500">
-          <Route className="h-3.5 w-3.5 text-terracotta" /> Circuits
-        </p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">Road trips</p>
         {active && (
-          <div className="flex gap-1">
-            <button
-              type="button"
+          <div className="-mr-2 flex">
+            <IconButton
+              label={collapsed ? 'Expand itinerary' : 'Collapse itinerary'}
               onClick={() => setCollapsed((c) => !c)}
-              className="grid h-8 w-8 place-items-center rounded-full text-charcoal-500 transition hover:bg-sand"
-              aria-label={collapsed ? 'Expand itinerary' : 'Collapse itinerary'}
-              aria-expanded={!collapsed}
+              expanded={!collapsed}
             >
-              <ChevronDown className={`h-4 w-4 transition ${collapsed ? 'rotate-180' : ''}`} />
-            </button>
-            <button
-              type="button"
-              onClick={() => onChange(null)}
-              aria-label="Clear itinerary"
-              className="grid h-8 w-8 place-items-center rounded-full text-charcoal-500 transition hover:bg-sand hover:text-charcoal"
-            >
-              <X className="h-4 w-4" />
-            </button>
+              <ChevronDown className={`h-4 w-4 transition ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+            </IconButton>
+            <IconButton label="Clear itinerary" onClick={() => onChange(null)}>
+              <X className="h-4 w-4" strokeWidth={1.5} />
+            </IconButton>
           </div>
         )}
       </div>
-      <div className="no-scrollbar flex gap-2 overflow-x-auto px-5 pb-4 pt-3">
+
+      <div className="no-scrollbar flex gap-1.5 overflow-x-auto px-5 pb-4 pt-3">
         {itineraries.map((it) => {
           const isActive = it.id === activeId;
           return (
@@ -79,18 +70,18 @@ export default function ItinerarySelector({
                 onChange(isActive ? null : it.id);
               }}
               aria-pressed={isActive}
-              className={`shrink-0 rounded-pill px-4 py-2 text-sm font-medium transition ${
-                isActive ? 'text-cream shadow-soft' : 'bg-sand text-charcoal hover:bg-sand-200'
+              className={`shrink-0 rounded-pill border px-3.5 py-1.5 text-sm transition ${
+                isActive
+                  ? 'border-charcoal bg-charcoal text-cream'
+                  : 'border-sand-200 text-charcoal-700 hover:border-charcoal-300 hover:text-charcoal'
               }`}
-              style={isActive ? { background: it.color } : undefined}
             >
-              {it.emoji} {it.name}
+              {it.name}
             </button>
           );
         })}
       </div>
 
-      {/* Active circuit */}
       <AnimatePresence initial={false}>
         {active && !collapsed && (
           <motion.div
@@ -103,16 +94,16 @@ export default function ItinerarySelector({
           >
             <div className="border-t border-sand-200 px-5 pb-5 pt-4">
               <h3 className="font-serif text-2xl leading-tight text-charcoal">{active.name}</h3>
-              <p className="mt-0.5 text-sm italic text-terracotta-700">{active.tagline}</p>
+              <p className="mt-0.5 font-serif text-sm italic text-charcoal-500">{active.tagline}</p>
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-500">{active.description}</p>
 
-              <div className="mt-3 grid grid-cols-3 gap-2">
-                <Stat icon={Car} label="Distance" value={`~${formatKm(route.totalKm)}`} />
-                <Stat icon={Clock} label="Driving" value={`~${formatDuration(route.totalMinutes)}`} />
-                <Stat icon={CalendarDays} label="Suggested" value={`${active.days} days`} />
-              </div>
+              <dl className="mt-4 grid grid-cols-3 divide-x divide-sand-200 border-y border-sand-200 py-3 text-center">
+                <Stat label="Distance" value={`~${formatKm(route.totalKm)}`} />
+                <Stat label="Driving" value={`~${formatDuration(route.totalMinutes)}`} />
+                <Stat label="Suggested" value={`${active.days} days`} />
+              </dl>
 
-              <ol className="no-scrollbar mt-4 max-h-[32vh] overflow-y-auto">
+              <ol className="no-scrollbar mt-3 max-h-[30vh] overflow-y-auto">
                 {stops.map((stop, i) => {
                   const leg = route.legs[i];
                   const selected = stop.id === selectedPlaceId;
@@ -121,25 +112,21 @@ export default function ItinerarySelector({
                       <button
                         type="button"
                         onClick={() => onSelectStop(stop.id)}
-                        className={`flex w-full items-center gap-3 rounded-2xl px-2 py-2 text-left transition ${
-                          selected ? 'bg-sand' : 'hover:bg-sand/60'
-                        }`}
+                        className="group flex w-full items-baseline gap-3 py-1.5 text-left"
                       >
+                        <span className="w-5 shrink-0 font-serif text-sm tabular-nums text-charcoal-300">{i + 1}</span>
                         <span
-                          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold text-cream"
-                          style={{ background: active.color }}
+                          className={`truncate text-sm transition ${
+                            selected ? 'text-terracotta-700' : 'text-charcoal group-hover:text-terracotta-700'
+                          }`}
                         >
-                          {i + 1}
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block truncate text-sm font-semibold text-charcoal">{stop.name}</span>
-                          <span className="block truncate text-xs text-charcoal-500">{stop.tagline}</span>
+                          {stop.name}
                         </span>
                       </button>
                       {leg && (
-                        <div className="ml-[22px] flex items-center gap-2 border-l-2 border-dashed border-sand-300 py-1.5 pl-5 text-[11px] font-medium text-charcoal-500">
-                          <Car className="h-3 w-3" /> {formatKm(leg.km)} · {formatDuration(leg.minutes)}
-                        </div>
+                        <p className="ml-8 border-l border-dashed border-sand-300 py-1 pl-3 text-[11px] text-charcoal-300">
+                          {formatKm(leg.km)} · {formatDuration(leg.minutes)}
+                        </p>
                       )}
                     </li>
                   );
@@ -147,16 +134,16 @@ export default function ItinerarySelector({
               </ol>
 
               <p className="mt-2 text-[11px] text-charcoal-300">
-                Estimates use straight-line distance with a road factor. Check live traffic before you go.
+                Estimates use straight-line distance with a road factor.
               </p>
 
               <a
                 href={googleMapsRouteUrl(stops)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 flex items-center justify-center gap-2 rounded-pill bg-charcoal px-4 py-3 text-sm font-semibold text-cream transition hover:bg-charcoal-700"
+                className="mt-3 flex items-center justify-center rounded-pill bg-charcoal px-4 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
               >
-                <Navigation className="h-4 w-4" /> Open full route in Google Maps
+                Open the route in Google Maps
               </a>
             </div>
           </motion.div>
@@ -166,21 +153,35 @@ export default function ItinerarySelector({
   );
 }
 
-function Stat({
-  icon: Icon,
+function IconButton({
   label,
-  value,
+  onClick,
+  expanded,
+  children,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
   label: string;
-  value: string;
+  onClick: () => void;
+  expanded?: boolean;
+  children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl bg-sand px-3 py-2.5">
-      <p className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-charcoal-500">
-        <Icon className="h-3 w-3" /> {label}
-      </p>
-      <p className="mt-0.5 text-sm font-semibold text-charcoal">{value}</p>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-expanded={expanded}
+      className="grid h-8 w-8 place-items-center rounded-full text-charcoal-500 transition hover:bg-sand hover:text-charcoal"
+    >
+      {children}
+    </button>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-[10px] uppercase tracking-[0.18em] text-charcoal-300">{label}</dt>
+      <dd className="mt-0.5 text-sm text-charcoal">{value}</dd>
     </div>
   );
 }
