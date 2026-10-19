@@ -4,8 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import OfflineTripButton from '@/components/OfflineTripButton';
+import { MONTHS, seasonFor } from '@/data/seasons';
 import { PLACE_BY_ID } from '@/data/tunisiaData';
-import type { Itinerary, Place } from '@/data/types';
+import type { Itinerary, Photo, Place } from '@/data/types';
 import { formatDuration, formatKm, summarizeRoute } from '@/lib/geo';
 import { googleMapsRouteUrl } from '@/lib/links';
 
@@ -15,6 +17,10 @@ export interface ItinerarySelectorProps {
   selectedPlaceId: string | null;
   onChange: (itineraryId: string | null) => void;
   onSelectStop: (placeId: string) => void;
+  /** Photos per place, saved with the trip for offline use. */
+  photos: Record<string, Photo[]>;
+  /** Travel month picked in the header (0 = January), to flag stops to avoid. */
+  month?: number | null;
 }
 
 export default function ItinerarySelector({
@@ -23,6 +29,8 @@ export default function ItinerarySelector({
   selectedPlaceId,
   onChange,
   onSelectStop,
+  photos,
+  month = null,
 }: ItinerarySelectorProps) {
   const [collapsed, setCollapsed] = useState(false);
   const active = itineraries.find((i) => i.id === activeId) ?? null;
@@ -37,6 +45,7 @@ export default function ItinerarySelector({
     [active],
   );
   const route = useMemo(() => summarizeRoute(stops), [stops]);
+  const offSeason = month === null ? [] : stops.filter((s) => seasonFor(s.id, month) === 'avoid');
 
   return (
     <div className="pointer-events-auto w-full max-w-[400px] overflow-hidden rounded-3xl border border-sand-200 bg-cream/95 shadow-soft backdrop-blur-md">
@@ -103,6 +112,13 @@ export default function ItinerarySelector({
                 <Stat label="Suggested" value={`${active.days} days`} />
               </dl>
 
+              {month !== null && offSeason.length > 0 && (
+                <p className="mt-3 border-l-2 border-terracotta pl-3 text-xs leading-relaxed text-charcoal-700">
+                  {offSeason.length === stops.length ? 'This trip is' : `${offSeason.map((s) => s.name).join(', ')} ${offSeason.length > 1 ? 'are' : 'is'}`}{' '}
+                  better avoided in {MONTHS[month]}.
+                </p>
+              )}
+
               <ol className="no-scrollbar mt-3 max-h-[30vh] overflow-y-auto">
                 {stops.map((stop, i) => {
                   const leg = route.legs[i];
@@ -122,6 +138,9 @@ export default function ItinerarySelector({
                         >
                           {stop.name}
                         </span>
+                        {month !== null && seasonFor(stop.id, month) === 'avoid' && (
+                          <span className="shrink-0 text-[11px] text-charcoal-300">off season</span>
+                        )}
                       </button>
                       {leg && (
                         <p className="ml-8 border-l border-dashed border-sand-300 py-1 pl-3 text-[11px] text-charcoal-300">
@@ -145,6 +164,7 @@ export default function ItinerarySelector({
               >
                 Open the route in Google Maps
               </a>
+              <OfflineTripButton itinerary={active} photos={photos} />
             </div>
           </motion.div>
         )}

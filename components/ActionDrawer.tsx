@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
+import SeasonStrip from '@/components/SeasonStrip';
 import { CATEGORY_BY_ID, PLACE_BY_ID } from '@/data/tunisiaData';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import {
@@ -25,9 +26,11 @@ export interface ActionDrawerProps {
   itinerary: Itinerary | null;
   onClose: () => void;
   onNavigate: (placeId: string) => void;
+  /** Travel month picked in the header, highlighted in the season strip. */
+  month?: number | null;
 }
 
-export default function ActionDrawer({ place, photos, itinerary, onClose, onNavigate }: ActionDrawerProps) {
+export default function ActionDrawer({ place, photos, itinerary, onClose, onNavigate, month = null }: ActionDrawerProps) {
   useEffect(() => {
     if (!place) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -64,6 +67,7 @@ export default function ActionDrawer({ place, photos, itinerary, onClose, onNavi
                 itinerary={itinerary}
                 onClose={onClose}
                 onNavigate={onNavigate}
+                month={month}
               />
             </motion.div>
           </AnimatePresence>
@@ -79,12 +83,14 @@ function DrawerContent({
   itinerary,
   onClose,
   onNavigate,
+  month,
 }: {
   place: Place;
   photos: Photo[];
   itinerary: Itinerary | null;
   onClose: () => void;
   onNavigate: (placeId: string) => void;
+  month: number | null;
 }) {
   const category = CATEGORY_BY_ID[place.category];
   const stopIndex = itinerary ? itinerary.stops.indexOf(place.id) : -1;
@@ -126,6 +132,8 @@ function DrawerContent({
           <p className="mt-4 font-serif text-lg italic text-charcoal-700">{place.tagline}</p>
           <p className="mt-2 text-[15px] leading-relaxed text-charcoal-700">{place.description}</p>
         </header>
+
+        <SeasonStrip placeId={place.id} highlightMonth={month} />
 
         {/* Action hub */}
         <section aria-label="Plan your visit">

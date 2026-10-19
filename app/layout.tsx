@@ -1,11 +1,15 @@
 import type { Metadata, Viewport } from 'next';
 
+import ServiceWorker from '@/components/ServiceWorker';
+
 import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Tunisia Go · Explore Tunisia',
   description:
     'Interactive map, curated road trips and local know-how for Tunisia: Roman ruins, Sahara dunes, beaches, medinas and food.',
+  appleWebApp: { capable: true, title: 'Tunisia Go', statusBarStyle: 'default' },
+  icons: { icon: '/icons/icon-192.png', apple: '/icons/apple-touch-icon.png' },
 };
 
 export const viewport: Viewport = {
@@ -27,7 +31,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <style>{`:root{--font-serif:'Fraunces';--font-sans:'Inter';}`}</style>
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        {children}
+        <ServiceWorker />
+      </body>
     </html>
   );
 }
