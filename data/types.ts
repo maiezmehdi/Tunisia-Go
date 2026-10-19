@@ -1,8 +1,10 @@
-export type CategoryId = 'heritage' | 'sahara' | 'beach' | 'culture' | 'culinary';
+export type CategoryId = 'heritage' | 'sahara' | 'beach' | 'culture' | 'culinary' | 'souk';
 
 export interface Category {
   id: CategoryId;
   label: string;
+  /** Short label for the filter pills */
+  short: string;
 }
 
 export type LatLng = [number, number];

@@ -119,13 +119,13 @@ export default function Explorer({ photos }: ExplorerProps) {
           </div>
         </div>
 
-        <nav aria-label="Map layers" className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-1 lg:px-0">
+        <nav aria-label="Map layers" className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] lg:mx-0 lg:flex-1 lg:px-0 lg:[mask-image:none]">
           <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
             All <Count>{PLACES.length}</Count>
           </FilterPill>
           {CATEGORIES.map((c) => (
-            <FilterPill key={c.id} active={!allOn && activeCategories.has(c.id)} onClick={() => toggleCategory(c.id)}>
-              {c.label} <Count>{counts[c.id]}</Count>
+            <FilterPill key={c.id} title={c.label} active={!allOn && activeCategories.has(c.id)} onClick={() => toggleCategory(c.id)}>
+              {c.short} <Count>{counts[c.id]}</Count>
             </FilterPill>
           ))}
         </nav>
@@ -169,7 +169,7 @@ export default function Explorer({ photos }: ExplorerProps) {
             layoutKey={viewMode}
           />
 
-          <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-[1000] flex sm:right-auto">
+          <div className="pointer-events-none absolute inset-4 z-[1000] flex items-end sm:right-auto">
             <ItinerarySelector
               itineraries={ITINERARIES}
               activeId={itineraryId}
@@ -244,9 +244,11 @@ function Count({ children }: { children: React.ReactNode }) {
 function FilterPill({
   active,
   onClick,
+  title,
   children,
 }: {
   active: boolean;
+  title?: string;
   onClick: () => void;
   children: React.ReactNode;
 }) {
@@ -254,6 +256,7 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
+      title={title}
       aria-pressed={active}
       className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill border px-4 py-1.5 text-sm transition ${
         active
