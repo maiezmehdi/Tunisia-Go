@@ -48,7 +48,7 @@ export default function ItinerarySelector({
   const offSeason = month === null ? [] : stops.filter((s) => seasonFor(s.id, month) === 'avoid');
 
   return (
-    <div className="pointer-events-auto w-full max-w-[400px] overflow-hidden rounded-3xl border border-sand-200 bg-cream/95 shadow-soft backdrop-blur-md">
+    <div className="no-scrollbar pointer-events-auto max-h-full w-full max-w-[400px] overflow-y-auto overflow-x-hidden rounded-3xl border border-sand-200 bg-cream/95 shadow-soft backdrop-blur-md">
       <div className="flex items-center justify-between px-5 pt-4">
         <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">Road trips</p>
         {active && (
@@ -67,7 +67,7 @@ export default function ItinerarySelector({
         )}
       </div>
 
-      <div className="no-scrollbar flex gap-1.5 overflow-x-auto px-5 pb-4 pt-3">
+      <div className="flex flex-wrap gap-1.5 px-5 pb-4 pt-3">
         {itineraries.map((it) => {
           const isActive = it.id === activeId;
           return (

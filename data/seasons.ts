@@ -61,6 +61,15 @@ const RAW: Record<string, string> = {
   djerba: 'xoooBBBBBBox',
   'el-ghriba': ALL_YEAR,
   guellala: ALL_YEAR,
+  kerkennah: COAST_SWIM,
+  'ghar-el-melh': 'xxooBBBBBoxx',
+  korbous: 'ooBBBooooBBo',
+  zarzis: 'xoooBBBBBBox',
+  'souk-el-attarine': CITY,
+  'houmt-souk': 'ooBBBoooBBBo',
+  'nabeul-market': 'ooBBoooooBBo',
+  'kairouan-souks': 'BBBBoxxxoBBB',
+  'gabes-jara': 'BBBBoxxxoBBB',
 };
 
 const LETTER: Record<string, SeasonRating> = { B: 'best', o: 'fine', x: 'avoid' };
