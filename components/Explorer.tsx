@@ -69,7 +69,7 @@ export default function Explorer({ photos }: ExplorerProps) {
   }, [itineraryId]);
 
   const itinerary = ITINERARIES.find((i) => i.id === itineraryId) ?? null;
-  const selectedPlace = selectedId ? PLACE_BY_ID[selectedId] ?? null : null;
+  const selectedPlace = selectedId ? (PLACE_BY_ID[selectedId] ?? null) : null;
 
   const feedPlaces = useMemo(() => {
     if (itinerary) return itinerary.stops.map((id) => PLACE_BY_ID[id]).filter((p): p is Place => !!p);
@@ -116,33 +116,46 @@ export default function Explorer({ photos }: ExplorerProps) {
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-cream">
       {/* Top bar */}
-      <header className="z-[1200] flex flex-col gap-3 border-b border-sand-200 bg-cream px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-8">
-        <div className="flex items-center justify-between gap-4">
-          <a href="/" className="leading-none">
-            <span className="block font-serif text-2xl tracking-tight text-charcoal">Tunisia Go</span>
-            <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300">
+      <header className="relative z-[1200] flex flex-col gap-3 border-b border-sand-200 bg-cream px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-8">
+        <div className="relative z-10 flex items-center justify-between gap-3">
+          <a href="/" className="shrink-0 leading-none">
+            <span className="block whitespace-nowrap font-serif text-xl tracking-tight text-charcoal sm:text-2xl">
+              Tunisia Go
+            </span>
+            <span className="mt-1 hidden text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300 sm:block">
               {t.explorer}
             </span>
           </a>
-          <div className="flex items-center gap-4 lg:hidden">
-            <LanguageSwitch />
-            <HeaderLinks />
-            <ViewToggle mode={viewMode} onChange={setViewMode} />
+          <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
+            <OfflineBadge />
+            <ViewToggle mode={viewMode} onChange={setViewMode} compact />
+            <MobileMenu />
           </div>
         </div>
 
-        <nav aria-label={t.mapLayers} className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] lg:mx-0 lg:flex-1 lg:px-0 lg:[mask-image:none]">
+        <nav
+          aria-label={t.mapLayers}
+          className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-1 lg:px-0 lg:[mask-image:none]"
+        >
+          <div className="shrink-0 lg:hidden">
+            <MonthSelect value={month} onChange={setMonth} />
+          </div>
           <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
             {t.all} <Count>{PLACES.length}</Count>
           </FilterPill>
           {categories.map((c) => (
-            <FilterPill key={c.id} title={c.label} active={!allOn && activeCategories.has(c.id)} onClick={() => toggleCategory(c.id)}>
+            <FilterPill
+              key={c.id}
+              title={c.label}
+              active={!allOn && activeCategories.has(c.id)}
+              onClick={() => toggleCategory(c.id)}
+            >
               {c.short} <Count>{counts[c.id]}</Count>
             </FilterPill>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden items-center gap-3 lg:flex">
           <MonthSelect value={month} onChange={setMonth} />
           <OfflineBadge />
         </div>
@@ -197,7 +210,7 @@ export default function Explorer({ photos }: ExplorerProps) {
 
         <ActionDrawer
           place={selectedPlace}
-          photos={selectedPlace ? photos[selectedPlace.id] ?? [] : []}
+          photos={selectedPlace ? (photos[selectedPlace.id] ?? []) : []}
           itinerary={itinerary}
           onClose={handleClose}
           onNavigate={handleSelect}
@@ -210,13 +223,73 @@ export default function Explorer({ photos }: ExplorerProps) {
 
 function HeaderLinks() {
   const { t } = useLocale();
-  const link = 'whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline';
+  const link =
+    'whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline';
   return (
     <nav aria-label={t.travelTools} className="flex items-center gap-4">
       <a href="/pratique" className={link}>
         {t.practical}
       </a>
     </nav>
+  );
+}
+
+/** Below desktop width: a quiet "Menu" button that opens the secondary links and the language switch. */
+function MobileMenu() {
+  const { t } = useLocale();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+  const link = 'block py-2.5 text-sm text-charcoal-700 transition hover:text-charcoal';
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-controls="explorer-menu"
+        aria-label={t.menu}
+        className="grid h-8 w-8 place-items-center rounded-full border border-sand-200 text-charcoal-700 transition hover:border-charcoal-300"
+      >
+        <svg aria-hidden viewBox="0 0 14 8" className="h-2 w-3.5">
+          {open ? (
+            <path d="M3 0.5l8 7M11 0.5l-8 7" fill="none" stroke="currentColor" strokeWidth="1.3" />
+          ) : (
+            <path d="M0 1h14M0 7h14" fill="none" stroke="currentColor" strokeWidth="1.3" />
+          )}
+        </svg>
+      </button>
+      {open && (
+        <>
+          <button
+            type="button"
+            aria-label={t.close}
+            tabIndex={-1}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 cursor-default"
+          />
+          <div
+            id="explorer-menu"
+            className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-sand-200 bg-cream px-5 py-2 shadow-soft"
+          >
+            <a href="/pratique" className={link}>
+              {t.practical}
+            </a>
+            <a href="/spot-secret" className={`${link} border-t border-sand-200`}>
+              {t.shareSecretSpot}
+            </a>
+            <div className="flex items-center justify-between border-t border-sand-200 py-3">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">{t.language}</span>
+              <LanguageSwitch />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -288,10 +361,12 @@ function ViewToggle({
   mode,
   onChange,
   className = '',
+  compact = false,
 }: {
   mode: ViewMode;
   onChange: (m: ViewMode) => void;
   className?: string;
+  compact?: boolean;
 }) {
   const { t } = useLocale();
   const options: { id: ViewMode; label: string }[] = [
@@ -313,7 +388,7 @@ function ViewToggle({
             role="radio"
             aria-checked={active}
             onClick={() => onChange(id)}
-            className={`rounded-pill px-4 py-1 text-sm transition ${
+            className={`rounded-pill py-1 text-sm transition ${compact ? 'px-3' : 'px-4'} ${
               active ? 'bg-charcoal text-cream' : 'text-charcoal-500 hover:text-charcoal'
             }`}
           >
