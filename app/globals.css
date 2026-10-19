@@ -99,3 +99,32 @@ body {
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+/* Landing page */
+html {
+  scroll-behavior: smooth;
+}
+@keyframes tg-scroll-cue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+@keyframes tg-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+.atlas-track {
+  animation: tg-marquee 70s linear infinite;
+}
+.atlas-track-reverse {
+  animation-direction: reverse;
+  animation-duration: 85s;
+}
+.atlas-marquee:hover .atlas-track,
+.atlas-marquee:focus-within .atlas-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .atlas-track { animation: none; }
+  .atlas-marquee > div { width: auto; overflow-x: auto; }
+}
