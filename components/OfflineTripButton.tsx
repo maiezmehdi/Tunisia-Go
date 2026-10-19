@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import type { Itinerary, Photo } from '@/data/types';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 import {
   estimateTripMb,
   offlineSupported,
@@ -22,6 +23,7 @@ export default function OfflineTripButton({
   itinerary: Itinerary;
   photos: Record<string, Photo[]>;
 }) {
+  const { t, locale } = useLocale();
   const [supported, setSupported] = useState(false);
   const [saved, setSaved] = useState<SavedTrip | null>(null);
   const [state, setState] = useState<State>({ kind: 'idle' });
@@ -59,29 +61,29 @@ export default function OfflineTripButton({
         <div className="h-px w-full bg-sand-200">
           <div className="h-px bg-charcoal transition-[width]" style={{ width: `${pct}%` }} />
         </div>
-        <p className="mt-2 text-center text-xs text-charcoal-500">Saving for offline use · {pct}%</p>
+        <p className="mt-2 text-center text-xs text-charcoal-500">{t.savingOffline(pct)}</p>
       </div>
     );
   }
 
   if (saved) {
-    const date = new Date(saved.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    const date = new Date(saved.savedAt).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short' });
     return (
       <div className="mt-2 flex items-center justify-between gap-3 rounded-pill border border-sand-200 px-4 py-2 text-xs">
         <span className="text-charcoal-700">
           <span aria-hidden className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-charcoal align-middle" />
-          Available offline · saved {date}
+          {t.availableOffline(date)}
         </span>
         <span className="flex gap-3">
           <button type="button" onClick={save} className="text-charcoal-500 underline-offset-4 hover:text-charcoal hover:underline">
-            Update
+            {t.update}
           </button>
           <button
             type="button"
             onClick={() => removeTripOffline(itinerary.id)}
             className="text-charcoal-500 underline-offset-4 hover:text-charcoal hover:underline"
           >
-            Remove
+            {t.remove}
           </button>
         </span>
       </div>
@@ -95,12 +97,12 @@ export default function OfflineTripButton({
         onClick={save}
         className="flex w-full items-center justify-center rounded-pill border border-charcoal px-4 py-2.5 text-sm text-charcoal transition hover:bg-charcoal hover:text-cream"
       >
-        Save for offline use
+        {t.saveOffline}
       </button>
       <p className="mt-1.5 text-center text-[11px] text-charcoal-300">
         {state.kind === 'error'
-          ? 'Some files could not be downloaded. Check the connection and try again.'
-          : `Map, photos and stop details, about ${sizeMb ?? '…'} MB. For the desert, where the network drops.`}
+          ? t.saveOfflineError
+          : t.saveOfflineHint(sizeMb)}
       </p>
     </div>
   );

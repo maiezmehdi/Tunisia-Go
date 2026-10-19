@@ -7,20 +7,27 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import ActionDrawer from '@/components/ActionDrawer';
 import EditorialFeed from '@/components/EditorialFeed';
 import ItinerarySelector from '@/components/ItinerarySelector';
+import LanguageSwitch from '@/components/LanguageSwitch';
 import OfflineBadge from '@/components/OfflineBadge';
-import { MONTHS, seasonFor } from '@/data/seasons';
-import { CATEGORIES, ITINERARIES, PLACES, PLACE_BY_ID } from '@/data/tunisiaData';
+import { seasonFor } from '@/data/seasons';
+import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Photo, Place } from '@/data/types';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 // Leaflet touches `window`, so the map only renders in the browser.
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
   ssr: false,
-  loading: () => (
-    <div className="grid h-full w-full place-items-center bg-sand-50">
-      <p className="font-serif text-lg italic text-charcoal-300">Loading the map…</p>
-    </div>
-  ),
+  loading: () => <MapLoading />,
 });
+
+function MapLoading() {
+  const { t } = useLocale();
+  return (
+    <div className="grid h-full w-full place-items-center bg-sand-50">
+      <p className="font-serif text-lg italic text-charcoal-300">{t.loadingMap}</p>
+    </div>
+  );
+}
 
 type ViewMode = 'map' | 'split';
 
@@ -32,6 +39,8 @@ export interface ExplorerProps {
 }
 
 export default function Explorer({ photos }: ExplorerProps) {
+  const { t, catalog } = useLocale();
+  const { places: PLACES, placeById: PLACE_BY_ID, itineraries: ITINERARIES, categories } = catalog;
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [activeCategories, setActiveCategories] = useState<Set<CategoryId>>(ALL_CATEGORIES);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -46,6 +55,8 @@ export default function Explorer({ photos }: ExplorerProps) {
     const place = params.get('place');
     if (trip && ITINERARIES.some((i) => i.id === trip)) setItineraryId(trip);
     if (place && PLACE_BY_ID[place]) setSelectedId(place);
+    // Read once on mount: the catalog only changes with a full reload.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Keep the chosen road trip in the address bar so the view can be shared.
@@ -69,19 +80,19 @@ export default function Explorer({ photos }: ExplorerProps) {
     return inCategory
       .filter((p) => seasonFor(p.id, month) !== 'avoid')
       .sort((a, b) => rank[seasonFor(a.id, month)] - rank[seasonFor(b.id, month)]);
-  }, [activeCategories, itinerary, month]);
+  }, [activeCategories, itinerary, month, PLACES, PLACE_BY_ID]);
 
   const mapPlaces = useMemo(() => {
     if (month === null) return PLACES;
     const stops = new Set(itinerary?.stops ?? []);
     return PLACES.filter((p) => stops.has(p.id) || seasonFor(p.id, month) !== 'avoid');
-  }, [month, itinerary]);
+  }, [month, itinerary, PLACES]);
 
   const counts = useMemo(() => {
     const c = {} as Record<CategoryId, number>;
     for (const p of PLACES) c[p.category] = (c[p.category] ?? 0) + 1;
     return c;
-  }, []);
+  }, [PLACES]);
 
   const allOn = activeCategories.size === ALL_CATEGORIES.size;
 
@@ -110,20 +121,21 @@ export default function Explorer({ photos }: ExplorerProps) {
           <a href="/" className="leading-none">
             <span className="block font-serif text-2xl tracking-tight text-charcoal">Tunisia Go</span>
             <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300">
-              Explorer
+              {t.explorer}
             </span>
           </a>
           <div className="flex items-center gap-4 lg:hidden">
+            <LanguageSwitch />
             <HeaderLinks />
             <ViewToggle mode={viewMode} onChange={setViewMode} />
           </div>
         </div>
 
-        <nav aria-label="Map layers" className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] lg:mx-0 lg:flex-1 lg:px-0 lg:[mask-image:none]">
+        <nav aria-label={t.mapLayers} className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] lg:mx-0 lg:flex-1 lg:px-0 lg:[mask-image:none]">
           <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
-            All <Count>{PLACES.length}</Count>
+            {t.all} <Count>{PLACES.length}</Count>
           </FilterPill>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <FilterPill key={c.id} title={c.label} active={!allOn && activeCategories.has(c.id)} onClick={() => toggleCategory(c.id)}>
               {c.short} <Count>{counts[c.id]}</Count>
             </FilterPill>
@@ -137,6 +149,7 @@ export default function Explorer({ photos }: ExplorerProps) {
 
         <div className="hidden items-center gap-5 lg:flex">
           <HeaderLinks />
+          <LanguageSwitch />
           <ViewToggle mode={viewMode} onChange={setViewMode} />
         </div>
       </header>
@@ -196,20 +209,22 @@ export default function Explorer({ photos }: ExplorerProps) {
 }
 
 function HeaderLinks() {
+  const { t } = useLocale();
   const link = 'whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline';
   return (
-    <nav aria-label="Travel tools" className="flex items-center gap-4">
+    <nav aria-label={t.travelTools} className="flex items-center gap-4">
       <a href="/pratique" className={link}>
-        Practical
+        {t.practical}
       </a>
     </nav>
   );
 }
 
 function MonthSelect({ value, onChange }: { value: number | null; onChange: (m: number | null) => void }) {
+  const { t } = useLocale();
   return (
     <label className="relative inline-flex shrink-0 items-center">
-      <span className="sr-only">Travel month</span>
+      <span className="sr-only">{t.travelMonth}</span>
       <select
         value={value ?? ''}
         onChange={(e) => onChange(e.target.value === '' ? null : Number(e.target.value))}
@@ -219,10 +234,10 @@ function MonthSelect({ value, onChange }: { value: number | null; onChange: (m: 
             : 'border-charcoal bg-charcoal text-cream'
         }`}
       >
-        <option value="">Any month</option>
-        {MONTHS.map((m, i) => (
+        <option value="">{t.anyMonth}</option>
+        {t.months.map((m, i) => (
           <option key={m} value={i}>
-            In {m}
+            {t.inMonth(m)}
           </option>
         ))}
       </select>
@@ -278,14 +293,15 @@ function ViewToggle({
   onChange: (m: ViewMode) => void;
   className?: string;
 }) {
+  const { t } = useLocale();
   const options: { id: ViewMode; label: string }[] = [
-    { id: 'map', label: 'Map' },
-    { id: 'split', label: 'Split' },
+    { id: 'map', label: t.viewMap },
+    { id: 'split', label: t.viewSplit },
   ];
   return (
     <div
       role="radiogroup"
-      aria-label="View mode"
+      aria-label={t.viewMode}
       className={`flex shrink-0 rounded-pill border border-sand-200 p-0.5 ${className}`}
     >
       {options.map(({ id, label }) => {

@@ -83,11 +83,18 @@ export function seasonFor(placeId: string, month: number): SeasonRating {
   return SEASONS[placeId]?.[month] ?? 'fine';
 }
 
-/** "March to May, October to November" style summary of the best months. */
-export function bestMonthsLabel(placeId: string): string {
+const FR_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const FR_MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+/**
+ * Summary of the best months: "Mar to May, Oct to Nov" in English,
+ * "mars à mai, oct. à nov." in French, "All year" / "toute l’année" when flat.
+ */
+export function bestMonthsLabel(placeId: string, locale: 'en' | 'fr' = 'en'): string {
+  const allYear = locale === 'fr' ? 'toute l’année' : 'All year';
   const months = SEASONS[placeId];
-  if (!months) return 'All year';
-  if (months.every((m) => m === months[0])) return 'All year';
+  if (!months) return allYear;
+  if (months.every((m) => m === months[0])) return allYear;
   const ranges: [number, number][] = [];
   months.forEach((r, i) => {
     if (r !== 'best') return;
@@ -99,6 +106,11 @@ export function bestMonthsLabel(placeId: string): string {
   if (ranges.length > 1 && ranges[0][0] === 0 && ranges[ranges.length - 1][1] === 11) {
     const first = ranges.shift()!;
     ranges[ranges.length - 1][1] = first[1];
+  }
+  if (locale === 'fr') {
+    const full = (i: number) => FR_MONTHS[i];
+    const short = (i: number) => FR_SHORT[i];
+    return ranges.map(([a, b]) => (a === b ? full(a) : `${short(a)} à ${short(b)}`)).join(', ');
   }
   const short = (i: number) => MONTHS[i].slice(0, 3);
   return ranges.map(([a, b]) => (a === b ? MONTHS[a] : `${short(a)} to ${short(b)}`)).join(', ');
