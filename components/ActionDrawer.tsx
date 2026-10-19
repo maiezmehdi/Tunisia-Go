@@ -1,9 +1,10 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Phone, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
 import { CATEGORY_BY_ID, PLACE_BY_ID } from '@/data/tunisiaData';
 import type { Itinerary, Photo, Place } from '@/data/types';
@@ -133,25 +134,32 @@ function DrawerContent({
           <div className="mt-3">
             <p className="text-sm font-medium text-charcoal">Trouver un logement</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              <Pill href={bookingUrl(place)}>Booking.com</Pill>
-              <Pill href={airbnbUrl(place)}>Airbnb</Pill>
+              <Pill href={bookingUrl(place)} brand="booking">
+                Booking.com
+              </Pill>
+              <Pill href={airbnbUrl(place)} brand="airbnb">
+                Airbnb
+              </Pill>
             </div>
           </div>
 
           <ul className="mt-5 divide-y divide-sand-200 border-y border-sand-200">
             <ActionRow
               href={guideWhatsAppUrl(place)}
+              brand="whatsapp"
               title="Contacter le guide local sur WhatsApp"
               subtitle={place.contact.guideName ? `${place.contact.guideName}, guide à ${place.region}` : 'Guide local'}
             />
             <ActionRow
               href={transferWhatsAppUrl(place)}
+              brand="whatsapp"
               title="Réserver un transfert / transport"
               subtitle="Aéroport, chauffeur privé ou 4x4"
             />
             {phone && (
               <ActionRow
                 href={phone}
+                leading={<Phone className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
                 title="Appeler le lieu / prestataire"
                 subtitle={place.contact.phone}
                 external={false}
@@ -160,10 +168,12 @@ function DrawerContent({
           </ul>
 
           <div className="mt-5 grid grid-cols-2 gap-2">
-            <Pill href={googleMapsUrl(place)} primary>
+            <Pill href={googleMapsUrl(place)} brand="googlemaps" primary>
               Google Maps
             </Pill>
-            <Pill href={wazeUrl(place)}>Waze</Pill>
+            <Pill href={wazeUrl(place)} brand="waze">
+              Waze
+            </Pill>
           </div>
         </section>
 
@@ -214,18 +224,29 @@ function StopButton({
   );
 }
 
-function Pill({ href, primary, children }: { href: string; primary?: boolean; children: ReactNode }) {
+function Pill({
+  href,
+  primary,
+  brand,
+  children,
+}: {
+  href: string;
+  primary?: boolean;
+  brand?: Brand;
+  children: ReactNode;
+}) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
-      className={`inline-flex items-center justify-center rounded-pill px-4 py-2.5 text-sm transition ${
+      className={`inline-flex items-center justify-center gap-2 rounded-pill px-4 py-2.5 text-sm transition ${
         primary
           ? 'bg-charcoal text-cream hover:bg-charcoal-700'
           : 'border border-sand-300 text-charcoal hover:border-charcoal'
       }`}
     >
+      {brand && <BrandIcon brand={brand} className="h-3.5 w-3.5 shrink-0" />}
       {children}
     </a>
   );
@@ -233,11 +254,15 @@ function Pill({ href, primary, children }: { href: string; primary?: boolean; ch
 
 function ActionRow({
   href,
+  brand,
+  leading,
   title,
   subtitle,
   external = true,
 }: {
   href: string;
+  brand?: Brand;
+  leading?: ReactNode;
   title: string;
   subtitle?: string;
   external?: boolean;
@@ -249,9 +274,12 @@ function ActionRow({
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className="group flex items-center justify-between gap-4 py-3.5"
       >
-        <span className="min-w-0">
-          <span className="block text-sm font-medium text-charcoal group-hover:text-terracotta-700">{title}</span>
-          {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}
+        <span className="flex min-w-0 items-center gap-3">
+          {brand ? <BrandIcon brand={brand} className="h-4 w-4 shrink-0 text-charcoal-500" /> : leading}
+          <span className="min-w-0">
+            <span className="block text-sm font-medium text-charcoal group-hover:text-terracotta-700">{title}</span>
+            {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}
+          </span>
         </span>
         <span aria-hidden className="text-charcoal-300 transition group-hover:translate-x-0.5 group-hover:text-charcoal">
           →
