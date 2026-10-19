@@ -9,11 +9,19 @@ import { loadPhotos } from '@/lib/photos';
 // Photos come from Wikimedia Commons and are refreshed once a day.
 export const revalidate = 86400;
 
-export const metadata: Metadata = {
-  title: "Tunisia Go · La Tunisie, l'autre voyage",
-  description:
-    'Spots hors des sentiers battus, grands road trips et carte interactive pour découvrir la Tunisie autrement.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return lang === 'en'
+    ? {
+        title: 'Tunisia Go · Tunisia, the other journey',
+        description: 'Off-the-beaten-track spots, great road trips and an interactive map to see Tunisia differently.',
+      }
+    : {
+        title: 'Tunisia Go · La Tunisie, l’autre voyage',
+        description:
+          'Spots hors des sentiers battus, grands road trips et carte interactive pour découvrir la Tunisie autrement.',
+      };
+}
 
 export default async function HomePage() {
   const places = LANDING_PLACE_IDS.map((id) => PLACE_BY_ID[id]).filter((p): p is Place => !!p);

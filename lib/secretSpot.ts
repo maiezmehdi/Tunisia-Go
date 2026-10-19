@@ -1,5 +1,43 @@
-/** Shared between the form and the API route. */
-export const SPOT_TYPES = ['Café', 'Crique ou plage', 'Point de vue', 'Restaurant', 'Artisan', 'Randonnée', 'Autre'] as const;
+import type { Locale } from '@/lib/i18n/config';
+
+/** Shared between the form and the API route. The ids are what gets sent; labels are for display. */
+export const SPOT_TYPES = ['cafe', 'cove', 'viewpoint', 'restaurant', 'craft', 'hike', 'other'] as const;
+export type SpotType = (typeof SPOT_TYPES)[number];
+
+export const SPOT_TYPE_LABELS: Record<Locale, Record<SpotType, string>> = {
+  fr: {
+    cafe: 'Café',
+    cove: 'Crique ou plage',
+    viewpoint: 'Point de vue',
+    restaurant: 'Restaurant',
+    craft: 'Artisan',
+    hike: 'Randonnée',
+    other: 'Autre',
+  },
+  en: {
+    cafe: 'Café',
+    cove: 'Cove or beach',
+    viewpoint: 'Viewpoint',
+    restaurant: 'Restaurant',
+    craft: 'Craftsperson',
+    hike: 'Walk or hike',
+    other: 'Something else',
+  },
+};
+
+function isSpotType(value: string): value is SpotType {
+  return (SPOT_TYPES as readonly string[]).includes(value);
+}
+
+/** Accepts an id, or a label in either language (older clients sent the French label). */
+function toSpotType(value: string): SpotType {
+  if (isSpotType(value)) return value;
+  for (const labels of Object.values(SPOT_TYPE_LABELS)) {
+    const hit = SPOT_TYPES.find((id) => labels[id].toLowerCase() === value.toLowerCase());
+    if (hit) return hit;
+  }
+  return 'other';
+}
 
 export interface SecretSpot {
   name: string;
@@ -41,14 +79,15 @@ export function cleanSpot(input: Partial<Record<keyof SecretSpot, unknown>>): Se
     const v = input[key];
     spot[key] = typeof v === 'string' ? v.trim().slice(0, LIMITS[key]) : '';
   }
+  spot.type = toSpotType(spot.type);
   if (!spot.name || !spot.area || spot.why.length < 10) return null;
   return spot;
 }
 
-/** Plain-text version, used for the webhook message and the WhatsApp fallback. */
+/** Plain-text version, used for the webhook message and the WhatsApp fallback. Always French: it goes to the team. */
 export function spotAsText(spot: SecretSpot): string {
   return [
-    `Nouveau spot secret : ${spot.name} (${spot.type})`,
+    `Nouveau spot secret : ${spot.name} (${SPOT_TYPE_LABELS.fr[toSpotType(spot.type)]})`,
     `Où : ${spot.area}${spot.location ? ` · ${spot.location}` : ''}`,
     `Pourquoi : ${spot.why}`,
     spot.bestTime && `Meilleur moment : ${spot.bestTime}`,

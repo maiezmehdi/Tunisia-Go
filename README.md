@@ -71,3 +71,17 @@ road trips panel, "Save for offline use" downloads the map tiles along the route
 (zooms 5 to 14 around the stops), the photos of every stop and the app itself, so
 the trip stays usable where the network drops. Bump `VERSION` in `public/sw.js`
 when the cache layout changes.
+
+## Languages
+
+The site is in French (default) and English. Pages live under `app/[lang]/`, but
+URLs carry no prefix: `middleware.ts` rewrites each request to `/fr/...` or
+`/en/...` from the `tg-lang` cookie, or from the browser language on a first
+visit. The FR · EN switch in each header sets that cookie. A link to
+`/en/explore` (or `/fr/...`) switches the language and redirects to `/explore`.
+
+- Map interface strings: `lib/i18n/ui.ts`.
+- Places, road trips and categories: English in `data/tunisiaData.ts`, French in
+  `data/i18n/` (merged by `lib/i18n/catalog.ts`). A new place needs an entry in
+  `data/i18n/places.fr.a.ts` or `places.fr.b.ts`, otherwise it shows in English.
+- Landing, Pratique and Spot secret keep their copy next to the page, per language.

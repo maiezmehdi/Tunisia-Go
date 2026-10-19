@@ -5,9 +5,9 @@ import { ChevronDown, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import OfflineTripButton from '@/components/OfflineTripButton';
-import { MONTHS, seasonFor } from '@/data/seasons';
-import { PLACE_BY_ID } from '@/data/tunisiaData';
+import { seasonFor } from '@/data/seasons';
 import type { Itinerary, Photo, Place } from '@/data/types';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { formatDuration, formatKm, summarizeRoute } from '@/lib/geo';
 import { googleMapsRouteUrl } from '@/lib/links';
 
@@ -32,6 +32,7 @@ export default function ItinerarySelector({
   photos,
   month = null,
 }: ItinerarySelectorProps) {
+  const { t, catalog } = useLocale();
   const [collapsed, setCollapsed] = useState(false);
   const active = itineraries.find((i) => i.id === activeId) ?? null;
 
@@ -41,8 +42,8 @@ export default function ItinerarySelector({
   }, [selectedPlaceId]);
 
   const stops = useMemo<Place[]>(
-    () => (active ? active.stops.map((id) => PLACE_BY_ID[id]).filter((p): p is Place => !!p) : []),
-    [active],
+    () => (active ? active.stops.map((id) => catalog.placeById[id]).filter((p): p is Place => !!p) : []),
+    [active, catalog],
   );
   const route = useMemo(() => summarizeRoute(stops), [stops]);
   const offSeason = month === null ? [] : stops.filter((s) => seasonFor(s.id, month) === 'avoid');
@@ -50,17 +51,17 @@ export default function ItinerarySelector({
   return (
     <div className="no-scrollbar pointer-events-auto max-h-full w-full max-w-[400px] overflow-y-auto overflow-x-hidden rounded-3xl border border-sand-200 bg-cream/95 shadow-soft backdrop-blur-md">
       <div className="flex items-center justify-between px-5 pt-4">
-        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">Road trips</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.roadTrips}</p>
         {active && (
           <div className="-mr-2 flex">
             <IconButton
-              label={collapsed ? 'Expand itinerary' : 'Collapse itinerary'}
+              label={collapsed ? t.expandItinerary : t.collapseItinerary}
               onClick={() => setCollapsed((c) => !c)}
               expanded={!collapsed}
             >
               <ChevronDown className={`h-4 w-4 transition ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.5} />
             </IconButton>
-            <IconButton label="Clear itinerary" onClick={() => onChange(null)}>
+            <IconButton label={t.clearItinerary} onClick={() => onChange(null)}>
               <X className="h-4 w-4" strokeWidth={1.5} />
             </IconButton>
           </div>
@@ -107,15 +108,17 @@ export default function ItinerarySelector({
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-500">{active.description}</p>
 
               <dl className="mt-4 grid grid-cols-3 divide-x divide-sand-200 border-y border-sand-200 py-3 text-center">
-                <Stat label="Distance" value={`~${formatKm(route.totalKm)}`} />
-                <Stat label="Driving" value={`~${formatDuration(route.totalMinutes)}`} />
-                <Stat label="Suggested" value={`${active.days} days`} />
+                <Stat label={t.distance} value={`~${formatKm(route.totalKm)}`} />
+                <Stat label={t.driving} value={`~${formatDuration(route.totalMinutes)}`} />
+                <Stat label={t.suggested} value={t.days(active.days)} />
               </dl>
 
               {month !== null && offSeason.length > 0 && (
                 <p className="mt-3 border-l-2 border-terracotta pl-3 text-xs leading-relaxed text-charcoal-700">
-                  {offSeason.length === stops.length ? 'This trip is' : `${offSeason.map((s) => s.name).join(', ')} ${offSeason.length > 1 ? 'are' : 'is'}`}{' '}
-                  better avoided in {MONTHS[month]}.
+                  {t.offSeasonWarning(
+                    offSeason.length === stops.length ? null : offSeason.map((s) => s.name),
+                    t.months[month],
+                  )}
                 </p>
               )}
 
@@ -139,7 +142,7 @@ export default function ItinerarySelector({
                           {stop.name}
                         </span>
                         {month !== null && seasonFor(stop.id, month) === 'avoid' && (
-                          <span className="shrink-0 text-[11px] text-charcoal-300">off season</span>
+                          <span className="shrink-0 text-[11px] text-charcoal-300">{t.offSeason}</span>
                         )}
                       </button>
                       {leg && (
@@ -153,7 +156,7 @@ export default function ItinerarySelector({
               </ol>
 
               <p className="mt-2 text-[11px] text-charcoal-300">
-                Estimates use straight-line distance with a road factor.
+                {t.estimatesNote}
               </p>
 
               <a
@@ -162,7 +165,7 @@ export default function ItinerarySelector({
                 rel="noopener noreferrer"
                 className="mt-3 flex items-center justify-center rounded-pill bg-charcoal px-4 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
               >
-                Open the route in Google Maps
+                {t.openRouteInGoogleMaps}
               </a>
               <OfflineTripButton itinerary={active} photos={photos} />
             </div>

@@ -4,15 +4,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import type { CultureInsights, Place } from '@/data/types';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 type InsightKey = keyof CultureInsights;
 
-const TABS: { key: InsightKey; label: string }[] = [
-  { key: 'history', label: 'History' },
-  { key: 'customs', label: 'Customs' },
-  { key: 'food', label: 'Food' },
-  { key: 'bestTime', label: 'Best time' },
-];
+const TAB_KEYS: InsightKey[] = ['history', 'customs', 'food', 'bestTime'];
 
 /** Reads text aloud with the browser's speech engine. No audio files needed. */
 function useNarration(text: string, lang = 'en-GB') {
@@ -51,8 +47,10 @@ export interface CultureCardProps {
 }
 
 export default function CultureCard({ place }: CultureCardProps) {
+  const { t, locale } = useLocale();
   const [tab, setTab] = useState<InsightKey>('history');
-  const narration = useNarration(place.didYouKnow);
+  const narration = useNarration(place.didYouKnow, locale === 'fr' ? 'fr-FR' : 'en-GB');
+  const TABS = TAB_KEYS.map((key) => ({ key, label: t.insightTabs[key] }));
 
   useEffect(() => setTab('history'), [place.id]);
 
@@ -61,7 +59,7 @@ export default function CultureCard({ place }: CultureCardProps) {
       {/* Did you know? */}
       <figure className="border-l-2 border-terracotta pl-5">
         <figcaption className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
-          Did you know?
+          {t.didYouKnow}
         </figcaption>
         <blockquote className="mt-2 font-serif text-[19px] leading-snug text-charcoal">{place.didYouKnow}</blockquote>
         {narration.supported && (
@@ -71,14 +69,14 @@ export default function CultureCard({ place }: CultureCardProps) {
             aria-pressed={narration.speaking}
             className="mt-3 text-sm text-charcoal-500 underline decoration-sand-300 underline-offset-4 transition hover:text-charcoal hover:decoration-charcoal"
           >
-            {narration.speaking ? 'Stop reading' : 'Listen'}
+            {narration.speaking ? t.stopReading : t.listen}
           </button>
         )}
       </figure>
 
       {/* Micro-learning tabs */}
       <div>
-        <div role="tablist" aria-label="Cultural insights" className="flex gap-6 border-b border-sand-200">
+        <div role="tablist" aria-label={t.culturalInsights} className="flex gap-6 border-b border-sand-200">
           {TABS.map(({ key, label }) => {
             const active = tab === key;
             return (

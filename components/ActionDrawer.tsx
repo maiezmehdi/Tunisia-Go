@@ -7,8 +7,8 @@ import { useEffect, useState, type ReactNode } from 'react';
 import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
 import SeasonStrip from '@/components/SeasonStrip';
-import { CATEGORY_BY_ID, PLACE_BY_ID } from '@/data/tunisiaData';
 import type { Itinerary, Photo, Place } from '@/data/types';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 import {
   airbnbUrl,
   bookingUrl,
@@ -92,7 +92,8 @@ function DrawerContent({
   onNavigate: (placeId: string) => void;
   month: number | null;
 }) {
-  const category = CATEGORY_BY_ID[place.category];
+  const { t, catalog } = useLocale();
+  const category = catalog.categoryById[place.category];
   const stopIndex = itinerary ? itinerary.stops.indexOf(place.id) : -1;
   const prevId = itinerary && stopIndex > 0 ? itinerary.stops[stopIndex - 1] : null;
   const nextId =
@@ -106,7 +107,7 @@ function DrawerContent({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t.close}
           className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-cream/90 text-charcoal backdrop-blur transition hover:bg-cream"
         >
           <X className="h-4 w-4" strokeWidth={1.75} />
@@ -136,11 +137,11 @@ function DrawerContent({
         <SeasonStrip placeId={place.id} highlightMonth={month} />
 
         {/* Action hub */}
-        <section aria-label="Plan your visit">
-          <SectionTitle>Plan your visit</SectionTitle>
+        <section aria-label={t.planYourVisit}>
+          <SectionTitle>{t.planYourVisit}</SectionTitle>
 
           <div className="mt-3">
-            <p className="text-sm font-medium text-charcoal">Trouver un logement</p>
+            <p className="text-sm font-medium text-charcoal">{t.findAStay}</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
               <Pill href={bookingUrl(place)} brand="booking">
                 Booking.com
@@ -155,20 +156,20 @@ function DrawerContent({
             <ActionRow
               href={guideWhatsAppUrl(place)}
               brand="whatsapp"
-              title="Contacter le guide local sur WhatsApp"
-              subtitle={place.contact.guideName ? `${place.contact.guideName}, guide à ${place.region}` : 'Guide local'}
+              title={t.contactGuide}
+              subtitle={place.contact.guideName ? t.guideIn(place.contact.guideName, place.region) : t.localGuide}
             />
             <ActionRow
               href={transferWhatsAppUrl(place)}
               brand="whatsapp"
-              title="Réserver un transfert / transport"
-              subtitle="Aéroport, chauffeur privé ou 4x4"
+              title={t.bookTransfer}
+              subtitle={t.bookTransferHint}
             />
             {phone && (
               <ActionRow
                 href={phone}
                 leading={<Phone className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
-                title="Appeler le lieu / prestataire"
+                title={t.callVenue}
                 subtitle={place.contact.phone}
                 external={false}
               />
@@ -189,10 +190,10 @@ function DrawerContent({
 
         {/* Itinerary navigation */}
         {itinerary && stopIndex >= 0 && (
-          <nav aria-label="Itinerary stops" className="flex items-center justify-between gap-2 border-t border-sand-200 pt-4">
+          <nav aria-label={t.itineraryStops} className="flex items-center justify-between gap-2 border-t border-sand-200 pt-4">
             <StopButton id={prevId} dir="prev" onNavigate={onNavigate} />
             <span className="text-center text-xs text-charcoal-300">
-              Stop {stopIndex + 1} of {itinerary.stops.length}
+              {t.stopOf(stopIndex + 1, itinerary.stops.length)}
             </span>
             <StopButton id={nextId} dir="next" onNavigate={onNavigate} />
           </nav>
@@ -215,7 +216,8 @@ function StopButton({
   dir: 'prev' | 'next';
   onNavigate: (placeId: string) => void;
 }) {
-  const target = id ? PLACE_BY_ID[id] : null;
+  const { catalog } = useLocale();
+  const target = id ? catalog.placeById[id] : null;
   if (!target) return <span className="w-32" />;
   return (
     <button
@@ -299,6 +301,7 @@ function ActionRow({
 
 /** Swipeable photo carousel with credits. Falls back to a plain panel when no photo is available. */
 function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallbackCaptions: string[] }) {
+  const { t } = useLocale();
   const [index, setIndex] = useState(0);
   const [failed, setFailed] = useState<Record<number, boolean>>({});
   const usable = photos.filter((_, i) => !failed[i]);
@@ -363,7 +366,7 @@ function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallback
               <button
                 key={i}
                 type="button"
-                aria-label={`Photo ${i + 1}`}
+                aria-label={t.photoN(i + 1)}
                 onClick={() => setIndex(i)}
                 className={`h-1 rounded-full transition-all ${i === index ? 'w-4 bg-cream' : 'w-1 bg-cream/50'}`}
               />
@@ -371,7 +374,7 @@ function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallback
           </div>
           <button
             type="button"
-            aria-label="Previous photo"
+            aria-label={t.previousPhoto}
             onClick={() => go(-1)}
             className="absolute left-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-cream/80 text-charcoal backdrop-blur transition hover:bg-cream"
           >
@@ -379,7 +382,7 @@ function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallback
           </button>
           <button
             type="button"
-            aria-label="Next photo"
+            aria-label={t.nextPhoto}
             onClick={() => go(1)}
             className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-cream/80 text-charcoal backdrop-blur transition hover:bg-cream"
           >
