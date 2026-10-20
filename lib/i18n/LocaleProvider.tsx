@@ -25,8 +25,12 @@ export function useLocale(): LocaleValue {
   return value;
 }
 
-/** Saves the choice and reloads, so every page (and the service worker cache) follows. */
+/** Saves the choice and opens the same page in that language (/en/... for English). */
 export function switchLocale(next: Locale) {
   document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
-  window.location.reload();
+  const { pathname, search, hash } = window.location;
+  const bare = pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+  const target = next === 'en' ? `/en${bare === '/' ? '' : bare}` : bare;
+  if (target === pathname) window.location.reload();
+  else window.location.assign(target + search + hash);
 }

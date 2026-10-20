@@ -7,6 +7,7 @@ import ServiceWorker from '@/components/ServiceWorker';
 import { LOCALES, isLocale } from '@/lib/i18n/config';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import { MyTripProvider } from '@/lib/myTrip';
+import { SITE_URL } from '@/lib/seo';
 import { SoundProvider } from '@/lib/sound';
 
 import '../globals.css';
@@ -21,6 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params;
   const fr = lang !== 'en';
   return {
+    metadataBase: new URL(SITE_URL),
+    applicationName: 'Tunisia Go',
     title: fr ? 'Tunisia Go · Explorer la Tunisie' : 'Tunisia Go · Explore Tunisia',
     description: fr
       ? 'Carte interactive, road trips choisis et conseils locaux pour la Tunisie : ruines romaines, dunes du Sahara, plages, médinas et cuisine.'

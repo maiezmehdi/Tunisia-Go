@@ -20,7 +20,14 @@ export default function AdminLogin() {
     }).catch(() => null);
     setBusy(false);
     if (res?.ok) router.refresh();
-    else setError(res?.status === 401 ? 'Mot de passe incorrect.' : 'Connexion impossible, réessayez.');
+    else
+      setError(
+        res?.status === 401
+          ? 'Mot de passe incorrect.'
+          : res?.status === 429
+            ? 'Trop d’essais. Réessayez dans 15 minutes.'
+            : 'Connexion impossible, réessayez.',
+      );
   };
 
   return (

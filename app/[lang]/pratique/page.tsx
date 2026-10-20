@@ -9,6 +9,7 @@ import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
 import { PRATIQUE_COPY } from './copy';
+import { pageMetadata } from '@/lib/seo';
 
 type Params = { params: Promise<{ lang: string }> };
 
@@ -18,8 +19,9 @@ async function localeOf(params: Params['params']): Promise<Locale> {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const c = PRATIQUE_COPY[await localeOf(params)];
-  return { title: c.metaTitle, description: c.metaDescription };
+  const lang = await localeOf(params);
+  const c = PRATIQUE_COPY[lang];
+  return pageMetadata({ lang, path: '/pratique', title: c.metaTitle, description: c.metaDescription });
 }
 
 export default async function PratiquePage({ params }: Params) {
