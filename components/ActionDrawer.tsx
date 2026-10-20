@@ -9,6 +9,7 @@ import CultureCard from '@/components/CultureCard';
 import SeasonStrip from '@/components/SeasonStrip';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { lockPageScroll } from '@/lib/scrollLock';
 import {
   airbnbUrl,
   bookingUrl,
@@ -37,6 +38,14 @@ export default function ActionDrawer({ place, photos, itinerary, onClose, onNavi
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [place, onClose]);
+
+  // Below md the drawer covers the screen: keep the page behind it from scrolling.
+  const open = !!place;
+  useEffect(() => {
+    if (!open || !window.matchMedia('(max-width: 767px)').matches) return;
+    const unlock = lockPageScroll();
+    return unlock;
+  }, [open]);
 
   return (
     <AnimatePresence>
