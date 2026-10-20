@@ -12,7 +12,10 @@ import SoundToggle from '@/components/SoundToggle';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Itinerary, Photo, Place } from '@/data/types';
 import { track } from '@/lib/analytics';
-import { formatDuration, formatKm, summarizeRoute } from '@/lib/geo';
+import { formatDuration, formatKm, haversineKm, summarizeRoute } from '@/lib/geo';
+import TripPrintSheet from '@/components/trip/TripPrintSheet';
+import { GENERAL_GUIDE, guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
+import { bestMonthsLabel } from '@/data/seasons';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { googleMapsRouteUrl } from '@/lib/links';
 import { SHARE_PARAM, parseShared, shareUrl, useMyTrip } from '@/lib/myTrip';
@@ -98,7 +101,7 @@ export default function MyTripView({ photos, community = NO_PLACES }: MyTripView
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-6 sm:pt-12 print:px-0 print:pb-0 print:pt-0">
+      <div className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-6 sm:pt-12 print:hidden">
         {/* Only on paper: a plain title line instead of the site header. */}
         <p className="hidden text-[11px] uppercase tracking-[0.22em] text-charcoal-500 print:block">
           Tunisia Go · {t.printedFrom(today)}
@@ -196,6 +199,12 @@ export default function MyTripView({ photos, community = NO_PLACES }: MyTripView
                             {stop.region} · {category?.label}
                             {stop.visitDuration && ` · ${stop.visitDuration}`}
                           </p>
+                          <p className="mt-1 truncate font-serif text-[15px] italic text-charcoal-700">
+                            {stop.tagline}
+                          </p>
+                          <p className="mt-0.5 text-xs text-charcoal-300">
+                            {t.bestPeriod(bestMonthsLabel(stop.id, locale))}
+                          </p>
                         </div>
                         {!viewingShared && (
                           <div className="flex shrink-0 items-center print:hidden">
@@ -225,6 +234,9 @@ export default function MyTripView({ photos, community = NO_PLACES }: MyTripView
                 })}
               </ol>
               <p className="mt-4 text-xs text-charcoal-300">{t.estimatesNote}</p>
+
+              {!viewingShared && <NearbyStops stops={stops} all={byId} photos={photos} />}
+              <TripGuides stops={stops} />
             </section>
 
             {/* Map and actions */}
@@ -276,7 +288,97 @@ export default function MyTripView({ photos, community = NO_PLACES }: MyTripView
       <footer className="border-t border-sand-200 print:hidden">
         <MadeBy className="mx-auto max-w-6xl px-4 py-6 sm:px-6" />
       </footer>
+
+      {stops.length > 0 && <TripPrintSheet stops={stops} route={route} photos={photos} itinerary={itinerary} />}
     </main>
+  );
+}
+
+/** A few places close to the end of the route, one click away. */
+function NearbyStops({
+  stops,
+  all,
+  photos,
+}: {
+  stops: Place[];
+  all: Map<string, Place>;
+  photos: Record<string, Photo[]>;
+}) {
+  const { t } = useLocale();
+  const trip = useMyTrip();
+  const last = stops[stops.length - 1];
+  const picks = useMemo(() => {
+    if (!last) return [];
+    const taken = new Set(stops.map((s) => s.id));
+    return [...all.values()]
+      .filter((p) => !taken.has(p.id))
+      .map((p) => ({ place: p, km: haversineKm(last.coords, p.coords) * 1.3 }))
+      .sort((a, b) => a.km - b.km)
+      .slice(0, 3);
+  }, [stops, all, last]);
+  if (picks.length === 0) return null;
+  return (
+    <div className="mt-10 border-t border-sand-200 pt-6">
+      <h2 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.nearbyTitle}</h2>
+      <ul className="mt-3 divide-y divide-sand-200">
+        {picks.map(({ place, km }) => (
+          <li key={place.id} className="flex items-center gap-4 py-3">
+            <Thumb src={photos[place.id]?.[0]?.src} name={place.name} small />
+            <div className="min-w-0 flex-1">
+              <a
+                href={`/explore?place=${encodeURIComponent(place.id)}`}
+                className="block truncate font-serif text-lg leading-tight text-charcoal hover:text-terracotta-700"
+              >
+                {place.name}
+              </a>
+              <p className="mt-0.5 truncate text-sm text-charcoal-500">{t.kmFrom(formatKm(km), last.name)}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => trip.add(place.id)}
+              className="shrink-0 rounded-pill border border-charcoal-300 px-4 py-1.5 text-sm text-charcoal transition hover:border-charcoal"
+            >
+              {t.addStop}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** The regional notes that apply to this trip's stops. */
+function TripGuides({ stops }: { stops: Place[] }) {
+  const { t, locale } = useLocale();
+  const guides = useMemo(() => {
+    const wanted = new Set(stops.map((s) => guideFor(s.id)));
+    wanted.add(GENERAL_GUIDE);
+    return regionGuides(locale).filter((g) => wanted.has(g.id));
+  }, [stops, locale]);
+  return (
+    <div className="mt-10 border-t border-sand-200 pt-6">
+      <h2 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.tripGuides}</h2>
+      <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+        {guides.map((g) => (
+          <li key={g.id}>
+            <a
+              href={`/pratique#${guideAnchor(g.id)}`}
+              className="group block h-full rounded-2xl border border-sand-200 p-4 transition hover:border-charcoal-300"
+            >
+              <span className="block font-serif text-lg leading-snug text-charcoal group-hover:text-terracotta-700">
+                {g.title}
+              </span>
+              <span className="mt-1 block text-sm leading-relaxed text-charcoal-500">
+                {g.notes
+                  .slice(0, 3)
+                  .map((n) => n.title)
+                  .join(' · ')}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

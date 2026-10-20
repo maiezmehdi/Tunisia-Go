@@ -84,7 +84,20 @@ export function seasonFor(placeId: string, month: number): SeasonRating {
 }
 
 const FR_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
-const FR_MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+const FR_MONTHS = [
+  'janvier',
+  'février',
+  'mars',
+  'avril',
+  'mai',
+  'juin',
+  'juillet',
+  'août',
+  'septembre',
+  'octobre',
+  'novembre',
+  'décembre',
+];
 
 /**
  * Summary of the best months: "Mar to May, Oct to Nov" in English,
@@ -95,9 +108,18 @@ export function bestMonthsLabel(placeId: string, locale: 'en' | 'fr' = 'en'): st
   const months = SEASONS[placeId];
   if (!months) return allYear;
   if (months.every((m) => m === months[0])) return allYear;
+  return formatMonthRanges(
+    months.map((m) => m === 'best'),
+    locale,
+  );
+}
+
+/** "mars à mai, oct. à nov." for the months flagged true (0 = January). */
+export function formatMonthRanges(flags: boolean[], locale: 'en' | 'fr' = 'en'): string {
+  if (flags.every(Boolean)) return locale === 'fr' ? 'toute l’année' : 'All year';
   const ranges: [number, number][] = [];
-  months.forEach((r, i) => {
-    if (r !== 'best') return;
+  flags.forEach((on, i) => {
+    if (!on) return;
     const last = ranges[ranges.length - 1];
     if (last && last[1] === i - 1) last[1] = i;
     else ranges.push([i, i]);
@@ -114,4 +136,18 @@ export function bestMonthsLabel(placeId: string, locale: 'en' | 'fr' = 'en'): st
   }
   const short = (i: number) => MONTHS[i].slice(0, 3);
   return ranges.map(([a, b]) => (a === b ? MONTHS[a] : `${short(a)} to ${short(b)}`)).join(', ');
+}
+
+/**
+ * Best months for a whole trip: no stop to avoid, and at least half the stops at their best.
+ * Null when no month fits.
+ */
+export function tripBestMonthsLabel(placeIds: string[], locale: 'en' | 'fr' = 'en'): string | null {
+  if (placeIds.length === 0) return null;
+  const flags = MONTHS.map((_, m) => {
+    const ratings = placeIds.map((id) => seasonFor(id, m));
+    if (ratings.includes('avoid')) return false;
+    return ratings.filter((r) => r === 'best').length * 2 >= ratings.length;
+  });
+  return flags.some(Boolean) ? formatMonthRanges(flags, locale) : null;
 }
