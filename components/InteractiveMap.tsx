@@ -18,6 +18,8 @@ export interface InteractiveMapProps {
   onSelect: (placeId: string) => void;
   /** Change this value whenever the map container is resized (e.g. view mode toggle). */
   layoutKey?: string;
+  /** Small static maps (the printed road trip): even margins, a wider view of a single stop, no zoom buttons. */
+  still?: boolean;
 }
 
 interface PinOptions {
@@ -44,12 +46,14 @@ function MapController({
   frameCoords,
   frameIsRoute,
   layoutKey,
+  still,
 }: {
   selected: Place | null;
   /** Points to keep in frame: the itinerary route, or every visible marker. */
   frameCoords: LatLng[];
   frameIsRoute: boolean;
   layoutKey?: string;
+  still?: boolean;
 }) {
   const map = useMap();
 
@@ -65,12 +69,15 @@ function MapController({
     const bounds = L.latLngBounds(frameCoords);
     // On wide screens the open circuit panel covers the bottom-left: keep the route clear of it.
     const leftInset = frameIsRoute && map.getSize().x >= 900 ? 440 : 48;
-    const options: L.FitBoundsOptions = {
-      paddingTopLeft: [leftInset, 48],
-      paddingBottomRight: [48, 140],
-      maxZoom: frameCoords.length === 1 ? 10 : 9,
-    };
-    if (isFirstFrame.current) {
+    const options: L.FitBoundsOptions = still
+      ? { padding: [40, 40], maxZoom: frameCoords.length === 1 ? 7 : 9 }
+      : {
+          paddingTopLeft: [leftInset, 48],
+          paddingBottomRight: [48, 140],
+          maxZoom: frameCoords.length === 1 ? 10 : 9,
+        };
+    // Still maps jump straight to the frame, so a print never catches them mid-flight.
+    if (isFirstFrame.current || still) {
       isFirstFrame.current = false;
       map.fitBounds(bounds, options);
       return;
@@ -105,6 +112,7 @@ export default function InteractiveMap({
   itinerary,
   onSelect,
   layoutKey,
+  still = false,
 }: InteractiveMapProps) {
   const stopOrder = useMemo(() => {
     const order = new Map<string, number>();
@@ -133,6 +141,10 @@ export default function InteractiveMap({
       minZoom={5}
       maxZoom={16}
       zoomControl={false}
+      dragging={!still}
+      scrollWheelZoom={!still}
+      doubleClickZoom={!still}
+      keyboard={!still}
       className="h-full w-full"
       maxBounds={[
         [28.5, 4.5],
@@ -143,7 +155,7 @@ export default function InteractiveMap({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url={TILE_URL}
       />
-      <ZoomControlBottomRight />
+      {!still && <ZoomControlBottomRight />}
 
       {routeCoords.length > 1 && itinerary && (
         <>
@@ -178,6 +190,7 @@ export default function InteractiveMap({
         frameCoords={routeCoords.length > 1 ? routeCoords : visible.map((p) => p.coords)}
         frameIsRoute={routeCoords.length > 1}
         layoutKey={layoutKey}
+        still={still}
       />
     </MapContainer>
   );
