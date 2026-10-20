@@ -6,14 +6,24 @@ import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import SecretSpotForm from '@/components/SecretSpotForm';
 import { isLocale, type Locale } from '@/lib/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 
 const COPY: Record<
   Locale,
-  { metaTitle: string; metaDescription: string; brandTag: string; backToMap: string; eyebrow: string; title: string; lead: string }
+  {
+    metaTitle: string;
+    metaDescription: string;
+    brandTag: string;
+    backToMap: string;
+    eyebrow: string;
+    title: string;
+    lead: string;
+  }
 > = {
   fr: {
     metaTitle: 'Ajouter un lieu · Tunisia Go',
-    metaDescription: 'Un café, une crique isolée, un point de vue : partagez un lieu que seuls les habitués connaissent.',
+    metaDescription:
+      'Un café, une crique isolée, un point de vue : partagez un lieu que seuls les habitués connaissent.',
     brandTag: 'Nouveau lieu',
     backToMap: 'Retour à la carte',
     eyebrow: 'Ajouter un lieu',
@@ -39,8 +49,9 @@ async function localeOf(params: Params['params']): Promise<Locale> {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const c = COPY[await localeOf(params)];
-  return { title: c.metaTitle, description: c.metaDescription };
+  const lang = await localeOf(params);
+  const c = COPY[lang];
+  return pageMetadata({ lang, path: '/spot-secret', title: c.metaTitle, description: c.metaDescription });
 }
 
 export default async function SpotSecretPage({ params }: Params) {
@@ -65,12 +76,8 @@ export default async function SpotSecretPage({ params }: Params) {
 
       <div className="mx-auto max-w-3xl px-4 pb-24 pt-12 sm:px-6">
         <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.eyebrow}</p>
-        <h1 className="mt-2 font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
-          {c.title}
-        </h1>
-        <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-charcoal-500">
-          {c.lead}
-        </p>
+        <h1 className="mt-2 font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{c.title}</h1>
+        <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-charcoal-500">{c.lead}</p>
         <SecretSpotForm />
       </div>
       <footer className="border-t border-sand-200">

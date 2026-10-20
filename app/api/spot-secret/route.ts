@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { defaultCategory, parseCoords } from '@/lib/community';
 import { cleanSpot, spotAsText, type SecretSpot } from '@/lib/secretSpot';
+import { allow, clientIp, looksLikeImage, sameOrigin } from '@/lib/requestGuard';
 import { insertRow, supabaseConfig, uploadObject } from '@/lib/supabase';
 
 /**
@@ -16,11 +17,23 @@ export const runtime = 'nodejs';
 const MAX_PHOTOS = 4;
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/png': 'png' };
+/** Photos plus text, with room for the multipart envelope. */
+const MAX_BODY_BYTES = MAX_PHOTOS * MAX_PHOTO_BYTES + 256 * 1024;
+const HOUR = 60 * 60 * 1000;
 
 export async function POST(request: Request) {
   const supabase = supabaseConfig();
   const webhook = process.env.SECRET_SPOT_WEBHOOK_URL;
   if (!supabase && !webhook) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
+  if (!sameOrigin(request)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  // A few suggestions an hour per visitor is plenty; more is a script.
+  const ip = clientIp(request);
+  if (!allow(`spot:h:${ip}`, 5, HOUR) || !allow(`spot:d:${ip}`, 15, 24 * HOUR)) {
+    return NextResponse.json({ error: 'too_many' }, { status: 429, headers: { 'Retry-After': '3600' } });
+  }
+  if (Number(request.headers.get('content-length') ?? 0) > MAX_BODY_BYTES) {
+    return NextResponse.json({ error: 'too_large' }, { status: 413 });
+  }
 
   let fields: Record<string, unknown>;
   let photos: File[] = [];
@@ -41,6 +54,9 @@ export async function POST(request: Request) {
   const spot = cleanSpot(fields);
   if (!spot) return NextResponse.json({ error: 'invalid' }, { status: 400 });
   if (photos.length > MAX_PHOTOS || photos.some((p) => p.size > MAX_PHOTO_BYTES || !PHOTO_TYPES[p.type])) {
+    return NextResponse.json({ error: 'invalid_photos' }, { status: 400 });
+  }
+  if (!(await Promise.all(photos.map(looksLikeImage))).every(Boolean)) {
     return NextResponse.json({ error: 'invalid_photos' }, { status: 400 });
   }
   const locale = fields.locale === 'en' ? 'en' : 'fr';
@@ -70,7 +86,13 @@ export async function POST(request: Request) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // `text` for Slack, `content` for Discord, the fields for anything else.
-        body: JSON.stringify({ text, content: text, spot, photos: photos.length, receivedAt: new Date().toISOString() }),
+        body: JSON.stringify({
+          text,
+          content: text,
+          spot,
+          photos: photos.length,
+          receivedAt: new Date().toISOString(),
+        }),
         signal: AbortSignal.timeout(8000),
       });
       if (!res.ok) throw new Error(`webhook ${res.status}`);

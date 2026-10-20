@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { ADMIN_COOKIE, isAdminToken } from '@/lib/adminAuth';
+import { sameOrigin } from '@/lib/requestGuard';
 import {
   COMMUNITY_TAG,
   PRIVATE_BUCKET,
@@ -23,6 +24,7 @@ function text(value: unknown, max: number): string | undefined {
 
 /** Approve, reject or put back a suggestion, after optional edits from the moderation page. */
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!sameOrigin(request)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   const jar = await cookies();
   if (!isAdminToken(jar.get(ADMIN_COOKIE)?.value)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const cfg = supabaseConfig();

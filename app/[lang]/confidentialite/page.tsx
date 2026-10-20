@@ -5,10 +5,14 @@ import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 
 type Section = { title: string; body: string[] };
 
-const COPY: Record<Locale, { metaTitle: string; brandTag: string; backToMap: string; title: string; updated: string; sections: Section[] }> = {
+const COPY: Record<
+  Locale,
+  { metaTitle: string; brandTag: string; backToMap: string; title: string; updated: string; sections: Section[] }
+> = {
   fr: {
     metaTitle: 'Confidentialité et cookies · Tunisia Go',
     brandTag: 'Confidentialité',
@@ -101,7 +105,16 @@ async function localeOf(params: Params['params']): Promise<Locale> {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  return { title: COPY[await localeOf(params)].metaTitle };
+  const lang = await localeOf(params);
+  return pageMetadata({
+    lang,
+    path: '/confidentialite',
+    title: COPY[lang].metaTitle,
+    description:
+      lang === 'en'
+        ? 'What Tunisia Go collects, why, and how to have it removed: suggested places, photos and audience statistics.'
+        : 'Ce que Tunisia Go collecte, pourquoi, et comment le faire supprimer : lieux proposés, photos et statistiques.',
+  });
 }
 
 export default async function PrivacyPage({ params }: Params) {
@@ -114,7 +127,10 @@ export default async function PrivacyPage({ params }: Params) {
           <div className="flex items-center gap-5">
             <SoundToggle />
             <LanguageSwitch />
-            <a href="/explore" className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline">
+            <a
+              href="/explore"
+              className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
+            >
               {c.backToMap}
             </a>
           </div>
