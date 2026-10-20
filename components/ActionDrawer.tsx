@@ -129,7 +129,9 @@ function DrawerContent({
         <header>
           <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
             {category.label}
-            {place.unesco && ' · UNESCO'} · {place.visitDuration}
+            {place.unesco && ' · UNESCO'}
+            {place.visitDuration && ` · ${place.visitDuration}`}
+            {place.community && ` · ${t.communityPlace}`}
           </p>
           <div className="mt-2 flex items-baseline justify-between gap-4">
             <h2 className="font-serif text-[32px] leading-[1.05] tracking-tight text-charcoal">{place.name}</h2>
@@ -141,7 +143,12 @@ function DrawerContent({
           </div>
           <p className="mt-1 text-sm text-charcoal-500">{place.region}</p>
           <p className="mt-4 font-serif text-lg italic text-charcoal-700">{place.tagline}</p>
-          <p className="mt-2 text-[15px] leading-relaxed text-charcoal-700">{place.description}</p>
+          <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-charcoal-700">{place.description}</p>
+          {place.community && (
+            <p className="mt-3 text-sm text-charcoal-500">
+              {place.community.author ? t.suggestedBy(place.community.author) : t.suggestedByVisitor}
+            </p>
+          )}
         </header>
 
         <SeasonStrip placeId={place.id} highlightMonth={month} />
@@ -196,7 +203,7 @@ function DrawerContent({
           </div>
         </section>
 
-        <CultureCard place={place} />
+        {place.didYouKnow && <CultureCard place={place} />}
 
         {/* Itinerary navigation */}
         {itinerary && stopIndex >= 0 && (
@@ -360,15 +367,21 @@ function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallback
           {showPhoto && (
             <>
               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-charcoal/55 to-transparent" />
-              <a
-                href={photo.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute bottom-3 left-5 right-20 truncate text-[10px] text-cream/80 hover:text-cream"
-                title={`${photo.author} · ${photo.license}`}
-              >
-                {photo.author} · {photo.license} · Wikimedia Commons
-              </a>
+              {photo.sourceUrl ? (
+                <a
+                  href={photo.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-3 left-5 right-20 truncate text-[10px] text-cream/80 hover:text-cream"
+                  title={`${photo.author} · ${photo.license}`}
+                >
+                  {photo.author} · {photo.license} · Wikimedia Commons
+                </a>
+              ) : (
+                <span className="absolute bottom-3 left-5 right-20 truncate text-[10px] text-cream/80">
+                  {photo.author}
+                </span>
+              )}
             </>
           )}
         </motion.div>

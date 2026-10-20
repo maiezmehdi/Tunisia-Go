@@ -59,6 +59,8 @@ export interface Place {
   visitDuration: string;
   images: PlaceImage[];
   contact: PlaceContact;
+  /** Set on places suggested by visitors and approved on the moderation page. */
+  community?: { author: string | null };
 }
 
 export interface Itinerary {

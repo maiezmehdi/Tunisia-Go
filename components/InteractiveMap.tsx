@@ -124,7 +124,7 @@ export default function InteractiveMap({
     [places, activeCategories, stopOrder],
   );
 
-  const selected = selectedId ? PLACE_BY_ID[selectedId] ?? null : null;
+  const selected = selectedId ? (places.find((p) => p.id === selectedId) ?? PLACE_BY_ID[selectedId] ?? null) : null;
 
   return (
     <MapContainer

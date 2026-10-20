@@ -22,3 +22,16 @@ alter table public.spot_submissions enable row level security;
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('spot-photos', 'spot-photos', false, 2097152, array['image/jpeg','image/webp','image/png'])
 on conflict (id) do nothing;
+
+-- Moderation (/admin): coordinates and map category set before approval, and a public bucket
+-- for the photos of approved places (copied there on approval, removed when withdrawn).
+alter table public.spot_submissions
+  add column if not exists lat double precision,
+  add column if not exists lng double precision,
+  add column if not exists category text,
+  add column if not exists reviewed_at timestamptz,
+  add column if not exists public_photos text[] not null default '{}';
+create index if not exists spot_submissions_status_idx on public.spot_submissions (status, created_at desc);
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('community-photos', 'community-photos', true, 2097152, array['image/jpeg','image/webp','image/png'])
+on conflict (id) do nothing;
