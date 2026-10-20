@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import type { ReactNode } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
 import MadeBy from '@/components/MadeBy';
@@ -15,10 +16,19 @@ export interface EditorialFeedProps {
   onSelect: (placeId: string) => void;
   /** Travel month picked in the header (0 = January), if any. */
   month?: number | null;
+  /** Month and category filters, shown just above the list. */
+  filters?: ReactNode;
 }
 
 /** Magazine-style list shown next to the map in split mode. */
-export default function EditorialFeed({ places, photos, selectedId, onSelect, month = null }: EditorialFeedProps) {
+export default function EditorialFeed({
+  places,
+  photos,
+  selectedId,
+  onSelect,
+  month = null,
+  filters,
+}: EditorialFeedProps) {
   const { t, locale, catalog } = useLocale();
   return (
     <div className="no-scrollbar px-5 md:h-full md:overflow-y-auto pb-10 pt-5 sm:px-6">
@@ -38,6 +48,8 @@ export default function EditorialFeed({ places, photos, selectedId, onSelect, mo
           {t.missingPlace}
         </AddSpotLink>
       </div>
+
+      {filters && <div className="mb-5">{filters}</div>}
 
       {places.length === 0 && (
         <p className="border-t border-sand-200 pt-6 text-sm text-charcoal-500">

@@ -135,6 +135,27 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
     if (id) track('trip_selected', { trip: id });
   };
 
+  // Month and categories live with the content (above the list, or over the map in map view),
+  // not in the top bar.
+  const filters = (
+    <div role="group" aria-label={t.mapLayers} className="flex flex-wrap items-center gap-1.5">
+      <MonthSelect value={month} onChange={setMonth} />
+      <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
+        {t.all} <Count>{PLACES.length}</Count>
+      </FilterPill>
+      {categories.map((c) => (
+        <FilterPill
+          key={c.id}
+          title={c.label}
+          active={!allOn && activeCategories.has(c.id)}
+          onClick={() => toggleCategory(c.id)}
+        >
+          {c.short} <Count>{counts[c.id]}</Count>
+        </FilterPill>
+      ))}
+    </div>
+  );
+
   return (
     <main
       className={`flex flex-col bg-cream md:h-dvh md:overflow-hidden ${
@@ -154,34 +175,10 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
           </div>
         </div>
 
-        <nav
-          aria-label={t.mapLayers}
-          className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_85%,transparent)] sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-1 lg:px-0 lg:[mask-image:none]"
-        >
-          <div className="shrink-0 lg:hidden">
-            <MonthSelect value={month} onChange={setMonth} />
-          </div>
-          <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
-            {t.all} <Count>{PLACES.length}</Count>
-          </FilterPill>
-          {categories.map((c) => (
-            <FilterPill
-              key={c.id}
-              title={c.label}
-              active={!allOn && activeCategories.has(c.id)}
-              onClick={() => toggleCategory(c.id)}
-            >
-              {c.short} <Count>{counts[c.id]}</Count>
-            </FilterPill>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-3 lg:flex">
-          <MonthSelect value={month} onChange={setMonth} />
-          <OfflineBadge />
-        </div>
+        <div aria-hidden className="hidden lg:block lg:flex-1" />
 
         <div className="hidden items-center gap-5 lg:flex">
+          <OfflineBadge />
           <AddSpotLink from="header" />
           <HeaderLinks />
           <SoundToggle label />
@@ -204,6 +201,7 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
               selectedId={selectedId}
               onSelect={handleSelect}
               month={itinerary ? null : month}
+              filters={filters}
             />
           </motion.aside>
         )}
@@ -220,7 +218,18 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
             layoutKey={viewMode}
           />
 
-          <div className="pointer-events-none absolute right-3 top-3 z-[1000] lg:hidden">
+          {viewMode === 'map' && (
+            <div className="absolute left-3 right-3 top-3 z-[1000] sm:right-auto sm:max-w-[640px]">
+              <div className="rounded-3xl border border-sand-200 bg-cream/95 p-2 shadow-soft backdrop-blur">{filters}</div>
+            </div>
+          )}
+
+          <div
+            className={`pointer-events-none absolute right-3 z-[1000] lg:hidden ${
+              // In map view the filters take the top edge: the button moves above the zoom.
+              viewMode === 'map' ? 'bottom-24' : 'top-3'
+            }`}
+          >
             <AddSpotLink from="map" variant="floating" />
           </div>
 
