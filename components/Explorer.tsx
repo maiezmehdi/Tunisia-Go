@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import ActionDrawer from '@/components/ActionDrawer';
+import AddSpotLink from '@/components/AddSpotLink';
 import EditorialFeed from '@/components/EditorialFeed';
 import ItinerarySelector from '@/components/ItinerarySelector';
 import LanguageSwitch from '@/components/LanguageSwitch';
@@ -171,6 +172,7 @@ export default function Explorer({ photos }: ExplorerProps) {
         </div>
 
         <div className="hidden items-center gap-5 lg:flex">
+          <AddSpotLink from="header" />
           <HeaderLinks />
           <LanguageSwitch />
           <ViewToggle mode={viewMode} onChange={setViewMode} />
@@ -206,6 +208,10 @@ export default function Explorer({ photos }: ExplorerProps) {
             onSelect={handleSelect}
             layoutKey={viewMode}
           />
+
+          <div className="pointer-events-none absolute right-3 top-3 z-[1000] lg:hidden">
+            <AddSpotLink from="map" variant="floating" />
+          </div>
 
           <div className="pointer-events-none absolute inset-4 z-[1000] flex items-end sm:right-auto">
             <ItinerarySelector
@@ -288,12 +294,11 @@ function MobileMenu() {
             id="explorer-menu"
             className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-sand-200 bg-cream px-5 py-2 shadow-soft"
           >
-            <a href="/pratique" className={link}>
+            <AddSpotLink from="mobile-menu" variant="primary" className="mb-2 mt-2 w-full justify-center" />
+            <a href="/pratique" className={`${link} border-t border-sand-200`}>
               {t.practical}
             </a>
-            <a href="/spot-secret" className={`${link} border-t border-sand-200`}>
-              {t.shareSecretSpot}
-            </a>
+
             <div className="flex items-center justify-between border-t border-sand-200 py-3">
               <span className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">{t.language}</span>
               <LanguageSwitch />
