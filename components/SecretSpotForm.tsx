@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import BrandIcon from '@/components/BrandIcon';
 import type { Locale } from '@/lib/i18n/config';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { track } from '@/lib/analytics';
 import { secretSpotWhatsAppUrl } from '@/lib/links';
+import { resizeImage } from '@/lib/resizeImage';
 import { EMPTY_SPOT, SPOT_TYPES, SPOT_TYPE_LABELS, cleanSpot, spotAsText, type SecretSpot } from '@/lib/secretSpot';
 
 type Status =
@@ -14,6 +16,14 @@ type Status =
   | { kind: 'sent' }
   | { kind: 'whatsapp'; url: string }
   | { kind: 'error'; message: string };
+
+const MAX_PHOTOS = 4;
+
+interface PickedPhoto {
+  id: string;
+  blob: Blob;
+  preview: string;
+}
 
 const COPY: Record<
   Locale,
@@ -46,6 +56,13 @@ const COPY: Record<
     sending: string;
     submit: string;
     required: string;
+    photos: string;
+    photosHint: (max: number) => string;
+    addPhotos: string;
+    preparing: string;
+    removePhoto: string;
+    photoError: string;
+    whatsappPhotos: string;
   }
 > = {
   fr: {
@@ -78,6 +95,13 @@ const COPY: Record<
     sending: 'Envoi…',
     submit: 'Proposer ce spot',
     required: 'requis',
+    photos: 'Ajoutez des photos utiles',
+    photosHint: (max) => `Jusqu’à ${max} : l’entrée, la vue, le plat, le chemin…`,
+    addPhotos: 'Choisir des photos',
+    preparing: 'Préparation…',
+    removePhoto: 'Retirer la photo',
+    photoError: 'Une photo n’a pas pu être lue. Essayez une autre image (JPEG ou PNG).',
+    whatsappPhotos: 'Pensez à joindre vos photos dans la conversation.',
   },
   en: {
     errorRequired: 'Please give at least the name of the place, the area and what makes it special.',
@@ -109,6 +133,13 @@ const COPY: Record<
     sending: 'Sending…',
     submit: 'Suggest this spot',
     required: 'required',
+    photos: 'Add helpful photos',
+    photosHint: (max) => `Up to ${max}: the entrance, the view, the dish, the path…`,
+    addPhotos: 'Choose photos',
+    preparing: 'Preparing…',
+    removePhoto: 'Remove photo',
+    photoError: 'One photo could not be read. Try another image (JPEG or PNG).',
+    whatsappPhotos: 'Remember to attach your photos in the chat.',
   },
 };
 
@@ -122,6 +153,39 @@ export default function SecretSpotForm() {
   const [website, setWebsite] = useState('');
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
   const [locating, setLocating] = useState(false);
+  const [photos, setPhotos] = useState<PickedPhoto[]>([]);
+  const [preparing, setPreparing] = useState(false);
+  const [photoError, setPhotoError] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const previews = useRef<string[]>([]);
+  previews.current = photos.map((p) => p.preview);
+  useEffect(() => () => previews.current.forEach((url) => URL.revokeObjectURL(url)), []);
+
+  const addPhotos = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setPhotoError(false);
+    setPreparing(true);
+    const room = MAX_PHOTOS - photos.length;
+    const picked: PickedPhoto[] = [];
+    for (const file of Array.from(files).slice(0, room)) {
+      try {
+        const blob = await resizeImage(file);
+        picked.push({ id: crypto.randomUUID(), blob, preview: URL.createObjectURL(blob) });
+      } catch {
+        setPhotoError(true);
+      }
+    }
+    setPhotos((prev) => [...prev, ...picked].slice(0, MAX_PHOTOS));
+    setPreparing(false);
+    if (fileInput.current) fileInput.current.value = '';
+  };
+
+  const removePhoto = (id: string) =>
+    setPhotos((prev) => {
+      const gone = prev.find((p) => p.id === id);
+      if (gone) URL.revokeObjectURL(gone.preview);
+      return prev.filter((p) => p.id !== id);
+    });
 
   const set = (key: keyof SecretSpot) => (e: { target: { value: string } }) =>
     setSpot((s) => ({ ...s, [key]: e.target.value }));
@@ -148,12 +212,14 @@ export default function SecretSpotForm() {
     }
     setStatus({ kind: 'sending' });
     try {
-      const res = await fetch('/api/spot-secret', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...clean, website }),
-      });
+      const body = new FormData();
+      for (const [key, value] of Object.entries(clean)) body.append(key, value);
+      body.append('website', website);
+      body.append('locale', locale);
+      photos.forEach((p, i) => body.append('photos', p.blob, `photo-${i + 1}.jpg`));
+      const res = await fetch('/api/spot-secret', { method: 'POST', body });
       if (res.ok) {
+        track('spot_suggested', { type: clean.type, photos: photos.length });
         setStatus({ kind: 'sent' });
         return;
       }
@@ -178,6 +244,8 @@ export default function SecretSpotForm() {
           <button
             type="button"
             onClick={() => {
+              photos.forEach((p) => URL.revokeObjectURL(p.preview));
+              setPhotos([]);
               setSpot(EMPTY_SPOT);
               setStatus({ kind: 'idle' });
             }}
@@ -251,6 +319,49 @@ export default function SecretSpotForm() {
         <input className={input} value={spot.bestTime} onChange={set('bestTime')} placeholder={c.bestTimePlaceholder} maxLength={200} />
       </Field>
 
+      <fieldset>
+        <legend className="flex w-full items-baseline justify-between gap-3 text-sm">
+          <span className="font-medium text-charcoal">{c.photos}</span>
+          <span className="text-xs text-charcoal-300">{c.photosHint(MAX_PHOTOS)}</span>
+        </legend>
+        <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+          {photos.map((p, i) => (
+            <div key={p.id} className="relative aspect-square overflow-hidden rounded-2xl bg-sand">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.preview} alt={`${c.photos} ${i + 1}`} className="h-full w-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removePhoto(p.id)}
+                aria-label={c.removePhoto}
+                className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-cream/90 text-charcoal backdrop-blur transition hover:bg-cream"
+              >
+                <svg aria-hidden viewBox="0 0 10 10" className="h-2.5 w-2.5">
+                  <path d="M1 1l8 8M9 1l-8 8" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                </svg>
+              </button>
+            </div>
+          ))}
+          {photos.length < MAX_PHOTOS && (
+            <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-sand-300 px-2 text-center text-xs text-charcoal-500 transition hover:border-charcoal-300 hover:text-charcoal has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-charcoal">
+              <svg aria-hidden viewBox="0 0 14 14" className="h-3.5 w-3.5">
+                <path d="M7 1v12M1 7h12" fill="none" stroke="currentColor" strokeWidth="1.3" />
+              </svg>
+              {preparing ? c.preparing : c.addPhotos}
+              <input
+                ref={fileInput}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                multiple
+                disabled={preparing}
+                onChange={(e) => addPhotos(e.target.files)}
+                className="sr-only"
+              />
+            </label>
+          )}
+        </div>
+        {photoError && <p className="mt-2 text-xs text-charcoal-500">{c.photoError}</p>}
+      </fieldset>
+
       <div className="grid gap-8 sm:grid-cols-2">
         <Field label={c.author} hint={c.authorHint}>
           <input className={input} value={spot.author} onChange={set('author')} maxLength={80} autoComplete="given-name" />
@@ -281,7 +392,10 @@ export default function SecretSpotForm() {
       {status.kind === 'whatsapp' ? (
         <div role="status" className="rounded-3xl border border-sand-200 p-6">
           <p className="text-[15px] text-charcoal">{c.whatsappTitle}</p>
-          <p className="mt-1 text-sm text-charcoal-500">{c.whatsappBody}</p>
+          <p className="mt-1 text-sm text-charcoal-500">
+            {c.whatsappBody}
+            {photos.length > 0 && ` ${c.whatsappPhotos}`}
+          </p>
           <a
             href={status.url}
             target="_blank"
@@ -295,7 +409,7 @@ export default function SecretSpotForm() {
       ) : (
         <button
           type="submit"
-          disabled={status.kind === 'sending'}
+          disabled={status.kind === 'sending' || preparing}
           className="rounded-pill bg-charcoal px-6 py-3 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-60"
         >
           {status.kind === 'sending' ? c.sending : c.submit}

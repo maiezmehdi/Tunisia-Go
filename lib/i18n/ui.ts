@@ -46,6 +46,8 @@ const en = {
   shareSecretSpot: 'Share a secret spot',
   // Drawer
   close: 'Close',
+  privacy: 'Privacy',
+  cookies: 'Cookies',
   menu: 'Menu',
   roadTripsCount: (n: number) => `Road trips · ${n}`,
   planYourVisit: 'Plan your visit',
@@ -146,6 +148,8 @@ const fr: UiStrings = {
   knowAPlaceHint: 'Un café, une crique cachée, un point de vue que seuls les habitués connaissent.',
   shareSecretSpot: 'Partager un spot secret',
   close: 'Fermer',
+  privacy: 'Confidentialité',
+  cookies: 'Cookies',
   menu: 'Menu',
   roadTripsCount: (n: number) => `Road trips · ${n}`,
   planYourVisit: 'Préparer la visite',

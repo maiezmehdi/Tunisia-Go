@@ -10,6 +10,7 @@ import ItinerarySelector from '@/components/ItinerarySelector';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import OfflineBadge from '@/components/OfflineBadge';
 import { seasonFor } from '@/data/seasons';
+import { track } from '@/lib/analytics';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
@@ -106,11 +107,15 @@ export default function Explorer({ photos }: ExplorerProps) {
       return next.size === 0 ? new Set(ALL_CATEGORIES) : next;
     });
 
-  const handleSelect = useCallback((id: string) => setSelectedId(id), []);
+  const handleSelect = useCallback((id: string) => {
+    setSelectedId(id);
+    track('place_opened', { place: id });
+  }, []);
   const handleClose = useCallback(() => setSelectedId(null), []);
   const handleItinerary = (id: string | null) => {
     setItineraryId(id);
     setSelectedId(null);
+    if (id) track('trip_selected', { trip: id });
   };
 
   return (
