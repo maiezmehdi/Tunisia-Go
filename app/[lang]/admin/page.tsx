@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
+import BrandLogo from '@/components/BrandLogo';
 import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
 import { ADMIN_COOKIE, adminConfigured, isAdminToken } from '@/lib/adminAuth';
@@ -18,10 +19,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-dvh bg-cream px-5 py-8 sm:px-10">
       <div className="mx-auto max-w-5xl">
-        <a href="/" className="font-serif text-2xl tracking-tight text-charcoal">
-          Tunisia Go
-        </a>
-        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300">Modération</p>
+        <BrandLogo tag="Modération" size={40} />
         <div className="mt-8">{children}</div>
       </div>
     </main>

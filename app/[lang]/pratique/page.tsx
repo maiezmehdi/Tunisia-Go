@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
@@ -25,12 +26,7 @@ export default async function PratiquePage({ params }: Params) {
     <main className="min-h-dvh bg-cream text-charcoal">
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-          <a href="/" className="leading-none">
-            <span className="block font-serif text-2xl tracking-tight">Tunisia Go</span>
-            <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300">
-              {c.brandTag}
-            </span>
-          </a>
+          <BrandLogo tag={c.brandTag} size={40} compact />
           <div className="flex items-center gap-5">
             <SoundToggle />
             <LanguageSwitch />

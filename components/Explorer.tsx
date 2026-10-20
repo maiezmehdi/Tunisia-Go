@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import ActionDrawer from '@/components/ActionDrawer';
 import AddSpotLink from '@/components/AddSpotLink';
+import BrandLogo from '@/components/BrandLogo';
 import EditorialFeed from '@/components/EditorialFeed';
 import ItinerarySelector from '@/components/ItinerarySelector';
 import LanguageSwitch from '@/components/LanguageSwitch';
@@ -144,14 +145,7 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
       {/* Top bar */}
       <header className="sticky top-0 z-[1200] flex flex-col gap-3 border-b border-sand-200 bg-cream px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-8">
         <div className="relative z-10 flex items-center justify-between gap-3">
-          <a href="/" className="shrink-0 leading-none">
-            <span className="block whitespace-nowrap font-serif text-xl tracking-tight text-charcoal sm:text-2xl">
-              Tunisia Go
-            </span>
-            <span className="mt-1 hidden text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300 sm:block">
-              {t.explorer}
-            </span>
-          </a>
+          <BrandLogo tag={t.explorer} size={38} compact />
           <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
             <OfflineBadge />
             <ViewToggle mode={viewMode} onChange={setViewMode} compact />

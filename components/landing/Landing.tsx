@@ -4,6 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { useRef } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
+import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
@@ -104,16 +105,14 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
       />
 
       <header className="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-5 sm:px-10">
-        <a href="/" className="font-serif text-xl tracking-tight">
-          Tunisia Go
-        </a>
+        <BrandLogo tone="light" size={42} compact markOnlyOnPhone />
         <nav className="flex items-center gap-5 sm:gap-6">
           <SoundToggle tone="light" />
           <LanguageSwitch tone="light" />
           <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a
             href="/explore"
-            className="rounded-pill border border-cream/40 px-4 py-1.5 text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
+            className="whitespace-nowrap rounded-pill border border-cream/40 px-4 py-1.5 text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
           >
             {copy.nav.openMap}
           </a>
@@ -475,10 +474,10 @@ function Footer({ photos }: { photos: Photo[] }) {
   return (
     <footer className="bg-charcoal px-5 pb-10 text-cream/50 sm:px-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 border-t border-cream/10 pt-8 text-xs sm:flex-row sm:items-start sm:justify-between">
-        <p>
-          <span className="font-serif text-base text-cream">Tunisia Go</span>
-          <span className="ml-3">{c.tagline}</span>
-        </p>
+        <div className="flex items-center gap-4">
+          <BrandLogo tone="light" size={32} tag={null} />
+          <span>{c.tagline}</span>
+        </div>
         {photos.length > 0 && (
           <details className="max-w-xl sm:text-right">
             <summary className="cursor-pointer list-none transition hover:text-cream">
