@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import type { Itinerary, Photo } from '@/data/types';
+import { track } from '@/lib/analytics';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import {
   estimateTripMb,
@@ -48,6 +49,7 @@ export default function OfflineTripButton({
     setState({ kind: 'saving', done: 0, total: 1 });
     try {
       await saveTripOffline(itinerary, photos, (done, total) => setState({ kind: 'saving', done, total }));
+      track('trip_saved_offline', { trip: itinerary.id });
       setState({ kind: 'idle' });
     } catch {
       setState({ kind: 'error' });

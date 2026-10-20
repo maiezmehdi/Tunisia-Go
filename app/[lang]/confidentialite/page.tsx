@@ -1,0 +1,144 @@
+import type { Metadata } from 'next';
+
+import LanguageSwitch from '@/components/LanguageSwitch';
+import MadeBy from '@/components/MadeBy';
+import { isLocale, type Locale } from '@/lib/i18n/config';
+
+type Section = { title: string; body: string[] };
+
+const COPY: Record<Locale, { metaTitle: string; brandTag: string; backToMap: string; title: string; updated: string; sections: Section[] }> = {
+  fr: {
+    metaTitle: 'Confidentialité et cookies · Tunisia Go',
+    brandTag: 'Confidentialité',
+    backToMap: 'Retour à la carte',
+    title: 'Confidentialité et cookies',
+    updated: 'Mise à jour : octobre 2026',
+    sections: [
+      {
+        title: 'Qui est responsable',
+        body: [
+          'Tunisia Go est édité par Mehdi Maiez. Pour toute question sur vos données, ou pour en demander l’accès, la correction ou la suppression, écrivez-nous via mehdimaiez.com.',
+        ],
+      },
+      {
+        title: 'Les spots secrets que vous proposez',
+        body: [
+          'Quand vous proposez un lieu, nous enregistrons ce que vous saisissez (nom du lieu, région, position, description, prénom et contact si vous les donnez) et vos photos. Les photos sont réduites et leurs métadonnées, dont la position GPS, sont supprimées dans votre navigateur avant l’envoi.',
+          'Ces données servent uniquement à relire la proposition et, si elle est retenue, à l’ajouter à la carte en vous créditant par votre prénom. Elles sont hébergées dans l’Union européenne (Supabase, Francfort). Votre contact n’est jamais publié. Les propositions non retenues sont supprimées au bout de 12 mois.',
+        ],
+      },
+      {
+        title: 'Mesure d’audience',
+        body: [
+          'Avec votre accord seulement, nous mesurons les visites (pages vues, lieux et road trips consultés, type d’appareil, pays) avec PostHog, hébergé dans l’Union européenne. Cela nous aide à savoir quels contenus vous sont utiles. Aucune donnée n’est vendue ni utilisée pour de la publicité.',
+          'Si vous refusez, aucun outil de mesure n’est chargé. Votre choix est conservé 6 mois, et vous pouvez le changer à tout moment avec le lien « Cookies » en bas de chaque page.',
+        ],
+      },
+      {
+        title: 'Ce qui est stocké sur votre appareil',
+        body: [
+          'tg-lang : la langue choisie. tg-consent : votre choix sur les cookies. Les road trips enregistrés pour le hors-ligne sont gardés dans votre navigateur et ne nous sont pas envoyés. Si vous acceptez la mesure d’audience, PostHog dépose ses propres cookies (ph_…).',
+        ],
+      },
+      {
+        title: 'Vos droits',
+        body: [
+          'Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou vous opposer à leur traitement. Vous pouvez aussi saisir l’autorité de protection des données de votre pays (la CNIL en France, l’INPDP en Tunisie).',
+        ],
+      },
+    ],
+  },
+  en: {
+    metaTitle: 'Privacy and cookies · Tunisia Go',
+    brandTag: 'Privacy',
+    backToMap: 'Back to the map',
+    title: 'Privacy and cookies',
+    updated: 'Updated October 2026',
+    sections: [
+      {
+        title: 'Who is responsible',
+        body: [
+          'Tunisia Go is published by Mehdi Maiez. For any question about your data, or to ask for access, correction or deletion, contact us through mehdimaiez.com.',
+        ],
+      },
+      {
+        title: 'Secret spots you suggest',
+        body: [
+          'When you suggest a place, we store what you type (name of the place, area, location, description, first name and contact if you give them) and your photos. Photos are resized and their metadata, including GPS location, is removed in your browser before upload.',
+          'This is only used to review the suggestion and, if it is accepted, to add it to the map with your first name as credit. It is hosted in the European Union (Supabase, Frankfurt). Your contact details are never published. Suggestions that are not kept are deleted after 12 months.',
+        ],
+      },
+      {
+        title: 'Audience measurement',
+        body: [
+          'Only with your consent, we measure visits (pages viewed, places and road trips opened, device type, country) with PostHog, hosted in the European Union. It tells us which content is useful. No data is sold or used for advertising.',
+          'If you decline, no measurement tool is loaded. Your choice is kept for 6 months, and you can change it at any time with the “Cookies” link at the bottom of every page.',
+        ],
+      },
+      {
+        title: 'What is stored on your device',
+        body: [
+          'tg-lang: your language. tg-consent: your cookie choice. Road trips saved for offline use stay in your browser and are not sent to us. If you accept audience measurement, PostHog sets its own cookies (ph_…).',
+        ],
+      },
+      {
+        title: 'Your rights',
+        body: [
+          'You can ask for access to your data, its correction or deletion, or object to its processing. You can also contact the data protection authority of your country (CNIL in France, INPDP in Tunisia).',
+        ],
+      },
+    ],
+  },
+};
+
+type Params = { params: Promise<{ lang: string }> };
+
+async function localeOf(params: Params['params']): Promise<Locale> {
+  const { lang } = await params;
+  return isLocale(lang) ? lang : 'fr';
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  return { title: COPY[await localeOf(params)].metaTitle };
+}
+
+export default async function PrivacyPage({ params }: Params) {
+  const c = COPY[await localeOf(params)];
+  return (
+    <main className="min-h-dvh bg-cream text-charcoal">
+      <header className="border-b border-sand-200">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6">
+          <a href="/" className="leading-none">
+            <span className="block font-serif text-2xl tracking-tight">Tunisia Go</span>
+            <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.24em] text-charcoal-300">
+              {c.brandTag}
+            </span>
+          </a>
+          <div className="flex items-center gap-5">
+            <LanguageSwitch />
+            <a href="/explore" className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline">
+              {c.backToMap}
+            </a>
+          </div>
+        </div>
+      </header>
+      <article className="mx-auto max-w-3xl px-4 pb-24 pt-12 sm:px-6">
+        <h1 className="font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{c.title}</h1>
+        <p className="mt-3 text-sm text-charcoal-300">{c.updated}</p>
+        {c.sections.map((s) => (
+          <section key={s.title} className="mt-10 border-t border-sand-200 pt-6">
+            <h2 className="font-serif text-2xl">{s.title}</h2>
+            {s.body.map((p) => (
+              <p key={p.slice(0, 24)} className="mt-3 max-w-2xl text-[15px] leading-relaxed text-charcoal-700">
+                {p}
+              </p>
+            ))}
+          </section>
+        ))}
+      </article>
+      <footer className="border-t border-sand-200">
+        <MadeBy className="mx-auto max-w-3xl px-4 py-6 sm:px-6" />
+      </footer>
+    </main>
+  );
+}

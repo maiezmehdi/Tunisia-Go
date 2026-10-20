@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 
 import { notFound } from 'next/navigation';
 
+import CookieConsent from '@/components/CookieConsent';
 import ServiceWorker from '@/components/ServiceWorker';
 import { LOCALES, isLocale } from '@/lib/i18n/config';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
@@ -55,7 +56,10 @@ export default async function RootLayout({
         <style>{`:root{--font-serif:'Fraunces';--font-sans:'Inter';}`}</style>
       </head>
       <body className="font-sans antialiased">
-        <LocaleProvider locale={lang}>{children}</LocaleProvider>
+        <LocaleProvider locale={lang}>
+          {children}
+          <CookieConsent />
+        </LocaleProvider>
         <ServiceWorker />
       </body>
     </html>

@@ -1,5 +1,6 @@
 'use client';
 
+import { openConsent } from '@/lib/consent';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 /** "Created with love by Mehdi Maiez", with a link to his site. */
@@ -21,6 +22,14 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
       >
         Mehdi Maiez
       </a>
+      <span aria-hidden className="mx-2">·</span>
+      <a href="/confidentialite" className={`underline underline-offset-4 transition ${link}`}>
+        {t.privacy}
+      </a>
+      <span aria-hidden className="mx-2">·</span>
+      <button type="button" onClick={openConsent} className={`underline underline-offset-4 transition ${link}`}>
+        {t.cookies}
+      </button>
     </p>
   );
 }
