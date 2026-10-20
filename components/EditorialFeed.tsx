@@ -20,7 +20,7 @@ export interface EditorialFeedProps {
 export default function EditorialFeed({ places, photos, selectedId, onSelect, month = null }: EditorialFeedProps) {
   const { t, locale, catalog } = useLocale();
   return (
-    <div className="no-scrollbar h-full overflow-y-auto px-5 pb-10 pt-5 sm:px-6">
+    <div className="no-scrollbar px-5 md:h-full md:overflow-y-auto pb-10 pt-5 sm:px-6">
       <div className="mb-6">
         <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.journal}</p>
         <h2 className="mt-1.5 font-serif text-3xl leading-tight text-charcoal">

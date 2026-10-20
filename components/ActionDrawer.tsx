@@ -50,7 +50,7 @@ export default function ActionDrawer({ place, photos, itinerary, onClose, onNavi
           animate={{ x: 0 }}
           exit={{ x: '105%' }}
           transition={{ type: 'spring', stiffness: 260, damping: 32 }}
-          className="absolute inset-y-0 right-0 z-[1100] flex w-full flex-col overflow-hidden border-sand-200 bg-cream shadow-lift sm:inset-y-3 sm:right-3 sm:w-[440px] sm:rounded-4xl sm:border"
+          className="fixed inset-y-0 right-0 z-[1300] flex md:absolute md:z-[1100] w-full flex-col overflow-hidden border-sand-200 bg-cream shadow-lift sm:inset-y-3 sm:right-3 sm:w-[440px] sm:rounded-4xl sm:border"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div

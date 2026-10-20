@@ -114,9 +114,14 @@ export default function Explorer({ photos }: ExplorerProps) {
   };
 
   return (
-    <main className="flex h-dvh flex-col overflow-hidden bg-cream">
+    <main
+      className={`flex flex-col bg-cream md:h-dvh md:overflow-hidden ${
+        // Phones in list view: one page scroll (map, then the journal), no inner scroller.
+        viewMode === 'split' ? 'min-h-dvh' : 'h-dvh overflow-hidden'
+      }`}
+    >
       {/* Top bar */}
-      <header className="relative z-[1200] flex flex-col gap-3 border-b border-sand-200 bg-cream px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-8">
+      <header className="sticky top-0 z-[1200] flex flex-col gap-3 border-b border-sand-200 bg-cream px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-8">
         <div className="relative z-10 flex items-center justify-between gap-3">
           <a href="/" className="shrink-0 leading-none">
             <span className="block whitespace-nowrap font-serif text-xl tracking-tight text-charcoal sm:text-2xl">
@@ -173,7 +178,7 @@ export default function Explorer({ photos }: ExplorerProps) {
           <motion.aside
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="h-[45%] shrink-0 border-t border-sand-200 bg-cream md:h-auto md:w-[420px] md:border-r md:border-t-0"
+            className="shrink-0 border-t border-sand-200 bg-cream md:w-[420px] md:border-r md:border-t-0"
           >
             <EditorialFeed
               places={feedPlaces}
@@ -185,7 +190,9 @@ export default function Explorer({ photos }: ExplorerProps) {
           </motion.aside>
         )}
 
-        <section className="relative min-h-0 flex-1">
+        <section
+          className={`relative min-h-0 md:h-auto md:flex-1 ${viewMode === 'split' ? 'h-[62svh] shrink-0' : 'flex-1'}`}
+        >
           <InteractiveMap
             places={mapPlaces}
             activeCategories={activeCategories}
