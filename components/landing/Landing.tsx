@@ -45,14 +45,16 @@ export default function Landing({ photos }: LandingProps) {
   };
   if (heroPhoto) usedPhotos.set(heroPhoto.src, heroPhoto);
 
-  const trips = TRIP_STORIES[locale].map((story) => {
-    const itinerary = catalog.itineraries.find((i) => i.id === story.id);
-    return itinerary ? { story, itinerary, photo: use(story.cover) } : null;
-  }).filter((t): t is NonNullable<typeof t> => !!t);
+  const trips = TRIP_STORIES[locale]
+    .map((story) => {
+      const itinerary = catalog.itineraries.find((i) => i.id === story.id);
+      return itinerary ? { story, itinerary, photo: use(story.cover) } : null;
+    })
+    .filter((t): t is NonNullable<typeof t> => !!t);
 
-  const vignettes = ATLAS[locale].map((v) => ({ ...v, place: catalog.placeById[v.id], photo: use(v.id) })).filter(
-    (v): v is typeof v & { place: Place } => !!v.place,
-  );
+  const vignettes = ATLAS[locale]
+    .map((v) => ({ ...v, place: catalog.placeById[v.id], photo: use(v.id) }))
+    .filter((v): v is typeof v & { place: Place } => !!v.place);
 
   return (
     <div lang={locale} className="bg-cream text-charcoal">
@@ -105,14 +107,15 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
       />
 
       <header className="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-5 sm:px-10">
-        <BrandLogo tone="light" size={42} compact markOnlyOnPhone />
+        {/* Phones show the whole logo: the hero button below already opens the map. */}
+        <BrandLogo tone="light" size={42} />
         <nav className="flex items-center gap-5 sm:gap-6">
           <SoundToggle tone="light" />
           <LanguageSwitch tone="light" />
           <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a
             href="/explore"
-            className="whitespace-nowrap rounded-pill border border-cream/40 px-4 py-1.5 text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
+            className="hidden whitespace-nowrap rounded-pill border border-cream/40 px-4 py-1.5 sm:inline-block text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
           >
             {copy.nav.openMap}
           </a>
@@ -162,7 +165,10 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
             {c.cta}
             <Arrow className="transition-transform group-hover:translate-x-1" />
           </a>
-          <a href="#manifeste" className="text-sm text-cream/70 underline-offset-4 transition hover:text-cream hover:underline">
+          <a
+            href="#manifeste"
+            className="text-sm text-cream/70 underline-offset-4 transition hover:text-cream hover:underline"
+          >
             {c.readManifesto}
           </a>
         </motion.div>
@@ -180,7 +186,12 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
         </span>
       </a>
 
-      {photo && <Credit photo={photo} className="absolute bottom-6 right-5 hidden max-w-[40%] text-right sm:right-10 lg:block" />}
+      {photo && (
+        <Credit
+          photo={photo}
+          className="absolute bottom-6 right-5 hidden max-w-[40%] text-right sm:right-10 lg:block"
+        />
+      )}
     </section>
   );
 }
@@ -219,9 +230,7 @@ function Manifesto() {
               <p className="first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:font-serif first-letter:text-6xl first-letter:leading-[0.8] first-letter:text-charcoal">
                 {c.body[0]}
               </p>
-              <p>
-                {c.body[1]}
-              </p>
+              <p>{c.body[1]}</p>
             </div>
           </Reveal>
 
@@ -264,9 +273,7 @@ function Escapes({ trips }: { trips: TripCard[] }) {
               {c.title}
             </h2>
           </div>
-          <p className="max-w-xs text-sm text-charcoal-500">
-            {c.intro}
-          </p>
+          <p className="max-w-xs text-sm text-charcoal-500">{c.intro}</p>
         </Reveal>
       </div>
 
@@ -317,9 +324,7 @@ function TripCardView({ trip, index }: { trip: TripCard; index: number }) {
       <p className="mt-3 text-sm leading-relaxed text-cream/80">{story.text}</p>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-cream/20 pt-4 text-xs text-cream/75">
-        <span className="tabular-nums">
-          {c.meta(itinerary.days, stops.length, formatKm(km))}
-        </span>
+        <span className="tabular-nums">{c.meta(itinerary.days, stops.length, formatKm(km))}</span>
         <span className="inline-flex items-center gap-2 text-cream">
           {c.seeTrip}
           <Arrow className="transition-transform group-hover:translate-x-1" />
@@ -356,9 +361,7 @@ function Atlas({ vignettes }: { vignettes: VignetteCard[] }) {
               {c.title(catalog.places.length)}
             </h2>
           </div>
-          <p className="self-end text-sm leading-relaxed text-charcoal-500 lg:col-span-5 lg:col-start-8">
-            {c.intro}
-          </p>
+          <p className="self-end text-sm leading-relaxed text-charcoal-500 lg:col-span-5 lg:col-start-8">{c.intro}</p>
         </Reveal>
       </div>
 
@@ -440,9 +443,7 @@ function Finale() {
           <br />
           <span className="italic text-terracotta-300">{c.titleLine2}</span>
         </h2>
-        <p className="mt-8 max-w-lg text-base leading-relaxed text-cream/70">
-          {c.body}
-        </p>
+        <p className="mt-8 max-w-lg text-base leading-relaxed text-cream/70">{c.body}</p>
         <div className="mt-12 flex flex-wrap items-center gap-6">
           <a
             href="/explore"
@@ -480,9 +481,7 @@ function Footer({ photos }: { photos: Photo[] }) {
         </div>
         {photos.length > 0 && (
           <details className="max-w-xl sm:text-right">
-            <summary className="cursor-pointer list-none transition hover:text-cream">
-              {c.credits}
-            </summary>
+            <summary className="cursor-pointer list-none transition hover:text-cream">{c.credits}</summary>
             <ul className="mt-3 space-y-1 leading-relaxed">
               {photos.map((p) => (
                 <li key={p.src}>
@@ -504,15 +503,7 @@ function Footer({ photos }: { photos: Photo[] }) {
 /* Small pieces                                                        */
 /* ------------------------------------------------------------------ */
 
-function Reveal({
-  children,
-  className,
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
+function Reveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
