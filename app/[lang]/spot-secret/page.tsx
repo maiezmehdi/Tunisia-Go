@@ -10,20 +10,20 @@ const COPY: Record<
   { metaTitle: string; metaDescription: string; brandTag: string; backToMap: string; eyebrow: string; title: string; lead: string }
 > = {
   fr: {
-    metaTitle: 'Ajouter un spot secret · Tunisia Go',
+    metaTitle: 'Ajouter un lieu · Tunisia Go',
     metaDescription: 'Un café, une crique isolée, un point de vue : partagez un lieu que seuls les habitués connaissent.',
-    brandTag: 'Spot secret',
+    brandTag: 'Nouveau lieu',
     backToMap: 'Retour à la carte',
-    eyebrow: 'Ajouter un spot secret',
+    eyebrow: 'Ajouter un lieu',
     title: 'Un lieu que seuls les habitués connaissent ?',
     lead: 'Un café de village, une crique isolée du Cap Bon, un point de vue au bout d’une piste. Racontez-le : chaque proposition est relue avant d’apparaître sur la carte.',
   },
   en: {
-    metaTitle: 'Share a secret spot · Tunisia Go',
+    metaTitle: 'Add a place · Tunisia Go',
     metaDescription: 'A café, a hidden cove, a viewpoint: share a place only the regulars know.',
-    brandTag: 'Secret spot',
+    brandTag: 'New place',
     backToMap: 'Back to the map',
-    eyebrow: 'Share a secret spot',
+    eyebrow: 'Add a place',
     title: 'Know a place only the regulars do?',
     lead: 'A village café, a secluded cove on Cap Bon, a viewpoint at the end of a dirt track. Tell us about it: every suggestion is read before it appears on the map.',
   },

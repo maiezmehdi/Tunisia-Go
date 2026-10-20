@@ -21,7 +21,7 @@ const COPY: Record<Locale, { metaTitle: string; brandTag: string; backToMap: str
         ],
       },
       {
-        title: 'Les spots secrets que vous proposez',
+        title: 'Les lieux que vous proposez',
         body: [
           'Quand vous proposez un lieu, nous enregistrons ce que vous saisissez (nom du lieu, région, position, description, prénom et contact si vous les donnez) et vos photos. Les photos sont réduites et leurs métadonnées, dont la position GPS, sont supprimées dans votre navigateur avant l’envoi.',
           'Ces données servent uniquement à relire la proposition et, si elle est retenue, à l’ajouter à la carte en vous créditant par votre prénom. Elles sont hébergées dans l’Union européenne (Supabase, Francfort). Votre contact n’est jamais publié. Les propositions non retenues sont supprimées au bout de 12 mois.',
@@ -62,7 +62,7 @@ const COPY: Record<Locale, { metaTitle: string; brandTag: string; backToMap: str
         ],
       },
       {
-        title: 'Secret spots you suggest',
+        title: 'Places you suggest',
         body: [
           'When you suggest a place, we store what you type (name of the place, area, location, description, first name and contact if you give them) and your photos. Photos are resized and their metadata, including GPS location, is removed in your browser before upload.',
           'This is only used to review the suggestion and, if it is accepted, to add it to the map with your first name as credit. It is hosted in the European Union (Supabase, Frankfurt). Your contact details are never published. Suggestions that are not kept are deleted after 12 months.',

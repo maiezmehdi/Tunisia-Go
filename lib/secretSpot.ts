@@ -87,7 +87,7 @@ export function cleanSpot(input: Partial<Record<keyof SecretSpot, unknown>>): Se
 /** Plain-text version, used for the webhook message and the WhatsApp fallback. Always French: it goes to the team. */
 export function spotAsText(spot: SecretSpot): string {
   return [
-    `Nouveau spot secret : ${spot.name} (${SPOT_TYPE_LABELS.fr[toSpotType(spot.type)]})`,
+    `Nouveau lieu proposé : ${spot.name} (${SPOT_TYPE_LABELS.fr[toSpotType(spot.type)]})`,
     `Où : ${spot.area}${spot.location ? ` · ${spot.location}` : ''}`,
     `Pourquoi : ${spot.why}`,
     spot.bestTime && `Meilleur moment : ${spot.bestTime}`,
