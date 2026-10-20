@@ -8,12 +8,15 @@ import type { Photo, Place } from '@/data/types';
  */
 
 const API = 'https://en.wikipedia.org/w/api.php';
+const API_FR = 'https://fr.wikipedia.org/w/api.php';
+const COMMONS = 'https://commons.wikimedia.org/w/api.php';
 const HEADERS = { 'User-Agent': 'TunisiaGo/0.1 (https://github.com/maiezmehdi/Tunisia-Go)' };
 const MAX_PHOTOS = 4;
 const THUMB_WIDTH = 1280;
 
 /** File names that are almost never photos of the place itself */
-const SKIP = /(map|carte|logo|flag|coat[_ ]of[_ ]arms|icon|locator|location|blason|seal|diagram|plan\b|commons-logo|wiki)/i;
+const SKIP =
+  /(map|carte|logo|flag|coat[_ ]of[_ ]arms|icon|locator|location|blason|seal|diagram|plan\b|commons-logo|wiki)/i;
 
 interface ImageInfo {
   thumburl?: string;
@@ -29,6 +32,8 @@ interface ApiPage {
   title: string;
   pageimage?: string;
   imageinfo?: ImageInfo[];
+  /** Search rank, on Commons search results */
+  index?: number;
 }
 
 function stripHtml(html = ''): string {
@@ -41,8 +46,8 @@ function stripHtml(html = ''): string {
     .trim();
 }
 
-async function query(params: Record<string, string>): Promise<{ pages?: Record<string, ApiPage> } | null> {
-  const url = new URL(API);
+async function query(params: Record<string, string>, api = API): Promise<{ pages?: Record<string, ApiPage> } | null> {
+  const url = new URL(api);
   for (const [k, v] of Object.entries({ action: 'query', format: 'json', redirects: '1', ...params })) {
     url.searchParams.set(k, v);
   }
@@ -77,18 +82,29 @@ function toPhoto(page: ApiPage): Photo | null {
   };
 }
 
-async function photosFor(article: string): Promise<Photo[]> {
+const IMAGE_INFO = {
+  prop: 'imageinfo',
+  iiprop: 'url|mime|size|extmetadata',
+  iiurlwidth: String(THUMB_WIDTH),
+  iiextmetadatafilter: 'Artist|LicenseShortName|ObjectName',
+};
+
+/** Photos used in a Wikipedia article (English by default), its lead image first. */
+async function photosFor(article: string, api = API): Promise<Photo[]> {
   const [lead, all] = await Promise.all([
-    query({ titles: article, prop: 'pageimages', piprop: 'name' }),
-    query({
-      titles: article,
-      generator: 'images',
-      gimlimit: '50',
-      prop: 'imageinfo',
-      iiprop: 'url|mime|size|extmetadata',
-      iiurlwidth: String(THUMB_WIDTH),
-      iiextmetadatafilter: 'Artist|LicenseShortName|ObjectName',
-    }),
+    query({ titles: article, prop: 'pageimages', piprop: 'name' }, api),
+    query(
+      {
+        titles: article,
+        generator: 'images',
+        gimlimit: '50',
+        prop: 'imageinfo',
+        iiprop: 'url|mime|size|extmetadata',
+        iiurlwidth: String(THUMB_WIDTH),
+        iiextmetadatafilter: 'Artist|LicenseShortName|ObjectName',
+      },
+      api,
+    ),
   ]);
 
   const leadName = Object.values(lead?.pages ?? {})[0]?.pageimage;
@@ -106,9 +122,38 @@ async function photosFor(article: string): Promise<Photo[]> {
   return photos.slice(0, MAX_PHOTOS);
 }
 
-export async function loadPhotos(places: Place[]): Promise<Record<string, Photo[]>> {
-  const entries = await Promise.all(
-    places.map(async (p) => [p.id, p.wiki ? await photosFor(p.wiki) : []] as const),
+/** Free photos found by a search on Wikimedia Commons, most relevant first. */
+async function searchCommons(search: string): Promise<Photo[]> {
+  const res = await query(
+    { generator: 'search', gsrnamespace: '6', gsrsearch: `${search} filetype:bitmap`, gsrlimit: '12', ...IMAGE_INFO },
+    COMMONS,
   );
+  return Object.values(res?.pages ?? {})
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+    .map(toPhoto)
+    .filter((p): p is Photo => !!p)
+    .slice(0, MAX_PHOTOS);
+}
+
+function unique(photos: Photo[]): Photo[] {
+  const seen = new Set<string>();
+  return photos.filter((p) => !seen.has(p.src) && seen.add(p.src));
+}
+
+/**
+ * English article first, then the French one, then a Commons search on the place's own
+ * words, until there are at least two photos (some articles have none, or only maps).
+ */
+async function photosForPlace(place: Place): Promise<Photo[]> {
+  let photos = place.wiki ? await photosFor(place.wiki) : [];
+  if (photos.length < 2 && place.wikiFr) photos = unique([...photos, ...(await photosFor(place.wikiFr, API_FR))]);
+  if (photos.length < 2) {
+    photos = unique([...photos, ...(await searchCommons(place.photoSearch ?? `${place.name} ${place.stayQuery}`))]);
+  }
+  return photos.slice(0, MAX_PHOTOS);
+}
+
+export async function loadPhotos(places: Place[]): Promise<Record<string, Photo[]>> {
+  const entries = await Promise.all(places.map(async (p) => [p.id, await photosForPlace(p)] as const));
   return Object.fromEntries(entries);
 }

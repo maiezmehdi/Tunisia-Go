@@ -44,6 +44,10 @@ export interface Place {
   id: string;
   /** English Wikipedia article used to find photos */
   wiki?: string;
+  /** French Wikipedia article, tried when the English one has fewer than two photos */
+  wikiFr?: string;
+  /** Wikimedia Commons search used as a last resort (default: name and town) */
+  photoSearch?: string;
   name: string;
   nameAr?: string;
   region: string;

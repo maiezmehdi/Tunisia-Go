@@ -144,6 +144,8 @@ export const PLACES: Place[] = [
   {
     id: 'marche-central',
     wiki: 'Central Market of Tunis',
+    wikiFr: 'Marché central de Tunis',
+    photoSearch: 'Marché central Tunis',
     name: 'Marché Central',
     nameAr: 'السوق المركزي',
     region: 'Tunis',

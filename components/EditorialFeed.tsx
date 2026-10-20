@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
@@ -75,17 +76,7 @@ export default function EditorialFeed({
                 aria-current={selected || undefined}
                 className="group flex w-full gap-4 py-4 text-left"
               >
-                <span className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-sand">
-                  {cover && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={cover.src}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover grayscale-[15%] transition duration-500 group-hover:scale-105"
-                    />
-                  )}
-                </span>
+                <Thumb src={cover?.src} name={place.name} />
                 <span className="min-w-0 flex-1 py-0.5">
                   <span className="block text-[11px] uppercase tracking-[0.16em] text-charcoal-300">
                     {category.label} · {place.region}
@@ -125,5 +116,29 @@ export default function EditorialFeed({
 
       <MadeBy className="mt-10 border-t border-sand-200 pt-5" />
     </div>
+  );
+}
+
+/** List thumbnail. Without a photo (or if it fails to load), a quiet tile with the place's initial. */
+function Thumb({ src, name }: { src?: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+  const show = src && !failed;
+  return (
+    <span className="relative grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-2xl border border-sand-200 bg-sand-50">
+      {show ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          onError={() => setFailed(true)}
+          className="h-full w-full object-cover grayscale-[15%] transition duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <span aria-hidden className="font-serif text-4xl italic text-charcoal-300">
+          {name.replace(/^(le|la|les|l’|the)\s+/i, '').charAt(0)}
+        </span>
+      )}
+    </span>
   );
 }
