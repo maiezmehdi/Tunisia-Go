@@ -5,6 +5,7 @@ import { useRef } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
 import LanguageSwitch from '@/components/LanguageSwitch';
+import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import LineArtPortrait from '@/components/landing/LineArtPortrait';
 import { ATLAS, HERO_CANDIDATES, LANDING_COPY, TRIP_STORIES, type TripStory } from '@/components/landing/content';
@@ -107,6 +108,7 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
           Tunisia Go
         </a>
         <nav className="flex items-center gap-5 sm:gap-6">
+          <SoundToggle tone="light" />
           <LanguageSwitch tone="light" />
           <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a

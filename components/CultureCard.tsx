@@ -5,22 +5,43 @@ import { useEffect, useState } from 'react';
 
 import type { CultureInsights, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useSound } from '@/lib/sound';
+import { bestVoice, sentences } from '@/lib/voice';
 
 type InsightKey = keyof CultureInsights;
 
 const TAB_KEYS: InsightKey[] = ['history', 'customs', 'food', 'bestTime'];
 
-/** Reads text aloud with the browser's speech engine. No audio files needed. */
+/**
+ * Reads text aloud with the browser's speech engine, using the most natural voice it has for
+ * the page's language, one sentence at a time. The ambient music is turned down meanwhile.
+ */
 function useNarration(text: string, lang = 'en-GB') {
   const [speaking, setSpeaking] = useState(false);
   const [supported, setSupported] = useState(false);
-  useEffect(() => setSupported('speechSynthesis' in window), []);
+  const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const { duck } = useSound();
+
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) return;
+    setSupported(true);
+    // Voices load asynchronously in Chrome.
+    const pick = () => setVoice(bestVoice(lang));
+    pick();
+    window.speechSynthesis.addEventListener('voiceschanged', pick);
+    return () => window.speechSynthesis.removeEventListener('voiceschanged', pick);
+  }, [lang]);
 
   useEffect(() => {
     if (!supported) return;
     setSpeaking(false);
-    return () => window.speechSynthesis.cancel();
-  }, [supported, text]);
+    return () => {
+      window.speechSynthesis.cancel();
+      duck(false);
+    };
+  }, [supported, text, duck]);
+
+  useEffect(() => duck(speaking), [speaking, duck]);
 
   const toggle = () => {
     if (!supported) return;
@@ -30,12 +51,17 @@ function useNarration(text: string, lang = 'en-GB') {
       setSpeaking(false);
       return;
     }
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    utterance.rate = 0.98;
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
-    synth.speak(utterance);
+    const parts = sentences(text);
+    parts.forEach((part, i) => {
+      const utterance = new SpeechSynthesisUtterance(part);
+      utterance.lang = voice?.lang ?? lang;
+      if (voice) utterance.voice = voice;
+      utterance.rate = 0.94;
+      utterance.pitch = 1;
+      if (i === parts.length - 1) utterance.onend = () => setSpeaking(false);
+      utterance.onerror = () => setSpeaking(false);
+      synth.speak(utterance);
+    });
     setSpeaking(true);
   };
 

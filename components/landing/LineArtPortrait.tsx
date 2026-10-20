@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 /**
  * Line drawing of a Tunisian woman in a headscarf, in profile, with a jasmine flower at the temple.
+ * Behind her, smaller and fainter: the amphitheatre of El Jem and the houses of Sidi Bou Saïd.
  * The strokes draw themselves when the section scrolls into view, then the figure drifts gently.
  */
 const STROKES = [
@@ -25,6 +26,25 @@ const STROKES = [
   'M204 102 C 248 118, 284 156, 298 214',
   'M256 222 C 278 262, 284 300, 276 344',
   'M300 252 C 306 300, 304 330, 312 360',
+];
+
+
+/** Background monuments, drawn first and kept faint so the portrait stays in front. */
+const BACKDROP = [
+  // El Jem: ground, then the three tiers of the amphitheatre with the breach on the right.
+  'M-28 506 H132',
+  'M-20 506 V444 C-20 440, -16 438, -12 438 H58 L64 446 L70 446 L76 456 L84 456 L90 464 H104 L110 472 V506',
+  'M-20 484 H110 M-20 462 H90',
+  'M-14 506 V497 C-14 492, -6 492, -6 497 V506 M-1 506 V497 C-1 492, 7 492, 7 497 V506 M12 506 V497 C12 492, 20 492, 20 497 V506 M25 506 V497 C25 492, 33 492, 33 497 V506 M38 506 V497 C38 492, 46 492, 46 497 V506 M51 506 V497 C51 492, 59 492, 59 497 V506 M64 506 V497 C64 492, 72 492, 72 497 V506 M77 506 V497 C77 492, 85 492, 85 497 V506 M90 506 V497 C90 492, 98 492, 98 497 V506 M103 506 V497 C103 492, 111 492, 111 497 V506',
+  'M-14 484 V475 C-14 470, -6 470, -6 475 V484 M-1 484 V475 C-1 470, 7 470, 7 475 V484 M12 484 V475 C12 470, 20 470, 20 475 V484 M25 484 V475 C25 470, 33 470, 33 475 V484 M38 484 V475 C38 470, 46 470, 46 475 V484 M51 484 V475 C51 470, 59 470, 59 475 V484 M64 484 V475 C64 470, 72 470, 72 475 V484 M77 484 V475 C77 470, 85 470, 85 475 V484 M90 484 V475 C90 470, 98 470, 98 475 V484 M103 484 V475 C103 470, 111 470, 111 475 V484',
+  'M-14 462 V453 C-14 448, -6 448, -6 453 V462 M-1 462 V453 C-1 448, 7 448, 7 453 V462 M12 462 V453 C12 448, 20 448, 20 453 V462 M25 462 V453 C25 448, 33 448, 33 453 V462 M38 462 V453 C38 448, 46 448, 46 453 V462 M51 462 V453 C51 448, 59 448, 59 453 V462',
+  // Sidi Bou Saïd: ground, a domed house, a taller one with its arched door and moucharabieh.
+  'M368 506 H480',
+  'M390 506 V454 H428 M400 454 C400 437, 418 437, 418 454 M409 441 V433',
+  'M406 480 V472 C406 467, 414 467, 414 472 V480 Z',
+  'M428 506 V430 H468 V506',
+  'M440 506 V486 C440 477, 456 477, 456 486 V506',
+  'M444 442 H456 V452 H444 Z M450 442 V452',
 ];
 
 /** Jasmine (the Tunisian machmoum flower): five petals around a small heart, tucked at the temple. */
@@ -50,12 +70,17 @@ export default function LineArtPortrait({ className = '' }: { className?: string
 
   return (
     <motion.svg
-      viewBox="96 64 314 452"
+      viewBox="-34 64 518 452"
       aria-hidden
       className={className}
       animate={reduce ? undefined : { y: [0, -8, 0], rotate: [0, -0.6, 0] }}
       transition={reduce ? undefined : { duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
     >
+      <g fill="none" stroke="currentColor" strokeWidth={0.9} strokeLinecap="round" strokeLinejoin="round" opacity={0.55}>
+        {BACKDROP.map((d, i) => (
+          <motion.path key={i} d={d} {...draw(1 + i * 0.35, 1.8)} />
+        ))}
+      </g>
       <g fill="none" stroke="currentColor" strokeWidth={1.15} strokeLinecap="round" strokeLinejoin="round">
         {STROKES.map((d, i) => (
           <motion.path key={i} d={d} {...draw(i)} />

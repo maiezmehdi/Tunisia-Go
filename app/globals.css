@@ -128,3 +128,15 @@ html {
   .atlas-track { animation: none; }
   .atlas-marquee > div { width: auto; overflow-x: auto; }
 }
+
+/* Sound button: the bars breathe while the ambience plays. */
+@keyframes tg-sound-bar {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.35); }
+}
+.tg-sound-on rect {
+  animation: tg-sound-bar 1.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tg-sound-on rect { animation: none; }
+}

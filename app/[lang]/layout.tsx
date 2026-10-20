@@ -6,6 +6,7 @@ import CookieConsent from '@/components/CookieConsent';
 import ServiceWorker from '@/components/ServiceWorker';
 import { LOCALES, isLocale } from '@/lib/i18n/config';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
+import { SoundProvider } from '@/lib/sound';
 
 import '../globals.css';
 
@@ -57,8 +58,10 @@ export default async function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <LocaleProvider locale={lang}>
-          {children}
-          <CookieConsent />
+          <SoundProvider>
+            {children}
+            <CookieConsent />
+          </SoundProvider>
         </LocaleProvider>
         <ServiceWorker />
       </body>
