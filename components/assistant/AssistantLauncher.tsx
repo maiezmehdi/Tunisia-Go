@@ -17,7 +17,7 @@ export default function AssistantLauncher() {
   const [loaded, setLoaded] = useState(false);
 
   if (/\/admin(\/|$)/.test(pathname)) return null;
-  // On the map, stay clear of the zoom buttons and the "add a place" button.
+  // On the map, stay clear of the zoom buttons, and in full-map view of the "add a place" button.
   const onMap = /\/explore$/.test(pathname);
 
   return (
@@ -33,7 +33,7 @@ export default function AssistantLauncher() {
           aria-haspopup="dialog"
           className={`fixed inline-flex items-center gap-2 rounded-pill bg-charcoal px-4 py-2.5 text-sm text-cream shadow-lift transition hover:bg-charcoal-700 print:hidden ${
             onMap
-              ? 'bottom-[9.25rem] right-3 z-[1050] lg:bottom-24 lg:right-5' // under the place panel
+              ? 'bottom-4 right-4 z-[1050] lg:bottom-24 lg:right-5 [html[data-explore-view=map]_&]:max-lg:bottom-[9.25rem]' // under the place panel
               : 'bottom-4 right-4 z-[1250] sm:bottom-5 sm:right-5'
           }`}
         >

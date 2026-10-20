@@ -71,6 +71,14 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Lets floating buttons outside this component (the assistant) make room in map view.
+  useEffect(() => {
+    document.documentElement.dataset.exploreView = viewMode;
+    return () => {
+      delete document.documentElement.dataset.exploreView;
+    };
+  }, [viewMode]);
+
   // Keep the chosen road trip in the address bar so the view can be shared.
   useEffect(() => {
     const url = new URL(window.location.href);
