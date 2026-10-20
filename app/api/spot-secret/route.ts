@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { defaultCategory, parseCoords } from '@/lib/community';
 import { cleanSpot, spotAsText, type SecretSpot } from '@/lib/secretSpot';
 import { insertRow, supabaseConfig, uploadObject } from '@/lib/supabase';
 
@@ -83,6 +84,7 @@ export async function POST(request: Request) {
 }
 
 function toRow(spot: SecretSpot, locale: string, photos: string[]) {
+  const coords = parseCoords(spot.location);
   return {
     locale,
     name: spot.name,
@@ -94,5 +96,9 @@ function toRow(spot: SecretSpot, locale: string, photos: string[]) {
     author: spot.author || null,
     contact: spot.contact || null,
     photos,
+    // Pre-filled for the moderation page when the visitor gave coordinates or a map link.
+    lat: coords?.[0] ?? null,
+    lng: coords?.[1] ?? null,
+    category: defaultCategory(spot.type),
   };
 }

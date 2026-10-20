@@ -235,6 +235,7 @@ export default function ItinerarySelector({
             type="button"
             onClick={() => onChange(null)}
             aria-label={t.clearItinerary}
+            data-tip={t.clearItinerary}
             className="grid h-9 w-9 place-items-center border-l border-sand-200 text-charcoal-500"
           >
             <X className="h-3.5 w-3.5" strokeWidth={1.5} />

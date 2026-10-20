@@ -40,11 +40,17 @@ const ALL_CATEGORIES = new Set<CategoryId>(CATEGORIES.map((c) => c.id));
 export interface ExplorerProps {
   /** Photos per place id, loaded on the server */
   photos: Record<string, Photo[]>;
+  /** Places suggested by visitors and approved on the moderation page. */
+  community?: Place[];
 }
 
-export default function Explorer({ photos }: ExplorerProps) {
+const NO_PLACES: Place[] = [];
+
+export default function Explorer({ photos, community = NO_PLACES }: ExplorerProps) {
   const { t, catalog } = useLocale();
-  const { places: PLACES, placeById: PLACE_BY_ID, itineraries: ITINERARIES, categories } = catalog;
+  const { itineraries: ITINERARIES, categories } = catalog;
+  const PLACES = useMemo(() => [...catalog.places, ...community], [catalog.places, community]);
+  const PLACE_BY_ID = useMemo(() => Object.fromEntries(PLACES.map((p) => [p.id, p])), [PLACES]);
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [activeCategories, setActiveCategories] = useState<Set<CategoryId>>(ALL_CATEGORIES);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -282,6 +288,8 @@ function MobileMenu() {
         aria-expanded={open}
         aria-controls="explorer-menu"
         aria-label={t.menu}
+        data-tip={t.menu}
+        data-tip-align="end"
         className="grid h-8 w-8 place-items-center rounded-full border border-sand-200 text-charcoal-700 transition hover:border-charcoal-300"
       >
         <svg aria-hidden viewBox="0 0 14 8" className="h-2 w-3.5">
