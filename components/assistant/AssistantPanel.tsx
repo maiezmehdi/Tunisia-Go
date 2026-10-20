@@ -35,7 +35,7 @@ const MAX_MESSAGES = 60;
 const UI = {
   fr: {
     title: 'Assistant de voyage',
-    subtitle: 'Il répond dans votre navigateur, rien n’est envoyé.',
+    subtitle: 'Dites-moi ce que vous cherchez : durée, région, envies.',
     close: 'Fermer',
     restart: 'Recommencer',
     placeholder: 'Écrivez votre question…',
@@ -51,7 +51,7 @@ const UI = {
   },
   en: {
     title: 'Travel assistant',
-    subtitle: 'It answers in your browser, nothing is sent.',
+    subtitle: 'Tell me what you are after: how long, where, what you love.',
     close: 'Close',
     restart: 'Start again',
     placeholder: 'Type your question…',
@@ -90,6 +90,7 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
   const [draft, setDraft] = useState('');
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -113,8 +114,16 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
     // Phones would pop the keyboard over the answer: focus the field on larger screens only.
     if (window.matchMedia('(min-width: 640px)').matches) inputRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    // A click anywhere outside the card closes it (on phones the panel fills the screen).
+    const onPointer = (e: PointerEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) onClose();
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointer);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPointer);
+    };
   }, [open, onClose]);
 
   function push(userText: string, result: { reply: Reply; profile: Profile }) {
@@ -148,8 +157,8 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
       role="dialog"
       aria-modal="false"
       aria-label={ui.title}
-      hidden={!open}
-      className="fixed inset-0 z-[1600] flex flex-col bg-cream text-charcoal print:hidden sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(640px,calc(100vh-2.5rem))] sm:w-[400px] sm:overflow-hidden sm:rounded-3xl sm:border sm:border-sand-200 sm:shadow-lift"
+      ref={panelRef}
+      className={`fixed inset-0 z-[1600] flex-col ${open ? 'flex' : 'hidden'} bg-cream text-charcoal print:hidden sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(640px,calc(100vh-2.5rem))] sm:w-[400px] sm:overflow-hidden sm:rounded-3xl sm:border sm:border-sand-200 sm:shadow-lift`}
     >
       <header className="flex items-start justify-between gap-3 border-b border-sand-200 px-5 py-4">
         <div>
