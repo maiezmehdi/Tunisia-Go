@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 
 import { notFound } from 'next/navigation';
 
+import AssistantLauncher from '@/components/assistant/AssistantLauncher';
 import CookieConsent from '@/components/CookieConsent';
 import ServiceWorker from '@/components/ServiceWorker';
 import { LOCALES, isLocale } from '@/lib/i18n/config';
@@ -65,6 +66,7 @@ export default async function RootLayout({
           <SoundProvider>
             <MyTripProvider>
               {children}
+              <AssistantLauncher />
               <CookieConsent />
             </MyTripProvider>
           </SoundProvider>
