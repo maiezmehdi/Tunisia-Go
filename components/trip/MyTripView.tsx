@@ -83,7 +83,7 @@ export default function MyTripView({ photos, community = NO_PLACES }: MyTripView
     <main className="min-h-dvh bg-cream text-charcoal print:bg-white">
       <header className="border-b border-sand-200 print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <BrandLogo tag={t.myTrip} size={40} compact markOnlyOnPhone />
+          <BrandLogo tag={t.myTrip} size={40} compact />
           <div className="flex items-center gap-4 sm:gap-5">
             <SoundToggle />
             <LanguageSwitch />
