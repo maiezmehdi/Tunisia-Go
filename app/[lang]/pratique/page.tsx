@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import LanguageSwitch from '@/components/LanguageSwitch';
+import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
@@ -31,6 +32,7 @@ export default async function PratiquePage({ params }: Params) {
             </span>
           </a>
           <div className="flex items-center gap-5">
+            <SoundToggle />
             <LanguageSwitch />
             <a
               href="/explore"

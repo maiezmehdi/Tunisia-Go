@@ -9,12 +9,14 @@ import AddSpotLink from '@/components/AddSpotLink';
 import EditorialFeed from '@/components/EditorialFeed';
 import ItinerarySelector from '@/components/ItinerarySelector';
 import LanguageSwitch from '@/components/LanguageSwitch';
+import SoundToggle from '@/components/SoundToggle';
 import OfflineBadge from '@/components/OfflineBadge';
 import { seasonFor } from '@/data/seasons';
 import { track } from '@/lib/analytics';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { SOUTH_TRIPS, useSound } from '@/lib/sound';
 
 // Leaflet touches `window`, so the map only renders in the browser.
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
@@ -71,6 +73,13 @@ export default function Explorer({ photos }: ExplorerProps) {
   }, [itineraryId]);
 
   const itinerary = ITINERARIES.find((i) => i.id === itineraryId) ?? null;
+
+  // The Grand Sud road trips get a little more of the ambience (it never starts on its own).
+  const { setMood } = useSound();
+  useEffect(() => {
+    setMood(itineraryId && SOUTH_TRIPS.has(itineraryId) ? 'south' : 'default');
+    return () => setMood('default');
+  }, [itineraryId, setMood]);
   const selectedPlace = selectedId ? (PLACE_BY_ID[selectedId] ?? null) : null;
 
   const feedPlaces = useMemo(() => {
@@ -140,6 +149,7 @@ export default function Explorer({ photos }: ExplorerProps) {
           <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
             <OfflineBadge />
             <ViewToggle mode={viewMode} onChange={setViewMode} compact />
+            <SoundToggle className="px-1.5" />
             <MobileMenu />
           </div>
         </div>
@@ -174,6 +184,7 @@ export default function Explorer({ photos }: ExplorerProps) {
         <div className="hidden items-center gap-5 lg:flex">
           <AddSpotLink from="header" />
           <HeaderLinks />
+          <SoundToggle label />
           <LanguageSwitch />
           <ViewToggle mode={viewMode} onChange={setViewMode} />
         </div>
