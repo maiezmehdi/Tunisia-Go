@@ -5,6 +5,7 @@ import { useRef } from 'react';
 
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
+import LineArtPortrait from '@/components/landing/LineArtPortrait';
 import { ATLAS, HERO_CANDIDATES, LANDING_COPY, TRIP_STORIES, type TripStory } from '@/components/landing/content';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { formatKm, summarizeRoute } from '@/lib/geo';
@@ -423,6 +424,8 @@ function Finale() {
         className="pointer-events-none absolute inset-0 -z-10 opacity-[0.12] mix-blend-overlay"
         style={{ backgroundImage: GRAIN }}
       />
+
+      <LineArtPortrait className="pointer-events-none absolute bottom-0 right-[max(1.5rem,calc((100vw-72rem)/2))] -z-10 hidden h-[88%] max-h-[640px] w-auto text-cream/55 lg:block" />
 
       <Reveal className="mx-auto max-w-6xl">
         <SectionLabel index="04" tone="dark">
