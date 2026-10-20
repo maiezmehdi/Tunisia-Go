@@ -27,9 +27,7 @@ interface PinOptions {
 }
 
 function pinIcon({ active, dim, stopNumber }: PinOptions): L.DivIcon {
-  const classes = ['tg-pin', stopNumber && 'is-stop', active && 'is-active', dim && 'is-dim']
-    .filter(Boolean)
-    .join(' ');
+  const classes = ['tg-pin', stopNumber && 'is-stop', active && 'is-active', dim && 'is-dim'].filter(Boolean).join(' ');
   const size = stopNumber ? 26 : 16;
   return L.divIcon({
     className: 'tg-marker',
@@ -114,10 +112,12 @@ export default function InteractiveMap({
     return order;
   }, [itinerary]);
 
-  const routeCoords = useMemo<LatLng[]>(
-    () => (itinerary ? itinerary.stops.map((id) => PLACE_BY_ID[id]?.coords).filter((c): c is LatLng => !!c) : []),
-    [itinerary],
-  );
+  const routeCoords = useMemo<LatLng[]>(() => {
+    if (!itinerary) return [];
+    // Community places are not in the static catalog: look in the places on the map first.
+    const byId = new Map(places.map((p) => [p.id, p]));
+    return itinerary.stops.map((id) => (byId.get(id) ?? PLACE_BY_ID[id])?.coords).filter((c): c is LatLng => !!c);
+  }, [itinerary, places]);
 
   const visible = useMemo(
     () => places.filter((p) => activeCategories.has(p.category) || stopOrder.has(p.id)),

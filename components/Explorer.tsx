@@ -17,6 +17,7 @@ import { track } from '@/lib/analytics';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useMyTrip } from '@/lib/myTrip';
 import { SOUTH_TRIPS, useSound } from '@/lib/sound';
 
 // Leaflet touches `window`, so the map only renders in the browser.
@@ -220,7 +221,9 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
 
           {viewMode === 'map' && (
             <div className="absolute left-3 right-3 top-3 z-[1000] sm:right-auto sm:max-w-[640px]">
-              <div className="rounded-3xl border border-sand-200 bg-cream/95 p-2 shadow-soft backdrop-blur">{filters}</div>
+              <div className="rounded-3xl border border-sand-200 bg-cream/95 p-2 shadow-soft backdrop-blur">
+                {filters}
+              </div>
             </div>
           )}
 
@@ -265,10 +268,21 @@ function HeaderLinks() {
     'whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline';
   return (
     <nav aria-label={t.travelTools} className="flex items-center gap-4">
+      <MyTripLink className={link} />
       <a href="/pratique" className={link}>
         {t.practical}
       </a>
     </nav>
+  );
+}
+
+function MyTripLink({ className }: { className: string }) {
+  const { t } = useLocale();
+  const { ids } = useMyTrip();
+  return (
+    <a href="/mon-voyage" className={className}>
+      {t.myTripCount(ids.length)}
+    </a>
   );
 }
 
@@ -317,6 +331,7 @@ function MobileMenu() {
             className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-sand-200 bg-cream px-5 py-2 shadow-soft"
           >
             <AddSpotLink from="mobile-menu" variant="primary" className="mb-2 mt-2 w-full justify-center" />
+            <MyTripLink className={`${link} border-t border-sand-200`} />
             <a href="/pratique" className={`${link} border-t border-sand-200`}>
               {t.practical}
             </a>

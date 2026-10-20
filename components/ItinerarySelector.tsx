@@ -12,6 +12,7 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { lockPageScroll } from '@/lib/scrollLock';
 import { formatDuration, formatKm, summarizeRoute } from '@/lib/geo';
 import { googleMapsRouteUrl } from '@/lib/links';
+import { useMyTrip } from '@/lib/myTrip';
 
 export interface ItinerarySelectorProps {
   itineraries: Itinerary[];
@@ -208,6 +209,7 @@ export default function ItinerarySelector({
               >
                 {t.openRouteInGoogleMaps}
               </a>
+              <AddStopsButton stopIds={stops.map((s) => s.id)} />
               <OfflineTripButton itinerary={active} photos={photos} />
             </div>
           </motion.div>
@@ -245,6 +247,32 @@ export default function ItinerarySelector({
 
       {fullScreen ? createPortal(<div className="fixed inset-0 z-[1400] bg-cream">{panel}</div>, document.body) : panel}
     </>
+  );
+}
+
+/** Copies every stop of a suggested road trip into the visitor's own trip. */
+function AddStopsButton({ stopIds }: { stopIds: string[] }) {
+  const { t } = useLocale();
+  const trip = useMyTrip();
+  const missing = stopIds.filter((id) => !trip.has(id));
+  if (missing.length === 0) {
+    return (
+      <p className="mt-2 flex items-center justify-center gap-2 py-2 text-sm text-charcoal-500">
+        {t.allStopsInTrip} ·{' '}
+        <a href="/mon-voyage" className="underline underline-offset-4 hover:text-charcoal">
+          {t.viewMyTrip}
+        </a>
+      </p>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => trip.add(missing)}
+      className="mt-2 flex w-full items-center justify-center rounded-pill border border-charcoal-300 px-4 py-2.5 text-sm text-charcoal transition hover:border-charcoal"
+    >
+      {t.addAllStops(stopIds.length)}
+    </button>
   );
 }
 

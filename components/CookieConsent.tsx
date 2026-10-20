@@ -51,7 +51,7 @@ export default function CookieConsent() {
     <div
       role="dialog"
       aria-label={c.title}
-      className="fixed inset-x-3 bottom-3 z-[1500] mx-auto max-w-md rounded-3xl border border-sand-200 bg-cream p-5 text-charcoal shadow-lift sm:left-auto sm:right-5 sm:bottom-5 sm:mx-0"
+      className="fixed inset-x-3 bottom-3 z-[1500] mx-auto max-w-md print:hidden rounded-3xl border border-sand-200 bg-cream p-5 text-charcoal shadow-lift sm:left-auto sm:right-5 sm:bottom-5 sm:mx-0"
     >
       <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.title}</p>
       <p className="mt-2 text-sm leading-relaxed text-charcoal-700">

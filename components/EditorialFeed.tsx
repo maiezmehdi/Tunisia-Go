@@ -36,15 +36,9 @@ export default function EditorialFeed({
       <div className="mb-6">
         <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.journal}</p>
         <h2 className="mt-1.5 font-serif text-3xl leading-tight text-charcoal">
-          {month === null
-            ? t.placesWorthTheDrive(places.length)
-            : t.placesToVisitIn(places.length, t.months[month])}
+          {month === null ? t.placesWorthTheDrive(places.length) : t.placesToVisitIn(places.length, t.months[month])}
         </h2>
-        {month !== null && (
-          <p className="mt-2 text-sm text-charcoal-500">
-            {t.offSeasonHidden}
-          </p>
-        )}
+        {month !== null && <p className="mt-2 text-sm text-charcoal-500">{t.offSeasonHidden}</p>}
         <AddSpotLink from="journal-top" variant="text" className="mt-3">
           {t.missingPlace}
         </AddSpotLink>
@@ -53,9 +47,7 @@ export default function EditorialFeed({
       {filters && <div className="mb-5">{filters}</div>}
 
       {places.length === 0 && (
-        <p className="border-t border-sand-200 pt-6 text-sm text-charcoal-500">
-          {t.noPlacesMatch}
-        </p>
+        <p className="border-t border-sand-200 pt-6 text-sm text-charcoal-500">{t.noPlacesMatch}</p>
       )}
 
       <ul className="divide-y divide-sand-200 border-t border-sand-200">
@@ -120,11 +112,15 @@ export default function EditorialFeed({
 }
 
 /** List thumbnail. Without a photo (or if it fails to load), a quiet tile with the place's initial. */
-function Thumb({ src, name }: { src?: string; name: string }) {
+export function Thumb({ src, name, small = false }: { src?: string; name: string; small?: boolean }) {
   const [failed, setFailed] = useState(false);
   const show = src && !failed;
   return (
-    <span className="relative grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-2xl border border-sand-200 bg-sand-50">
+    <span
+      className={`relative grid shrink-0 place-items-center overflow-hidden border border-sand-200 bg-sand-50 ${
+        small ? 'h-16 w-16 rounded-xl' : 'h-24 w-24 rounded-2xl'
+      }`}
+    >
       {show ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -135,7 +131,7 @@ function Thumb({ src, name }: { src?: string; name: string }) {
           className="h-full w-full object-cover grayscale-[15%] transition duration-500 group-hover:scale-105"
         />
       ) : (
-        <span aria-hidden className="font-serif text-4xl italic text-charcoal-300">
+        <span aria-hidden className={`font-serif italic text-charcoal-300 ${small ? 'text-2xl' : 'text-4xl'}`}>
           {name.replace(/^(le|la|les|l’|the)\s+/i, '').charAt(0)}
         </span>
       )}
