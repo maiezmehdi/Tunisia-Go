@@ -4,6 +4,7 @@ import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import Lexicon from '@/components/Lexicon';
+import RegionGuides from '@/components/RegionGuides';
 import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
@@ -22,7 +23,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function PratiquePage({ params }: Params) {
-  const c = PRATIQUE_COPY[await localeOf(params)];
+  const locale = await localeOf(params);
+  const c = PRATIQUE_COPY[locale];
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
       <header className="border-b border-sand-200">
@@ -59,6 +61,12 @@ export default async function PratiquePage({ params }: Params) {
               {t.title}
             </a>
           ))}
+          <a
+            href="#cahiers"
+            className="shrink-0 rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 hover:text-charcoal"
+          >
+            {c.guidesNav}
+          </a>
           <a
             href="#mots"
             className="shrink-0 rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 hover:text-charcoal"
@@ -111,6 +119,10 @@ export default async function PratiquePage({ params }: Params) {
               </a>
             </div>
           </aside>
+        </div>
+
+        <div className="mt-16">
+          <RegionGuides locale={locale} />
         </div>
 
         <div className="mt-16">

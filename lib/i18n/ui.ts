@@ -106,6 +106,8 @@ const en = {
   offSeason: 'off season',
   estimatesNote: 'Estimates use straight-line distance with a road factor.',
   openRouteInGoogleMaps: 'Open the route in Google Maps',
+  regionGuide: 'Regional notes',
+  regionGuideHint: 'Customs, bargaining and the right season, in a few lines.',
   // My trip
   myTrip: 'My trip',
   myTripCount: (n: number) => (n === 0 ? 'My trip' : `My trip · ${n}`),
@@ -249,6 +251,8 @@ const fr: UiStrings = {
   offSeason: 'hors saison',
   estimatesNote: 'Estimations à vol d’oiseau, corrigées d’un facteur routier.',
   openRouteInGoogleMaps: 'Ouvrir l’itinéraire dans Google Maps',
+  regionGuide: 'Cahier pratique',
+  regionGuideHint: 'Usages, négociation et bonne saison, en quelques lignes.',
   myTrip: 'Mon voyage',
   myTripCount: (n) => (n === 0 ? 'Mon voyage' : `Mon voyage · ${n}`),
   addToTrip: 'Ajouter à mon road trip',
