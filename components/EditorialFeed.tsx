@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 
+import AddSpotLink from '@/components/AddSpotLink';
 import MadeBy from '@/components/MadeBy';
 import { bestMonthsLabel, seasonFor } from '@/data/seasons';
 import type { Photo, Place } from '@/data/types';
@@ -33,6 +34,9 @@ export default function EditorialFeed({ places, photos, selectedId, onSelect, mo
             {t.offSeasonHidden}
           </p>
         )}
+        <AddSpotLink from="journal-top" variant="text" className="mt-3">
+          {t.missingPlace}
+        </AddSpotLink>
       </div>
 
       {places.length === 0 && (
@@ -97,15 +101,14 @@ export default function EditorialFeed({ places, photos, selectedId, onSelect, mo
         })}
       </ul>
 
-      <div className="mt-8 border-t border-sand-200 pt-6">
-        <p className="font-serif text-xl leading-snug text-charcoal">{t.knowAPlace}</p>
-        <p className="mt-1 text-sm text-charcoal-500">{t.knowAPlaceHint}</p>
-        <a
-          href="/spot-secret"
-          className="mt-3 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal"
-        >
+      <div className="mt-8 rounded-3xl border border-sand-200 bg-sand-50 p-6">
+        <p className="font-serif text-2xl leading-snug text-charcoal">{t.knowAPlace}</p>
+        <p className="mt-2 text-sm leading-relaxed text-charcoal-500">
+          {t.knowAPlaceHint} {t.spotBenefit}
+        </p>
+        <AddSpotLink from="journal-end" variant="primary" className="mt-5">
           {t.shareSecretSpot}
-        </a>
+        </AddSpotLink>
       </div>
 
       <MadeBy className="mt-10 border-t border-sand-200 pt-5" />

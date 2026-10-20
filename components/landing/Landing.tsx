@@ -3,6 +3,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 
+import AddSpotLink from '@/components/AddSpotLink';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
 import LineArtPortrait from '@/components/landing/LineArtPortrait';
@@ -107,6 +108,7 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
         </a>
         <nav className="flex items-center gap-5 sm:gap-6">
           <LanguageSwitch tone="light" />
+          <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a
             href="/explore"
             className="rounded-pill border border-cream/40 px-4 py-1.5 text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
@@ -417,6 +419,7 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
 
 function Finale() {
   const c = useLanding().copy.finale;
+  const { t } = useLocale();
   return (
     <section className="relative isolate overflow-hidden bg-charcoal px-5 py-28 text-cream sm:px-10 sm:py-40">
       <div
@@ -454,6 +457,12 @@ function Finale() {
             {c.secondary}
           </a>
         </div>
+        <p className="mt-14 max-w-lg border-t border-cream/15 pt-6 text-sm text-cream/60">
+          {t.knowAPlace}{' '}
+          <AddSpotLink from="landing-finale" variant="text-light" className="text-cream underline decoration-cream/40">
+            {t.shareSecretSpot}
+          </AddSpotLink>
+        </p>
       </Reveal>
     </section>
   );

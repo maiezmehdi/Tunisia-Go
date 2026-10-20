@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Phone, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import AddSpotLink from '@/components/AddSpotLink';
 import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
 import SeasonStrip from '@/components/SeasonStrip';
@@ -207,6 +208,11 @@ function DrawerContent({
             <StopButton id={nextId} dir="next" onNavigate={onNavigate} />
           </nav>
         )}
+
+        <div className="border-t border-sand-200 pt-5">
+          <p className="text-sm text-charcoal-500">{t.missingPlaceNear(place.region)}</p>
+          <AddSpotLink from="place" className="mt-3" />
+        </div>
       </div>
     </>
   );
