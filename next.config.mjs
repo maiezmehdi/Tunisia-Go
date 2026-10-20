@@ -12,6 +12,8 @@ const IMAGES = [
   'https://basemaps.cartocdn.com',
   'https://*.basemaps.cartocdn.com',
   'https://upload.wikimedia.org',
+  // Wikimedia now serves resized photos from thumb.wikimedia.org.
+  'https://*.wikimedia.org',
   'https://*.supabase.co',
 ];
 const POSTHOG = ['https://eu.i.posthog.com', 'https://eu-assets.i.posthog.com', 'https://*.posthog.com'];
