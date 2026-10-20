@@ -44,6 +44,13 @@ const COPY: Record<
         title: 'Ce qui est stocké sur votre appareil',
         body: [
           'tg-lang : la langue choisie. tg-consent : votre choix sur les cookies. Les road trips enregistrés pour le hors-ligne sont gardés dans votre navigateur et ne nous sont pas envoyés. Si vous acceptez la mesure d’audience, PostHog dépose ses propres cookies (ph_…).',
+          'tg-my-trip : les étapes de « Mon voyage ». tg-assistant : la conversation avec l’assistant de voyage, effacée quand vous fermez l’onglet.',
+        ],
+      },
+      {
+        title: 'L’assistant de voyage',
+        body: [
+          'L’assistant en bas à droite n’est pas une intelligence artificielle en ligne. Il fonctionne entièrement dans votre navigateur et répond à partir des contenus du site (lieux, road trips, cahiers pratiques, mots du cru). Ce que vous y écrivez ne nous est pas envoyé et n’est transmis à aucun service.',
         ],
       },
       {
@@ -85,6 +92,13 @@ const COPY: Record<
         title: 'What is stored on your device',
         body: [
           'tg-lang: your language. tg-consent: your cookie choice. Road trips saved for offline use stay in your browser and are not sent to us. If you accept audience measurement, PostHog sets its own cookies (ph_…).',
+          'tg-my-trip: the stops of “My trip”. tg-assistant: your conversation with the travel assistant, erased when you close the tab.',
+        ],
+      },
+      {
+        title: 'The travel assistant',
+        body: [
+          'The assistant in the bottom-right corner is not an online artificial intelligence. It runs entirely in your browser and answers from the site’s own content (places, road trips, practical guides, local words). What you type is not sent to us or to any other service.',
         ],
       },
       {
