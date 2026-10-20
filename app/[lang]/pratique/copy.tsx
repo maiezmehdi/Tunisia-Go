@@ -22,6 +22,8 @@ export interface PratiqueCopy {
   title: string;
   lead: string;
   navLabel: string;
+  /** Topic nav link to the « mots du cru » lexicon. */
+  wordsNav: string;
   topics: Topic[];
   checklistTitle: string;
   checklist: string[];
@@ -44,9 +46,7 @@ function RentalCta({ label }: { label: string }) {
   );
 }
 
-const EMERGENCY_FR = (
-  <span className="tabular-nums">Police 197 · SAMU 190 · Pompiers 198 · Garde nationale 193</span>
-);
+const EMERGENCY_FR = <span className="tabular-nums">Police 197 · SAMU 190 · Pompiers 198 · Garde nationale 193</span>;
 const EMERGENCY_EN = (
   <span className="tabular-nums">Police 197 · Ambulance (SAMU) 190 · Fire brigade 198 · National Guard 193</span>
 );
@@ -62,6 +62,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
     title: 'Tout ce qu’il faut régler avant la route',
     lead: 'Location, argent, téléphone et les petites règles qui facilitent le voyage, réunis au même endroit.',
     navLabel: 'Rubriques',
+    wordsNav: 'Les mots du cru',
     topics: [
       {
         id: '4x4',
@@ -215,6 +216,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
     title: 'Everything to settle before you hit the road',
     lead: 'Car hire, money, phones and the small rules that make travel easier, gathered in one place.',
     navLabel: 'Sections',
+    wordsNav: 'Local words',
     topics: [
       {
         id: '4x4',
@@ -354,8 +356,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
       'A local SIM, even where the signal is weak',
       'Someone who knows your route',
     ],
-    seasonNote:
-      'Not sure when to go? Pick a month on the map: spots that are too hot or closed are hidden.',
+    seasonNote: 'Not sure when to go? Pick a month on the map: spots that are too hot or closed are hidden.',
     openMap: 'Open the map',
   },
 };

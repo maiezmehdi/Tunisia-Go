@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
+import Lexicon from '@/components/Lexicon';
 import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
@@ -42,14 +43,13 @@ export default async function PratiquePage({ params }: Params) {
 
       <div className="mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
         <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.eyebrow}</p>
-        <h1 className="mt-2 max-w-2xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
-          {c.title}
-        </h1>
-        <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-charcoal-500">
-          {c.lead}
-        </p>
+        <h1 className="mt-2 max-w-2xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{c.title}</h1>
+        <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-charcoal-500">{c.lead}</p>
 
-        <nav aria-label={c.navLabel} className="no-scrollbar -mx-4 mt-8 flex gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <nav
+          aria-label={c.navLabel}
+          className="no-scrollbar -mx-4 mt-8 flex gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+        >
           {c.topics.map((t) => (
             <a
               key={t.id}
@@ -59,6 +59,12 @@ export default async function PratiquePage({ params }: Params) {
               {t.title}
             </a>
           ))}
+          <a
+            href="#mots"
+            className="shrink-0 rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 hover:text-charcoal"
+          >
+            {c.wordsNav}
+          </a>
         </nav>
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_300px] lg:gap-16">
@@ -83,7 +89,9 @@ export default async function PratiquePage({ params }: Params) {
 
           <aside className="lg:pt-10">
             <div className="rounded-3xl border border-sand-200 p-6 lg:sticky lg:top-6">
-              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.checklistTitle}</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
+                {c.checklistTitle}
+              </p>
               <ul className="mt-4 space-y-3">
                 {c.checklist.map((item) => (
                   <li key={item} className="flex gap-3 text-sm text-charcoal-700">
@@ -103,6 +111,10 @@ export default async function PratiquePage({ params }: Params) {
               </a>
             </div>
           </aside>
+        </div>
+
+        <div className="mt-16">
+          <Lexicon />
         </div>
       </div>
       <footer className="border-t border-sand-200">
