@@ -189,3 +189,14 @@ html {
   [data-tip-align='end']:hover::after,
   [data-tip-align='end']:focus-visible::after { transform: translateY(0); }
 }
+
+/* Printed road trip: the map without its zoom buttons. */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+  .leaflet-control-zoom {
+    display: none;
+  }
+}
