@@ -11,6 +11,7 @@ import SeasonStrip from '@/components/SeasonStrip';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { useMyTrip } from '@/lib/myTrip';
+import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { track } from '@/lib/analytics';
 import { lockPageScroll } from '@/lib/scrollLock';
 import {
@@ -215,6 +216,8 @@ function DrawerContent({
 
         {place.didYouKnow && <CultureCard place={place} />}
 
+        <GuideLink placeId={place.id} />
+
         {/* Itinerary navigation */}
         {itinerary && stopIndex >= 0 && (
           <nav
@@ -277,6 +280,26 @@ function TripButton({ placeId }: { placeId: string }) {
         </a>
       )}
     </div>
+  );
+}
+
+/** Points to the regional « Cahier pratique » on the Practical page. */
+function GuideLink({ placeId }: { placeId: string }) {
+  const { t, locale } = useLocale();
+  const id = guideFor(placeId);
+  const guide = regionGuides(locale).find((g) => g.id === id);
+  if (!guide) return null;
+  return (
+    <a
+      href={`/pratique#${guideAnchor(id)}`}
+      className="group block border-l-2 border-sand-300 py-1 pl-5 transition hover:border-charcoal"
+    >
+      <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.regionGuide}</span>
+      <span className="mt-1 block font-serif text-lg leading-snug text-charcoal group-hover:text-terracotta-700">
+        {guide.title}
+      </span>
+      <span className="mt-0.5 block text-sm text-charcoal-500">{t.regionGuideHint}</span>
+    </a>
   );
 }
 

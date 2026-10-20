@@ -24,6 +24,8 @@ export interface PratiqueCopy {
   navLabel: string;
   /** Topic nav link to the « mots du cru » lexicon. */
   wordsNav: string;
+  /** Topic nav link to the regional notes. */
+  guidesNav: string;
   topics: Topic[];
   checklistTitle: string;
   checklist: string[];
@@ -63,6 +65,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
     lead: 'Location, argent, téléphone et les petites règles qui facilitent le voyage, réunis au même endroit.',
     navLabel: 'Rubriques',
     wordsNav: 'Les mots du cru',
+    guidesNav: 'Cahiers par région',
     topics: [
       {
         id: '4x4',
@@ -217,6 +220,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
     lead: 'Car hire, money, phones and the small rules that make travel easier, gathered in one place.',
     navLabel: 'Sections',
     wordsNav: 'Local words',
+    guidesNav: 'Regional notes',
     topics: [
       {
         id: '4x4',
