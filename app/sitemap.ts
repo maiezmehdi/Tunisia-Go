@@ -1,11 +1,14 @@
 import type { MetadataRoute } from 'next';
 
+import { PLACES } from '@/data/tunisiaData';
+import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
 import { SITE_URL, localePath } from '@/lib/seo';
 
 // Public pages, each in French (/path) and English (/en/path).
 const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly' }[] = [
   { path: '/', priority: 1, changeFrequency: 'weekly' },
   { path: '/explore', priority: 0.9, changeFrequency: 'weekly' },
+  { path: '/lieux', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/pratique', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/spot-secret', priority: 0.4, changeFrequency: 'yearly' },
   { path: '/confidentialite', priority: 0.1, changeFrequency: 'yearly' },
@@ -13,10 +16,19 @@ const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return PAGES.flatMap(({ path, priority, changeFrequency }) =>
+  const pages = [
+    ...PAGES.map((p) => ({ ...p, lastModified: now })),
+    ...PLACES.map((place) => ({
+      path: placePath(place.id),
+      priority: 0.6,
+      changeFrequency: 'monthly' as const,
+      lastModified: new Date(CONTENT_UPDATED),
+    })),
+  ];
+  return pages.flatMap(({ path, priority, changeFrequency, lastModified }) =>
     (['fr', 'en'] as const).map((lang) => ({
       url: `${SITE_URL}${localePath(path, lang)}`,
-      lastModified: now,
+      lastModified,
       changeFrequency,
       priority: lang === 'fr' ? priority : Math.round(priority * 90) / 100,
       alternates: {

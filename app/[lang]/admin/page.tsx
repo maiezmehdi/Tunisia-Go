@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import BrandLogo from '@/components/BrandLogo';
 import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
+import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, isAdminToken } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
 import { selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
@@ -80,6 +81,28 @@ export default async function AdminPage() {
     console.error('admin: list', error);
     failed = true;
   }
+  // Reports are optional: without the table (db/place-reports.sql) the section just stays empty.
+  const reports: AdminReport[] = await selectRows<{
+    id: string;
+    created_at: string;
+    status: 'open' | 'done';
+    place_id: string;
+    place_name: string | null;
+    message: string;
+    contact: string | null;
+  }>(cfg, 'place_reports', 'select=*&order=created_at.desc&limit=200')
+    .then((list) =>
+      list.map((r) => ({
+        id: r.id,
+        createdAt: r.created_at,
+        status: r.status,
+        placeId: r.place_id,
+        placeName: r.place_name,
+        message: r.message,
+        contact: r.contact,
+      })),
+    )
+    .catch(() => []);
   const signed = await signUrls(
     cfg,
     PRIVATE_BUCKET,
@@ -114,7 +137,10 @@ export default async function AdminPage() {
           <p>Supabase n’a pas répondu. Réessayez dans un instant.</p>
         </Notice>
       ) : (
-        <AdminBoard submissions={submissions} />
+        <>
+          <AdminBoard submissions={submissions} />
+          <ReportsBoard reports={reports} />
+        </>
       )}
     </Shell>
   );

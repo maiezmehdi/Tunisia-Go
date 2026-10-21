@@ -1,5 +1,6 @@
 import type { Itinerary, Photo, Place } from '@/data/types';
 import type { Locale } from '@/lib/i18n/config';
+import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
 import { SITE_NAME, SITE_URL, localePath } from '@/lib/seo';
 
 const abs = (path: string) => `${SITE_URL}${path}`;
@@ -30,11 +31,11 @@ export function siteData(lang: Locale) {
 function attraction(place: Place, photos: Photo[], lang: Locale) {
   return {
     '@type': 'TouristAttraction',
-    '@id': abs(`${localePath('/explore', lang)}?place=${place.id}#place`),
+    '@id': abs(`${localePath(placePath(place.id), lang)}#place`),
     name: place.name,
     ...(place.nameAr && { alternateName: place.nameAr }),
     description: place.tagline ? `${place.tagline}. ${place.description}` : place.description,
-    url: abs(`${localePath('/explore', lang)}?place=${place.id}`),
+    url: abs(localePath(placePath(place.id), lang)),
     geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
     address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
     ...(photos[0] && { image: photos[0].src }),
@@ -75,10 +76,36 @@ export function exploreData(places: Place[], itineraries: Itinerary[], photos: R
             item: {
               '@type': 'TouristAttraction',
               name: p.name,
-              '@id': abs(`${localePath('/explore', lang)}?place=${p.id}#place`),
+              '@id': abs(`${localePath(placePath(p.id), lang)}#place`),
             },
           })),
       },
     })),
+  ];
+}
+
+/** A place's own page: the attraction plus a breadcrumb back to the list of places. */
+export function placePageData(place: Place, photos: Photo[], lang: Locale) {
+  return [
+    {
+      '@context': 'https://schema.org',
+      ...attraction(place, photos, lang),
+      inLanguage: lang,
+      dateModified: CONTENT_UPDATED,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: SITE_NAME, item: abs(localePath('/', lang)) },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: lang === 'en' ? 'Places' : 'Lieux',
+          item: abs(localePath('/lieux', lang)),
+        },
+        { '@type': 'ListItem', position: 3, name: place.name, item: abs(localePath(placePath(place.id), lang)) },
+      ],
+    },
   ];
 }
