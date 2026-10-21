@@ -29,6 +29,7 @@ const COPY: Record<
   Locale,
   {
     errorRequired: string;
+    errorSend: string;
     thanks: string;
     thanksBody: (name: string, author: string) => string;
     backToMap: string;
@@ -67,6 +68,7 @@ const COPY: Record<
 > = {
   fr: {
     errorRequired: 'Indiquez au moins le nom du lieu, la région et ce qui le rend spécial.',
+    errorSend: 'L’envoi n’a pas abouti. Réessayez dans un instant.',
     thanks: 'Merci, c’est noté.',
     thanksBody: (name, author) =>
       `On va voir ${name} de plus près. S’il rejoint la carte, vous serez crédité${author ? `, ${author}` : ''}.`,
@@ -105,6 +107,7 @@ const COPY: Record<
   },
   en: {
     errorRequired: 'Please give at least the name of the place, the area and what makes it special.',
+    errorSend: 'Sending did not work. Please try again in a moment.',
     thanks: 'Thank you, it’s on our list.',
     thanksBody: (name, author) =>
       `We’ll take a closer look at ${name}. If it makes it onto the map, you’ll be credited${author ? `, ${author}` : ''}.`,
@@ -211,6 +214,11 @@ export default function SecretSpotForm() {
       return;
     }
     setStatus({ kind: 'sending' });
+    // Saving failed: hand the suggestion over to WhatsApp when a real number is set, else ask to retry.
+    const fallback = () => {
+      const url = secretSpotWhatsAppUrl(spotAsText(clean));
+      setStatus(url ? { kind: 'whatsapp', url } : { kind: 'error', message: c.errorSend });
+    };
     try {
       const body = new FormData();
       for (const [key, value] of Object.entries(clean)) body.append(key, value);
@@ -223,10 +231,9 @@ export default function SecretSpotForm() {
         setStatus({ kind: 'sent' });
         return;
       }
-      // No webhook configured, or it failed: hand the suggestion over to WhatsApp instead.
-      setStatus({ kind: 'whatsapp', url: secretSpotWhatsAppUrl(spotAsText(clean)) });
+      fallback();
     } catch {
-      setStatus({ kind: 'whatsapp', url: secretSpotWhatsAppUrl(spotAsText(clean)) });
+      fallback();
     }
   };
 
@@ -238,7 +245,10 @@ export default function SecretSpotForm() {
           {c.thanksBody(spot.name, spot.author)}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <a href="/explore" className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700">
+          <a
+            href="/explore"
+            className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
+          >
             {c.backToMap}
           </a>
           <button
@@ -261,7 +271,14 @@ export default function SecretSpotForm() {
   return (
     <form onSubmit={submit} className="mt-12 space-y-8 border-t border-sand-200 pt-10" noValidate>
       <Field label={c.name} required>
-        <input className={input} value={spot.name} onChange={set('name')} placeholder={c.namePlaceholder} maxLength={120} required />
+        <input
+          className={input}
+          value={spot.name}
+          onChange={set('name')}
+          placeholder={c.namePlaceholder}
+          maxLength={120}
+          required
+        />
       </Field>
 
       <fieldset>
@@ -273,7 +290,9 @@ export default function SecretSpotForm() {
               <label
                 key={t}
                 className={`cursor-pointer rounded-pill border px-4 py-1.5 text-sm transition has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-charcoal ${
-                  active ? 'border-charcoal bg-charcoal text-cream' : 'border-sand-200 text-charcoal-700 hover:border-charcoal-300'
+                  active
+                    ? 'border-charcoal bg-charcoal text-cream'
+                    : 'border-sand-200 text-charcoal-700 hover:border-charcoal-300'
                 }`}
               >
                 <input type="radio" name="type" value={t} checked={active} onChange={set('type')} className="sr-only" />
@@ -286,7 +305,14 @@ export default function SecretSpotForm() {
 
       <div className="grid gap-8 sm:grid-cols-2">
         <Field label={c.area} required>
-          <input className={input} value={spot.area} onChange={set('area')} placeholder={c.areaPlaceholder} maxLength={120} required />
+          <input
+            className={input}
+            value={spot.area}
+            onChange={set('area')}
+            placeholder={c.areaPlaceholder}
+            maxLength={120}
+            required
+          />
         </Field>
         <Field
           label={c.position}
@@ -300,7 +326,13 @@ export default function SecretSpotForm() {
             </button>
           }
         >
-          <input className={input} value={spot.location} onChange={set('location')} placeholder={c.positionPlaceholder} maxLength={300} />
+          <input
+            className={input}
+            value={spot.location}
+            onChange={set('location')}
+            placeholder={c.positionPlaceholder}
+            maxLength={300}
+          />
         </Field>
       </div>
 
@@ -316,7 +348,13 @@ export default function SecretSpotForm() {
       </Field>
 
       <Field label={c.bestTime}>
-        <input className={input} value={spot.bestTime} onChange={set('bestTime')} placeholder={c.bestTimePlaceholder} maxLength={200} />
+        <input
+          className={input}
+          value={spot.bestTime}
+          onChange={set('bestTime')}
+          placeholder={c.bestTimePlaceholder}
+          maxLength={200}
+        />
       </Field>
 
       <fieldset>
@@ -364,10 +402,22 @@ export default function SecretSpotForm() {
 
       <div className="grid gap-8 sm:grid-cols-2">
         <Field label={c.author} hint={c.authorHint}>
-          <input className={input} value={spot.author} onChange={set('author')} maxLength={80} autoComplete="given-name" />
+          <input
+            className={input}
+            value={spot.author}
+            onChange={set('author')}
+            maxLength={80}
+            autoComplete="given-name"
+          />
         </Field>
         <Field label={c.contact} hint={c.contactHint}>
-          <input className={input} value={spot.contact} onChange={set('contact')} maxLength={120} autoComplete="email" />
+          <input
+            className={input}
+            value={spot.contact}
+            onChange={set('contact')}
+            maxLength={120}
+            autoComplete="email"
+          />
         </Field>
       </div>
 

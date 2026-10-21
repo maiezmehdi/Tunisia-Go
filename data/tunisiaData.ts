@@ -1,4 +1,4 @@
-import type { Category, CategoryId, Itinerary, Place, PlaceImage } from './types';
+import type { Category, CategoryId, Itinerary, Place, PlaceContact, PlaceImage } from './types';
 
 /**
  * Mock dataset for Tunisia Go.
@@ -25,14 +25,9 @@ function postcards(_category: CategoryId, captions: string[]): PlaceImage[] {
   return captions.map((caption) => ({ caption }));
 }
 
-const PLACEHOLDER_PHONE = '+21600000000';
-const PLACEHOLDER_WHATSAPP = '21600000000';
-
-const contact = (guideName: string) => ({
-  phone: PLACEHOLDER_PHONE,
-  whatsapp: PLACEHOLDER_WHATSAPP,
-  guideName,
-});
+// No real guide or venue numbers yet: the contact buttons show « Disponible bientôt »
+// until NEXT_PUBLIC_GUIDE_WHATSAPP / NEXT_PUBLIC_TRANSFER_WHATSAPP are set (lib/links.ts).
+const contact = (): PlaceContact => ({});
 
 export const PLACES: Place[] = [
   // ── Tunis & Carthage ───────────────────────────────────────────────
@@ -54,14 +49,13 @@ export const PLACES: Place[] = [
     insights: {
       history:
         'Legend says Queen Elyssa (Dido) founded the city around 814 BC. After three Punic Wars, Rome destroyed it and later rebuilt it as one of the largest cities of the empire.',
-      customs:
-        'One combined ticket covers most Carthage sites. Keep it with you as it is checked at each entrance.',
+      customs: 'One combined ticket covers most Carthage sites. Keep it with you as it is checked at each entrance.',
       food: 'Stop at La Marsa nearby for a "bambalouni", a sugared doughnut fried on the street.',
       bestTime: 'March to May and late September to November. Go early, there is little shade.',
     },
     visitDuration: 'Half day',
     images: postcards('heritage', ['Antonine Baths by the sea', 'Byrsa Hill at golden hour', 'The Punic ports']),
-    contact: contact('Sami'),
+    contact: contact(),
   },
   {
     id: 'sidi-bou-said',
@@ -76,7 +70,7 @@ export const PLACES: Place[] = [
     description:
       'A clifftop village of whitewashed houses, studded blue doors and bougainvillea, long loved by painters such as Paul Klee and August Macke. Wander the cobbled lanes, then watch the sun set over the bay.',
     didYouKnow:
-      'The blue and white look is protected. Baron Rodolphe d\'Erlanger pushed for the rule in 1915, and the village became one of the first protected sites in the world.',
+      "The blue and white look is protected. Baron Rodolphe d'Erlanger pushed for the rule in 1915, and the village became one of the first protected sites in the world.",
     insights: {
       history:
         'The village is named after Abu Said al-Baji, a 13th-century Sufi saint whose shrine still stands at the top of the hill.',
@@ -87,7 +81,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2–3 hours',
     images: postcards('culture', ['Studded blue doors', 'Café terraces over the bay', 'Bougainvillea lanes']),
-    contact: contact('Amira'),
+    contact: contact(),
   },
   {
     id: 'medina-tunis',
@@ -107,14 +101,13 @@ export const PLACES: Place[] = [
     insights: {
       history:
         'The medina grew around the Zitouna Mosque, founded in the 8th century, and peaked under the Hafsid dynasty when Tunis was a capital of the Islamic world.',
-      customs:
-        'Bargaining is expected in the souks. Start at around half the asking price and keep it friendly.',
+      customs: 'Bargaining is expected in the souks. Start at around half the asking price and keep it friendly.',
       food: 'Try "lablabi", a chickpea and cumin soup served with bread, olive oil and harissa.',
       bestTime: 'Weekday mornings. Many shops close on Sunday.',
     },
     visitDuration: 'Half day',
     images: postcards('heritage', ['Zitouna Mosque minaret', 'Souk el Attarine', 'Rooftop view at dusk']),
-    contact: contact('Yassine'),
+    contact: contact(),
   },
   {
     id: 'bardo',
@@ -125,7 +118,7 @@ export const PLACES: Place[] = [
     stayQuery: 'Tunis, Tunisia',
     category: 'culture',
     coords: [36.8094, 10.1342],
-    tagline: 'The world\'s great mosaic collection',
+    tagline: "The world's great mosaic collection",
     description:
       'Housed in a 15th-century Hafsid palace, the Bardo holds one of the largest collections of Roman mosaics anywhere, including the famous portrait of Virgil flanked by two Muses.',
     didYouKnow:
@@ -139,7 +132,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2–3 hours',
     images: postcards('culture', ['Virgil and the Muses', 'Neptune mosaic hall', 'Painted palace ceilings']),
-    contact: contact('Yassine'),
+    contact: contact(),
   },
   {
     id: 'marche-central',
@@ -156,16 +149,17 @@ export const PLACES: Place[] = [
     description:
       'Under its colonial-era iron roof, the central market sells fish fresh off the boats, pyramids of spices, olives by the dozen varieties and dates from the south.',
     didYouKnow:
-      'Tunisia is one of the largest olive oil exporters in the world, and many families still buy their year\'s oil in bulk straight after the winter harvest.',
+      "Tunisia is one of the largest olive oil exporters in the world, and many families still buy their year's oil in bulk straight after the winter harvest.",
     insights: {
-      history: 'The market was built during the French protectorate, at the edge of the new European quarter beside the medina.',
+      history:
+        'The market was built during the French protectorate, at the edge of the new European quarter beside the medina.',
       customs: 'Come in the morning when the fish hall is full. Vendors will happily let you taste olives.',
       food: 'Buy deglet nour dates, harissa and a jar of "bsissa", a roasted barley and spice flour.',
       bestTime: 'Before noon, when the stalls are fullest.',
     },
     visitDuration: '1–2 hours',
     images: postcards('culinary', ['Olives by the barrel', 'The fish hall', 'Spice pyramids']),
-    contact: contact('Yassine'),
+    contact: contact(),
   },
 
   // ── North-west ─────────────────────────────────────────────────────
@@ -183,7 +177,7 @@ export const PLACES: Place[] = [
     description:
       'A complete Roman town on a hillside among olive groves: a 3,500-seat theatre, the Capitol, baths, temples and a Libyco-Punic mausoleum, all with almost nobody around.',
     didYouKnow:
-      'The bilingual inscription from Dougga\'s mausoleum, in Punic and Libyan, helped scholars decipher the ancient Libyan script. The original stone is now in the British Museum.',
+      "The bilingual inscription from Dougga's mausoleum, in Punic and Libyan, helped scholars decipher the ancient Libyan script. The original stone is now in the British Museum.",
     insights: {
       history:
         'Thugga was a Numidian town before Rome. Romans and Numidians lived side by side here for centuries, which is why the town plan is so irregular.',
@@ -193,7 +187,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('heritage', ['The Capitol', 'Theatre over the valley', 'Libyco-Punic mausoleum']),
-    contact: contact('Hichem'),
+    contact: contact(),
   },
   {
     id: 'bulla-regia',
@@ -217,7 +211,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2 hours',
     images: postcards('heritage', ['Underground villa', 'Amphitrite mosaic', 'Columns among the fields']),
-    contact: contact('Hichem'),
+    contact: contact(),
   },
   {
     id: 'tabarka',
@@ -241,7 +235,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 days',
     images: postcards('beach', ['Genoese fort', 'Les Aiguilles rocks', 'Pine forest above the sea']),
-    contact: contact('Nour'),
+    contact: contact(),
   },
 
   // ── Sahel & centre ─────────────────────────────────────────────────
@@ -270,7 +264,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1 day',
     images: postcards('heritage', ['Great Mosque courtyard', 'Aghlabid basins', 'Carpet weavers']),
-    contact: contact('Mourad'),
+    contact: contact(),
   },
   {
     id: 'sbeitla',
@@ -294,7 +288,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2–3 hours',
     images: postcards('heritage', ['Capitoline temples', 'Antonine gate', 'Byzantine basilica']),
-    contact: contact('Mourad'),
+    contact: contact(),
   },
   {
     id: 'el-jem',
@@ -308,7 +302,7 @@ export const PLACES: Place[] = [
     unesco: true,
     tagline: 'A colosseum rising from the olive groves',
     description:
-      'Built around 238 AD for 35,000 spectators, Thysdrus\'s amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.',
+      "Built around 238 AD for 35,000 spectators, Thysdrus's amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.",
     didYouKnow:
       'El Jem is the third-largest Roman amphitheatre ever built. Its arena appeared in the film "Gladiator", and it now hosts a summer symphony festival.',
     insights: {
@@ -320,7 +314,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2–3 hours',
     images: postcards('heritage', ['The arena from above', 'Underground tunnels', 'Summer concert night']),
-    contact: contact('Rania'),
+    contact: contact(),
   },
   {
     id: 'sousse-medina',
@@ -339,13 +333,13 @@ export const PLACES: Place[] = [
       'The Ribat of Sousse was a fortress-monastery where warriors also lived as scholars. Its watchtower once signalled by fire to the next ribat along the coast.',
     insights: {
       history: 'Ancient Hadrumetum, rebuilt by the Aghlabids in the 9th century as their main naval base.',
-      customs: 'Climb the Ribat\'s watchtower for the best view over the medina.',
+      customs: "Climb the Ribat's watchtower for the best view over the medina.",
       food: '"Brik à l\'oeuf", a crisp pastry with a runny egg inside. Eat it with your fingers.',
       bestTime: 'April to June and September to October.',
     },
     visitDuration: 'Half day',
     images: postcards('heritage', ['Ribat watchtower', 'Great Mosque', 'Souk lanes']),
-    contact: contact('Rania'),
+    contact: contact(),
   },
   {
     id: 'monastir',
@@ -359,17 +353,16 @@ export const PLACES: Place[] = [
     tagline: 'A fortress on the edge of the sea',
     description:
       'The oldest ribat in North Africa, founded in 796, stands right by the water. Its walls and towers have been used as a set by many films.',
-    didYouKnow:
-      'Scenes from Monty Python\'s "Life of Brian" were filmed at the Ribat of Monastir in 1978.',
+    didYouKnow: 'Scenes from Monty Python\'s "Life of Brian" were filmed at the Ribat of Monastir in 1978.',
     insights: {
-      history: 'Built by the Abbasid governor Harthama ibn A\'yan to guard the coast against Byzantine raids.',
-      customs: 'Monastir is the hometown of Habib Bourguiba, Tunisia\'s first president, whose mausoleum is nearby.',
+      history: "Built by the Abbasid governor Harthama ibn A'yan to guard the coast against Byzantine raids.",
+      customs: "Monastir is the hometown of Habib Bourguiba, Tunisia's first president, whose mausoleum is nearby.",
       food: 'Try "kosksi bil hout", fish couscous, a coastal Sahel speciality.',
       bestTime: 'All year. Summer evenings by the marina are lively.',
     },
     visitDuration: '2 hours',
     images: postcards('heritage', ['Ribat by the sea', 'Watchtower stairs', 'Bourguiba mausoleum']),
-    contact: contact('Rania'),
+    contact: contact(),
   },
   {
     id: 'mahdia',
@@ -386,14 +379,15 @@ export const PLACES: Place[] = [
     didYouKnow:
       'In 1907, sponge divers off Mahdia found a Roman shipwreck full of bronze and marble statues. Its treasures are now displayed in the Bardo.',
     insights: {
-      history: 'Founded in 916 by the first Fatimid caliph, al-Mahdi, as his capital before the dynasty moved to Cairo.',
+      history:
+        'Founded in 916 by the first Fatimid caliph, al-Mahdi, as his capital before the dynasty moved to Cairo.',
       customs: 'Friday is market day. Visit a silk workshop to see handlooms at work.',
       food: 'Mahdia is the best place for fresh fish and "tajine malsouka", a baked egg and cheese dish.',
       bestTime: 'June to October for swimming.',
     },
     visitDuration: '1–2 days',
     images: postcards('beach', ['White sand beach', 'Skifa el Kahla gate', 'Fishing boats at the port']),
-    contact: contact('Rania'),
+    contact: contact(),
   },
   {
     id: 'sfax-medina',
@@ -406,7 +400,7 @@ export const PLACES: Place[] = [
     coords: [34.7383, 10.7603],
     tagline: 'Fish market and sweets without the crowds',
     description:
-      'Tunisia\'s second city keeps one of the most authentic medinas in the country, with a vast fish market and pastry shops famous nationwide.',
+      "Tunisia's second city keeps one of the most authentic medinas in the country, with a vast fish market and pastry shops famous nationwide.",
     didYouKnow:
       'Sfax is surrounded by millions of olive trees planted in a neat grid, one of the largest olive groves in the world.',
     insights: {
@@ -417,7 +411,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('culinary', ['The fish market', 'Pastry shop window', 'Bab Diwan gate']),
-    contact: contact('Walid'),
+    contact: contact(),
   },
 
   // ── Cap Bon ────────────────────────────────────────────────────────
@@ -432,7 +426,7 @@ export const PLACES: Place[] = [
     coords: [36.4, 10.6167],
     tagline: 'Jasmine, beaches and a walled medina',
     description:
-      'Tunisia\'s classic seaside town: a small medina by the water, long sandy beaches and the villa of Georges Sebastian, now a cultural centre with an open-air theatre.',
+      "Tunisia's classic seaside town: a small medina by the water, long sandy beaches and the villa of Georges Sebastian, now a cultural centre with an open-air theatre.",
     didYouKnow:
       'Men in Hammamet traditionally tuck a small bouquet of jasmine behind the ear: on the left if they are single, on the right if they are taken.',
     insights: {
@@ -443,7 +437,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–3 days',
     images: postcards('beach', ['Medina walls on the beach', 'Jasmine sellers', 'Sebastian villa theatre']),
-    contact: contact('Ines'),
+    contact: contact(),
   },
   {
     id: 'nabeul',
@@ -456,9 +450,8 @@ export const PLACES: Place[] = [
     coords: [36.4561, 10.7376],
     tagline: 'Capital of harissa and hand-painted pottery',
     description:
-      'Nabeul is where Tunisia\'s chillies are dried, ground and turned into harissa. Its potters and ceramic painters supply the whole country.',
-    didYouKnow:
-      'Tunisian harissa was added to UNESCO\'s list of Intangible Cultural Heritage in 2022.',
+      "Nabeul is where Tunisia's chillies are dried, ground and turned into harissa. Its potters and ceramic painters supply the whole country.",
+    didYouKnow: "Tunisian harissa was added to UNESCO's list of Intangible Cultural Heritage in 2022.",
     insights: {
       history: 'Ancient Neapolis was a Greek and Roman town famous for its fish sauce, garum.',
       customs: 'Every Friday the big market draws people from all of Cap Bon.',
@@ -467,7 +460,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('culinary', ['Chillies drying in the sun', 'Painted pottery', 'Friday market']),
-    contact: contact('Ines'),
+    contact: contact(),
   },
   {
     id: 'kelibia',
@@ -481,8 +474,7 @@ export const PLACES: Place[] = [
     tagline: 'Turquoise water below a Byzantine fort',
     description:
       'The beach of El Mansourah is often called the most beautiful in Tunisia: shallow turquoise water at the foot of a fortress that has watched the coast since the 6th century.',
-    didYouKnow:
-      'Kélibia hosts one of the oldest amateur film festivals in the world, running since 1964.',
+    didYouKnow: 'Kélibia hosts one of the oldest amateur film festivals in the world, running since 1964.',
     insights: {
       history: 'The fort sits on Punic foundations and was reused by Byzantines, Spaniards and Ottomans.',
       customs: 'Kélibia is known for its dry muscat wine, a Cap Bon tradition.',
@@ -491,7 +483,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1 day',
     images: postcards('beach', ['El Mansourah beach', 'The fortress', 'Fishing port']),
-    contact: contact('Ines'),
+    contact: contact(),
   },
   {
     id: 'el-haouaria',
@@ -508,14 +500,14 @@ export const PLACES: Place[] = [
     didYouKnow:
       'El Haouaria has a centuries-old falconry tradition. Every spring, migrating raptors cross here and a falconry festival takes place in June.',
     insights: {
-      history: 'Stone for Carthage\'s monuments was quarried here and shipped across the gulf.',
+      history: "Stone for Carthage's monuments was quarried here and shipped across the gulf.",
       customs: 'Falconers often bring their birds out for visitors around the quarries.',
       food: 'Try "kafteji", a fried mix of vegetables, egg and spices.',
       bestTime: 'Spring for bird migration, June for the falconry festival.',
     },
     visitDuration: 'Half day',
     images: postcards('sahara', ['Roman quarry caves', 'Falconer on the cliff', 'View toward Sicily']),
-    contact: contact('Ines'),
+    contact: contact(),
   },
 
   // ── South-west: Jerid & Sahara ─────────────────────────────────────
@@ -535,13 +527,13 @@ export const PLACES: Place[] = [
       'The palm grove is irrigated by more than 200 springs, shared out with a water-clock system devised in the 13th century by the mathematician Ibn Chabbat.',
     insights: {
       history: 'Ancient Thusuros was a caravan stop on the trans-Saharan routes.',
-      customs: 'The poet Abou el Kacem Chebbi, author of the national anthem\'s verses, was born here.',
+      customs: "The poet Abou el Kacem Chebbi, author of the national anthem's verses, was born here.",
       food: 'Deglet nour dates, and "legmi", fresh palm sap, if you find it in the morning.',
       bestTime: 'October to April. The Sahara Festival in Douz is in late December.',
     },
     visitDuration: '1–2 days',
     images: postcards('sahara', ['Palm grove at dawn', 'Patterned brick walls', 'Date harvest']),
-    contact: contact('Karim'),
+    contact: contact(),
   },
   {
     id: 'mos-espa',
@@ -555,7 +547,7 @@ export const PLACES: Place[] = [
     description:
       'The set of Mos Espa, Anakin Skywalker\'s hometown in "The Phantom Menace", still stands among the dunes near Ong Jemel rock, also known as the Camel\'s Neck.',
     didYouKnow:
-      'Tatooine, Luke Skywalker\'s home planet, is named after the real town of Tataouine in southern Tunisia.',
+      "Tatooine, Luke Skywalker's home planet, is named after the real town of Tataouine in southern Tunisia.",
     insights: {
       history: 'Built in 1997 for "Episode I", the set was reused for "Attack of the Clones".',
       customs: 'Go with a 4x4 driver, the track crosses soft sand.',
@@ -564,7 +556,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('sahara', ['Domed set buildings', 'Ong Jemel rock', 'Dunes at sunset']),
-    contact: contact('Karim'),
+    contact: contact(),
   },
   {
     id: 'chebika',
@@ -588,7 +580,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('sahara', ['Canyon spring', 'Abandoned stone village', 'Palms in the gorge']),
-    contact: contact('Karim'),
+    contact: contact(),
   },
   {
     id: 'chott-el-jerid',
@@ -612,7 +604,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 hours',
     images: postcards('sahara', ['Salt crust to the horizon', 'Pink salt pools', 'The causeway']),
-    contact: contact('Karim'),
+    contact: contact(),
   },
   {
     id: 'douz',
@@ -636,7 +628,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 days',
     images: postcards('sahara', ['Camel caravan', 'Desert camp under stars', 'Festival horsemen']),
-    contact: contact('Karim'),
+    contact: contact(),
   },
 
   // ── South-east: Matmata, Tataouine, Djerba ─────────────────────────
@@ -662,7 +654,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('culture', ['Troglodyte courtyard', 'Hotel Sidi Driss', 'Lunar hills']),
-    contact: contact('Ali'),
+    contact: contact(),
   },
   {
     id: 'ksar-ouled-soltane',
@@ -686,7 +678,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 hours',
     images: postcards('culture', ['Stacked ghorfas', 'Courtyard stairs', 'Desert hills']),
-    contact: contact('Ali'),
+    contact: contact(),
   },
   {
     id: 'djerba',
@@ -702,7 +694,7 @@ export const PLACES: Place[] = [
     description:
       'Flat, sunny and ringed by beaches, Djerba mixes whitewashed fortified mosques, the street art of Djerbahood and the lively souks of Houmt Souk.',
     didYouKnow:
-      'In Homer\'s Odyssey, Djerba is often identified as the land of the Lotus-eaters, whose fruit made sailors forget their way home.',
+      "In Homer's Odyssey, Djerba is often identified as the land of the Lotus-eaters, whose fruit made sailors forget their way home.",
     insights: {
       history:
         'Djerba was added to the UNESCO World Heritage List in 2023 as a model of settlement on an island, shaped by its Ibadi, Jewish and Maliki communities.',
@@ -712,7 +704,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2–4 days',
     images: postcards('beach', ['Sidi Mahrez beach', 'Djerbahood murals', 'Houmt Souk']),
-    contact: contact('Salma'),
+    contact: contact(),
   },
   {
     id: 'el-ghriba',
@@ -723,7 +715,7 @@ export const PLACES: Place[] = [
     stayQuery: 'Djerba, Tunisia',
     category: 'culture',
     coords: [33.8136, 10.8597],
-    tagline: 'One of Africa\'s oldest synagogues',
+    tagline: "One of Africa's oldest synagogues",
     description:
       'A synagogue of blue tiles and painted wood in the village of Erriadh, at the heart of one of the oldest Jewish communities in the Arab world.',
     didYouKnow:
@@ -736,7 +728,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1 hour',
     images: postcards('culture', ['Blue tiled prayer hall', 'Erriadh lanes', 'Pilgrimage candles']),
-    contact: contact('Salma'),
+    contact: contact(),
   },
   {
     id: 'guellala',
@@ -749,9 +741,9 @@ export const PLACES: Place[] = [
     coords: [33.7286, 10.8603],
     tagline: 'A village of clay and kilns',
     description:
-      'Djerba\'s pottery village, where potters still work in vaulted underground workshops. The Guellala Heritage Museum tells the story of island life.',
+      "Djerba's pottery village, where potters still work in vaulted underground workshops. The Guellala Heritage Museum tells the story of island life.",
     didYouKnow:
-      'Guellala\'s potters traditionally work in half-buried workshops, which keep the clay cool and moist while it dries slowly.',
+      "Guellala's potters traditionally work in half-buried workshops, which keep the clay cool and moist while it dries slowly.",
     insights: {
       history: 'Pottery has been made here since antiquity, and the craft has passed down through Amazigh families.',
       customs: 'Ask a potter to show you the wheel. Many workshops welcome visitors.',
@@ -760,7 +752,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2 hours',
     images: postcards('culture', ['Potter at the wheel', 'Underground kiln', 'Stacked amphorae']),
-    contact: contact('Salma'),
+    contact: contact(),
   },
   // ── Beaches ────────────────────────────────────────────────────────
   {
@@ -785,7 +777,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 days',
     images: postcards('beach', ['Charfia traps in the shallows', 'Palm-lined shore', 'Fishing boats at Kraten']),
-    contact: contact('Anis'),
+    contact: contact(),
   },
   {
     id: 'ghar-el-melh',
@@ -809,7 +801,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Day trip',
     images: postcards('beach', ['Sidi Ali El Mekki beach', 'The old port', 'Ottoman fort walls']),
-    contact: contact('Sami'),
+    contact: contact(),
   },
   {
     id: 'korbous',
@@ -832,7 +824,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('beach', ['Ain Atrous spring', 'Coastal road', 'Cliffs over the gulf']),
-    contact: contact('Amira'),
+    contact: contact(),
   },
   {
     id: 'zarzis',
@@ -855,7 +847,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 days',
     images: postcards('beach', ['Calm shallow water', 'Olive groves', 'Fishing harbour']),
-    contact: contact('Salma'),
+    contact: contact(),
   },
 
   // ── Souks & markets ────────────────────────────────────────────────
@@ -882,7 +874,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '1–2 hours',
     images: postcards('souk', ['Perfume bottles', 'Covered lane', 'Painted wedding chests']),
-    contact: contact('Sami'),
+    contact: contact(),
   },
   {
     id: 'houmt-souk',
@@ -905,7 +897,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('souk', ['Covered souk', 'Fish auction', 'Caravanserai courtyard']),
-    contact: contact('Salma'),
+    contact: contact(),
   },
   {
     id: 'nabeul-market',
@@ -919,7 +911,8 @@ export const PLACES: Place[] = [
     tagline: 'Pottery, spices and straw every Friday',
     description:
       'Each Friday the streets of Nabeul fill with stalls of pottery, baskets, spices and harissa, alongside the everyday trade of local farmers.',
-    didYouKnow: 'Nabeul’s potters work with clay from the area and have done so since Roman times, when the town was Neapolis.',
+    didYouKnow:
+      'Nabeul’s potters work with clay from the area and have done so since Roman times, when the town was Neapolis.',
     insights: {
       history: 'Nabeul has been a crafts town for two thousand years, known for pottery and orange-blossom water.',
       customs: 'Go early, before the tour buses from Hammamet arrive late morning.',
@@ -928,7 +921,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: 'Half day',
     images: postcards('souk', ['Pottery stalls', 'Chilli strings', 'Woven baskets']),
-    contact: contact('Amira'),
+    contact: contact(),
   },
   {
     id: 'kairouan-souks',
@@ -945,14 +938,15 @@ export const PLACES: Place[] = [
       'The covered souks of the walled medina, known for knotted and woven carpets and for the bakeries of makroudh, the date-filled semolina cakes of Kairouan.',
     didYouKnow: 'Kairouan carpets carry an official quality stamp from the national crafts office on the back.',
     insights: {
-      history: 'The souks grew around the Great Mosque, founded in 670, making Kairouan the first great city of Islamic North Africa.',
+      history:
+        'The souks grew around the Great Mosque, founded in 670, making Kairouan the first great city of Islamic North Africa.',
       customs: 'Ask to see the stamp on a carpet before buying, and take your time over tea.',
       food: 'Warm makroudh straight from the fryer, dipped in honey syrup.',
       bestTime: 'October to April, mornings.',
     },
     visitDuration: 'Half day',
     images: postcards('souk', ['Carpet stacks', 'Makroudh trays', 'Medina gate']),
-    contact: contact('Youssef'),
+    contact: contact(),
   },
   {
     id: 'gabes-jara',
@@ -966,7 +960,8 @@ export const PLACES: Place[] = [
     tagline: 'The henna souk of a seaside oasis',
     description:
       'In the old Jara quarter, stalls sell henna grown in the Gabès oasis, spices, baskets of palm leaves and dates, a short walk from one of the world’s rare seaside oases.',
-    didYouKnow: 'Gabès henna is said to give the deepest colour in Tunisia, and is sold as powder or still as dried leaves.',
+    didYouKnow:
+      'Gabès henna is said to give the deepest colour in Tunisia, and is sold as powder or still as dried leaves.',
     insights: {
       history: 'The Gabès oasis, where palms meet the Mediterranean, has fed the town since antiquity.',
       customs: 'Vendors can grind henna to order and explain how to mix it.',
@@ -975,7 +970,7 @@ export const PLACES: Place[] = [
     },
     visitDuration: '2 hours',
     images: postcards('souk', ['Henna powder', 'Spice stalls', 'Palm baskets']),
-    contact: contact('Youssef'),
+    contact: contact(),
   },
 ];
 
@@ -996,7 +991,7 @@ export const ITINERARIES: Itinerary[] = [
     name: 'Star Wars Desert Route',
     tagline: 'Tatooine was here all along',
     description:
-      'Follow the film crews across the Jerid and the Dahar: the Mos Espa set, Luke\'s homestead on the salt lake, the Lars family home in Matmata and the slave quarters at Ksar Ouled Soltane.',
+      "Follow the film crews across the Jerid and the Dahar: the Mos Espa set, Luke's homestead on the salt lake, the Lars family home in Matmata and the slave quarters at Ksar Ouled Soltane.",
     days: 3,
     stops: ['tozeur', 'mos-espa', 'chott-el-jerid', 'matmata', 'ksar-ouled-soltane'],
   },

@@ -193,15 +193,13 @@ function DrawerContent({
               title={t.bookTransfer}
               subtitle={t.bookTransferHint}
             />
-            {phone && (
-              <ActionRow
-                href={phone}
-                leading={<Phone className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
-                title={t.callVenue}
-                subtitle={place.contact.phone}
-                external={false}
-              />
-            )}
+            <ActionRow
+              href={phone}
+              leading={<Phone className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
+              title={t.callVenue}
+              subtitle={place.contact.phone}
+              external={false}
+            />
           </ul>
 
           <div className="mt-5 grid grid-cols-2 gap-2">
@@ -362,6 +360,7 @@ function Pill({
   );
 }
 
+/** A contact row. Without a real number (href null) it stays visible but inactive, marked « Bientôt ». */
 function ActionRow({
   href,
   brand,
@@ -370,13 +369,41 @@ function ActionRow({
   subtitle,
   external = true,
 }: {
-  href: string;
+  href: string | null;
   brand?: Brand;
   leading?: ReactNode;
   title: string;
   subtitle?: string;
   external?: boolean;
 }) {
+  const { t } = useLocale();
+  const icon = brand ? <BrandIcon brand={brand} className="h-4 w-4 shrink-0 text-charcoal-500" /> : leading;
+
+  if (!href) {
+    return (
+      <li>
+        <div
+          aria-disabled="true"
+          tabIndex={0}
+          data-tip={t.comingSoon}
+          className="flex cursor-default items-center justify-between gap-4 py-3.5 outline-none"
+        >
+          <span className="flex min-w-0 items-center gap-3 opacity-50">
+            {icon}
+            <span className="min-w-0">
+              <span className="block text-sm font-medium text-charcoal">{title}</span>
+              {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}
+            </span>
+          </span>
+          <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-charcoal-300">
+            <span className="sr-only">{t.comingSoon}</span>
+            <span aria-hidden>{t.soon}</span>
+          </span>
+        </div>
+      </li>
+    );
+  }
+
   return (
     <li>
       <a
@@ -385,7 +412,7 @@ function ActionRow({
         className="group flex items-center justify-between gap-4 py-3.5"
       >
         <span className="flex min-w-0 items-center gap-3">
-          {brand ? <BrandIcon brand={brand} className="h-4 w-4 shrink-0 text-charcoal-500" /> : leading}
+          {icon}
           <span className="min-w-0">
             <span className="block text-sm font-medium text-charcoal group-hover:text-terracotta-700">{title}</span>
             {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}

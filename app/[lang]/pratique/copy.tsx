@@ -34,10 +34,26 @@ export interface PratiqueCopy {
 }
 
 // The prefilled WhatsApp message stays in French: it goes to the local team.
-function RentalCta({ label }: { label: string }) {
+// Without a real number the button stays visible but inactive, with « Disponible bientôt » next to it.
+function RentalCta({ label, soon }: { label: string; soon: string }) {
+  const href = rental4x4WhatsAppUrl();
+  if (!href) {
+    return (
+      <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <span
+          aria-disabled="true"
+          className="inline-flex cursor-default items-center gap-2 rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream opacity-40"
+        >
+          <BrandIcon brand="whatsapp" className="h-4 w-4" />
+          {label}
+        </span>
+        <span className="text-xs text-charcoal-500">{soon}</span>
+      </span>
+    );
+  }
   return (
     <a
-      href={rental4x4WhatsAppUrl()}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-2 rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
@@ -84,7 +100,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
           },
           { term: 'Dans les dunes', text: 'Jamais seul, jamais de nuit. Dites à votre hôtel où vous allez.' },
         ],
-        action: <RentalCta label="Demander un 4x4 avec chauffeur" />,
+        action: <RentalCta label="Demander un 4x4 avec chauffeur" soon="Disponible bientôt" />,
       },
       {
         id: 'route',
@@ -239,7 +255,7 @@ export const PRATIQUE_COPY: Record<Locale, PratiqueCopy> = {
           },
           { term: 'In the dunes', text: 'Never alone, never after dark. Tell your hotel where you are heading.' },
         ],
-        action: <RentalCta label="Request a 4x4 with a driver" />,
+        action: <RentalCta label="Request a 4x4 with a driver" soon="Coming soon" />,
       },
       {
         id: 'route',
