@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Phone, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Phone, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
@@ -123,14 +123,27 @@ function DrawerContent({
     <>
       <div className="relative">
         <PhotoCarousel photos={photos} fallbackCaptions={place.images.map((i) => i.caption)} />
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t.close}
-          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-cream/90 text-charcoal backdrop-blur transition hover:bg-cream"
-        >
-          <X className="h-4 w-4" strokeWidth={1.75} />
-        </button>
+        <div className="absolute right-4 top-4 flex gap-2">
+          {!place.community && (
+            <a
+              href={`/lieux/${place.id}`}
+              aria-label={t.openFullPage}
+              data-tip={t.openFullPage}
+              data-tip-align="end"
+              className="grid h-9 w-9 place-items-center rounded-full bg-cream/90 text-charcoal backdrop-blur transition hover:bg-cream"
+            >
+              <Maximize2 className="h-4 w-4" strokeWidth={1.75} />
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t.close}
+            className="grid h-9 w-9 place-items-center rounded-full bg-cream/90 text-charcoal backdrop-blur transition hover:bg-cream"
+          >
+            <X className="h-4 w-4" strokeWidth={1.75} />
+          </button>
+        </div>
       </div>
 
       <div className="space-y-8 px-6 pb-10 pt-6">
@@ -214,15 +227,6 @@ function DrawerContent({
         {place.didYouKnow && <CultureCard place={place} />}
 
         <GuideLink placeId={place.id} />
-
-        {!place.community && (
-          <a
-            href={`/lieux/${place.id}`}
-            className="inline-block text-sm text-charcoal-500 underline decoration-sand-300 underline-offset-4 transition hover:text-charcoal hover:decoration-charcoal"
-          >
-            {t.placePage} →
-          </a>
-        )}
 
         {/* Itinerary navigation */}
         {itinerary && stopIndex >= 0 && (
