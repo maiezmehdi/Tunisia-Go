@@ -5,6 +5,7 @@ import BrandLogo from '@/components/BrandLogo';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
+import PlaceClose from '@/components/PlaceClose';
 import PlaceReport from '@/components/PlaceReport';
 import SeasonStrip from '@/components/SeasonStrip';
 import SoundToggle from '@/components/SoundToggle';
@@ -126,10 +127,11 @@ export default async function PlacePage({ params }: Params) {
             <LanguageSwitch />
             <a
               href="/lieux"
-              className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
+              className="hidden text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline sm:inline"
             >
               {c.allPlaces}
             </a>
+            <PlaceClose placeId={place.id} />
           </div>
         </div>
       </header>
