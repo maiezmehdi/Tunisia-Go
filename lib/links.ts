@@ -38,8 +38,10 @@ function waLink(number: string, text: string): string {
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
 }
 
-export function guideWhatsAppUrl(place: Place): string {
+// A link is only built from a real number: without one the button shows « Disponible bientôt ».
+export function guideWhatsAppUrl(place: Place): string | null {
   const number = GUIDE_WHATSAPP || place.contact.whatsapp || '';
+  if (!number) return null;
   const greeting = place.contact.guideName ? `Bonjour ${place.contact.guideName}` : 'Bonjour';
   return waLink(
     number,
@@ -47,16 +49,20 @@ export function guideWhatsAppUrl(place: Place): string {
   );
 }
 
-export function transferWhatsAppUrl(place: Place): string {
+export function transferWhatsAppUrl(place: Place): string | null {
   const number = TRANSFER_WHATSAPP || GUIDE_WHATSAPP || place.contact.whatsapp || '';
+  if (!number) return null;
   return waLink(
     number,
     `Bonjour, je souhaite réserver un transfert vers ${place.name} (${place.region}). Date : … · Départ : … · Passagers : …`,
   );
 }
 
+/** The venue's own number, else the guide line (a WhatsApp number is also a phone number). */
 export function phoneUrl(place: Place): string | null {
-  return place.contact.phone ? `tel:${place.contact.phone}` : null;
+  if (place.contact.phone) return `tel:${place.contact.phone}`;
+  const digits = GUIDE_WHATSAPP.replace(/\D/g, '');
+  return digits ? `tel:+${digits}` : null;
 }
 
 export function googleMapsUrl(place: Place): string {
@@ -85,14 +91,17 @@ export function googleMapsRouteUrl(places: Place[]): string {
 }
 
 /** 4x4 with a driver for the desert pistes, through the transfer partner. */
-export function rental4x4WhatsAppUrl(): string {
+export function rental4x4WhatsAppUrl(): string | null {
+  const number = TRANSFER_WHATSAPP || GUIDE_WHATSAPP;
+  if (!number) return null;
   return waLink(
-    TRANSFER_WHATSAPP || GUIDE_WHATSAPP || '21600000000',
+    number,
     'Bonjour, je cherche un 4x4 pour le Sud (Tozeur, Douz, Ksar Ghilane). Avec ou sans chauffeur : … · Dates : … · Passagers : …',
   );
 }
 
 /** Fallback when no webhook is configured: the suggestion goes to the team over WhatsApp. */
-export function secretSpotWhatsAppUrl(text: string): string {
-  return waLink(GUIDE_WHATSAPP || TRANSFER_WHATSAPP || '21600000000', text);
+export function secretSpotWhatsAppUrl(text: string): string | null {
+  const number = GUIDE_WHATSAPP || TRANSFER_WHATSAPP;
+  return number ? waLink(number, text) : null;
 }
