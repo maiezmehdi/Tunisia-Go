@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, Route, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -86,7 +86,10 @@ export default function ItinerarySelector({
           fullScreen ? 'sticky top-0 z-10 bg-cream pb-3 pt-[max(1rem,env(safe-area-inset-top))]' : ''
         }`}
       >
-        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.roadTrips}</p>
+        <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
+          <Route aria-hidden className="h-3.5 w-3.5 shrink-0 text-charcoal-500" strokeWidth={1.75} />
+          {t.roadTrips}
+        </p>
         <div className="-mr-2 flex">
           <button
             type="button"
@@ -229,6 +232,7 @@ export default function ItinerarySelector({
           aria-expanded={false}
           className="flex max-w-[60vw] items-center gap-2 py-2 pl-4 pr-3 text-sm text-charcoal"
         >
+          <Route aria-hidden className="h-3.5 w-3.5 shrink-0 text-charcoal-500" strokeWidth={1.75} />
           <span className="truncate">{active ? active.name : t.roadTripsCount(itineraries.length)}</span>
           <ChevronDown className="h-3.5 w-3.5 shrink-0 rotate-180 text-charcoal-500" strokeWidth={1.5} />
         </button>
