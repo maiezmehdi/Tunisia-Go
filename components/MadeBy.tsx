@@ -22,11 +22,21 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
       >
         Mehdi Maiez
       </a>
-      <span aria-hidden className="mx-2">·</span>
+      <span aria-hidden className="mx-2">
+        ·
+      </span>
+      <a href="/lieux" className={`underline underline-offset-4 transition ${link}`}>
+        {t.allPlaces}
+      </a>
+      <span aria-hidden className="mx-2">
+        ·
+      </span>
       <a href="/confidentialite" className={`underline underline-offset-4 transition ${link}`}>
         {t.privacy}
       </a>
-      <span aria-hidden className="mx-2">·</span>
+      <span aria-hidden className="mx-2">
+        ·
+      </span>
       <button type="button" onClick={openConsent} className={`underline underline-offset-4 transition ${link}`}>
         {t.cookies}
       </button>

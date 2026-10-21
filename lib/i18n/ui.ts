@@ -51,6 +51,8 @@ const en = {
   // Drawer
   close: 'Close',
   privacy: 'Privacy',
+  allPlaces: 'All places',
+  placePage: 'Full page',
   cookies: 'Cookies',
   menu: 'Menu',
   communityPlace: 'Community place',
@@ -209,6 +211,8 @@ const fr: UiStrings = {
   spotBenefit: 'Chaque lieu retenu apparaît sur la carte, avec votre prénom.',
   close: 'Fermer',
   privacy: 'Confidentialité',
+  allPlaces: 'Tous les lieux',
+  placePage: 'Page du lieu',
   cookies: 'Cookies',
   menu: 'Menu',
   communityPlace: 'Lieu de la communauté',
