@@ -126,6 +126,36 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     visitDuration: '2 à 4 jours',
     captions: ['La plage de Sidi Mahrez', 'Fresques de Djerbahood', 'Houmt Souk'],
   },
+  'ksar-ghilane': {
+    tagline: 'Des camps du désert autour d’une oasis aux sources chaudes',
+    description:
+      'Une oasis de palmiers en bordure du Grand Erg oriental, au sud de Douz. On dort dans des camps près des dunes, on se baigne dans les sources chaudes et on part à dos de dromadaire au coucher du soleil.',
+    didYouKnow: 'La source chaude de l’oasis reste tiède toute l’année, un plaisir rare en plein sable.',
+    insights: {
+      history: 'Un fort romain, Tisavar, se dresse à quelques kilomètres de l’oasis, vestige de l’ancienne frontière.',
+      customs:
+        'Les camps se réservent en général avec une nuit incluse ; renseignez-vous sur le programme avant de partir.',
+      food: 'Les repas de camp comprennent souvent chorba frik, méchoui et pain cuit sous le sable.',
+      bestTime: 'D’octobre à avril. Les journées d’été sont très chaudes.',
+    },
+    visitDuration: '1 à 2 jours',
+    captions: ['La source chaude de l’oasis', 'Un camp parmi les dunes', 'Balade en dromadaire au coucher du soleil'],
+  },
+  'djerba-velo': {
+    name: 'Djerba à vélo',
+    tagline: 'Un plan vélo pour une île toute plate',
+    description:
+      'Djerba est plate et compacte. Un plan vélo élaboré avec la coopération allemande (GIZ) recense huit parcours, environ 120 km au total, autour de deux axes : Houmt Souk – Ajim et Midoun – El May.',
+    didYouKnow: 'Le plan est issu de trois mois d’ateliers avec les communes de Houmt Souk, Midoun et Ajim.',
+    insights: {
+      history: 'Les parcours relient villages, champs et littoral d’une île inscrite à l’UNESCO en 2023.',
+      customs: 'En été, partez tôt : le soleil de midi est fort et l’ombre rare.',
+      food: 'Faites étape à Houmt Souk pour du poisson grillé ou un riz djerbien.',
+      bestTime: 'De mars à mai et d’octobre à novembre.',
+    },
+    visitDuration: '1 jour',
+    captions: ['Chemins de l’île', 'Houmt Souk', 'Route du littoral'],
+  },
   'el-ghriba': {
     name: 'Synagogue de la Ghriba',
     tagline: 'L’une des plus anciennes synagogues d’Afrique',
