@@ -14,6 +14,7 @@ import SoundToggle from '@/components/SoundToggle';
 import OfflineBadge from '@/components/OfflineBadge';
 import { seasonFor } from '@/data/seasons';
 import { track } from '@/lib/analytics';
+import CategoryGlyph from '@/components/CategoryGlyph';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
@@ -152,16 +153,19 @@ export default function Explorer({ photos, community = NO_PLACES }: ExplorerProp
       <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
         {t.all} <Count>{PLACES.length}</Count>
       </FilterPill>
-      {categories.map((c) => (
-        <FilterPill
-          key={c.id}
-          title={c.label}
-          active={!allOn && activeCategories.has(c.id)}
-          onClick={() => toggleCategory(c.id)}
-        >
-          {c.short} <Count>{counts[c.id]}</Count>
-        </FilterPill>
-      ))}
+      {categories
+        .filter((c) => counts[c.id])
+        .map((c) => (
+          <FilterPill
+            key={c.id}
+            title={c.label}
+            active={!allOn && activeCategories.has(c.id)}
+            onClick={() => toggleCategory(c.id)}
+          >
+            <CategoryGlyph category={c.id} />
+            {c.short} <Count>{counts[c.id]}</Count>
+          </FilterPill>
+        ))}
     </div>
   );
 

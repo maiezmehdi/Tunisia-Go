@@ -15,6 +15,9 @@ export const CATEGORIES: Category[] = [
   { id: 'culture', label: 'Culture & Craft', short: 'Culture' },
   { id: 'culinary', label: 'Culinary Spots', short: 'Food' },
   { id: 'souk', label: 'Souks & Markets', short: 'Souks' },
+  // No place of their own yet: they fill up with the spots visitors suggest (see /spot-secret).
+  { id: 'camping', label: 'Camping', short: 'Camping' },
+  { id: 'cycling', label: 'Cycling routes', short: 'Cycling' },
 ];
 
 export const CATEGORY_BY_ID: Record<CategoryId, Category> = Object.fromEntries(

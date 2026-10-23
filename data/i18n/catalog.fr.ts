@@ -7,6 +7,8 @@ export const CATEGORIES_FR: Record<CategoryId, { label: string; short: string }>
   culture: { label: 'Culture & Artisanat', short: 'Culture' },
   culinary: { label: 'Gastronomie', short: 'Saveurs' },
   souk: { label: 'Souks & Marchés', short: 'Souks' },
+  camping: { label: 'Camping', short: 'Camping' },
+  cycling: { label: 'Circuits vélo', short: 'Vélo' },
 };
 
 export const ITINERARIES_FR: Record<string, Pick<Itinerary, 'name' | 'tagline' | 'description'>> = {

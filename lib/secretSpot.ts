@@ -1,7 +1,17 @@
 import type { Locale } from '@/lib/i18n/config';
 
 /** Shared between the form and the API route. The ids are what gets sent; labels are for display. */
-export const SPOT_TYPES = ['cafe', 'cove', 'viewpoint', 'restaurant', 'craft', 'hike', 'other'] as const;
+export const SPOT_TYPES = [
+  'cafe',
+  'cove',
+  'viewpoint',
+  'restaurant',
+  'craft',
+  'hike',
+  'camping',
+  'cycling',
+  'other',
+] as const;
 export type SpotType = (typeof SPOT_TYPES)[number];
 
 export const SPOT_TYPE_LABELS: Record<Locale, Record<SpotType, string>> = {
@@ -12,6 +22,8 @@ export const SPOT_TYPE_LABELS: Record<Locale, Record<SpotType, string>> = {
     restaurant: 'Restaurant',
     craft: 'Artisan',
     hike: 'Randonnée',
+    camping: 'Camping',
+    cycling: 'Circuit vélo',
     other: 'Autre',
   },
   en: {
@@ -21,6 +33,8 @@ export const SPOT_TYPE_LABELS: Record<Locale, Record<SpotType, string>> = {
     restaurant: 'Restaurant',
     craft: 'Craftsperson',
     hike: 'Walk or hike',
+    camping: 'Camping',
+    cycling: 'Cycling route',
     other: 'Something else',
   },
 };

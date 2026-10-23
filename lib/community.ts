@@ -30,7 +30,7 @@ export const PUBLIC_BUCKET = 'community-photos';
 /** Cache tag of the approved places; the moderation page clears it on every change. */
 export const COMMUNITY_TAG = 'community-places';
 
-const CATEGORY_IDS: CategoryId[] = ['heritage', 'sahara', 'beach', 'culture', 'culinary', 'souk'];
+const CATEGORY_IDS: CategoryId[] = ['heritage', 'sahara', 'beach', 'culture', 'culinary', 'souk', 'camping', 'cycling'];
 
 export function isCategory(value: unknown): value is CategoryId {
   return typeof value === 'string' && (CATEGORY_IDS as string[]).includes(value);
@@ -44,6 +44,8 @@ export function defaultCategory(type: string | null): CategoryId {
     cove: 'beach',
     viewpoint: 'sahara',
     hike: 'sahara',
+    camping: 'camping',
+    cycling: 'cycling',
     craft: 'culture',
     other: 'culture',
   };
