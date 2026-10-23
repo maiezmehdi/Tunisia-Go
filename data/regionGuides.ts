@@ -416,10 +416,12 @@ const GUIDE_BY_PLACE: Record<string, string> = {
   matmata: 'sud',
   'ksar-ouled-soltane': 'sud',
   'gabes-jara': 'sud',
+  'ksar-ghilane': 'sud',
   djerba: 'djerba',
   'el-ghriba': 'djerba',
   guellala: 'djerba',
   'houmt-souk': 'djerba',
+  'djerba-velo': 'djerba',
   zarzis: 'djerba',
 };
 
