@@ -139,6 +139,8 @@ const CATEGORY_WORDS: Record<CategoryId, string> = {
     'cuisine food manger eat eating gastronomie gastronomy restaurant restaurants couscous plat plats dish dishes ' +
     'gourmand gourmet foodie saveurs epices spices harissa poisson fish street',
   souk: 'souk souks marche marches market markets shopping acheter buy souvenirs souvenir medina medinas bazar',
+  camping: 'camping campings tente tentes bivouac bivouaquer campement campsite campsites tent tents',
+  cycling: 'velo velos cyclisme cyclotourisme cycliste bike bikes biking bicycle cycling cyclist vtt',
 };
 
 const ZONE_WORDS: Record<ZoneId, string> = {
@@ -499,7 +501,9 @@ function read(input: string, places: Place[]): Cues {
   const text = normalize(input);
   const tokens = tokenize(input);
   const has = (words: string) => hits(tokens, vocabulary(words), ALL_KEYS);
-  const cats = (Object.keys(CATEGORY_WORDS) as CategoryId[]).filter((c) => has(CATEGORY_WORDS[c]));
+  // Only categories that have places to suggest (camping and cycling spots come from visitors, not the guide).
+  const withPlaces = new Set(places.map((p) => p.category));
+  const cats = (Object.keys(CATEGORY_WORDS) as CategoryId[]).filter((c) => withPlaces.has(c) && has(CATEGORY_WORDS[c]));
   if (/\bstar wars\b/.test(text) && !cats.includes('sahara')) cats.push('sahara');
   const zones = ZONES.filter(
     (z) => has(ZONE_WORDS[z]) || ZONE_PHRASES[z].some((phrase) => ` ${text} `.includes(` ${phrase} `)),
@@ -554,9 +558,9 @@ function ask(step: Step, locale: Locale): Reply {
       return {
         text: t.askCats,
         chips: [
-          ...catalog.categories.map(
-            (c) => ({ label: c.short, action: { type: 'set', patch: { cats: [c.id] } } }) as Chip,
-          ),
+          ...catalog.categories
+            .filter((c) => catalog.places.some((p) => p.category === c.id))
+            .map((c) => ({ label: c.short, action: { type: 'set', patch: { cats: [c.id] } } }) as Chip),
           { label: t.allCats, action: { type: 'set', patch: { cats: [] } } },
         ],
       };

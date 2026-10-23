@@ -1,4 +1,4 @@
-export type CategoryId = 'heritage' | 'sahara' | 'beach' | 'culture' | 'culinary' | 'souk';
+export type CategoryId = 'heritage' | 'sahara' | 'beach' | 'culture' | 'culinary' | 'souk' | 'camping' | 'cycling';
 
 export interface Category {
   id: CategoryId;

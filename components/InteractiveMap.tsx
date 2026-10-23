@@ -8,6 +8,7 @@ import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'reac
 
 import { PLACE_BY_ID, TUNISIA_CENTER } from '@/data/tunisiaData';
 import type { CategoryId, Itinerary, LatLng, Place } from '@/data/types';
+import { glyphSvg } from '@/lib/categoryGlyphs';
 import { TILE_URL } from '@/lib/tiles';
 
 export interface InteractiveMapProps {
@@ -26,14 +27,25 @@ interface PinOptions {
   active: boolean;
   dim: boolean;
   stopNumber?: number;
+  category: CategoryId;
 }
 
-function pinIcon({ active, dim, stopNumber }: PinOptions): L.DivIcon {
-  const classes = ['tg-pin', stopNumber && 'is-stop', active && 'is-active', dim && 'is-dim'].filter(Boolean).join(' ');
-  const size = stopNumber ? 26 : 16;
+function pinIcon({ active, dim, stopNumber, category }: PinOptions): L.DivIcon {
+  // Camping and cycling spots get a small icon so they stand out from the other dots.
+  const glyph = stopNumber ? '' : glyphSvg(category);
+  const classes = [
+    'tg-pin',
+    stopNumber && 'is-stop',
+    glyph && `has-glyph cat-${category}`,
+    active && 'is-active',
+    dim && 'is-dim',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const size = stopNumber ? 26 : glyph ? 24 : 16;
   return L.divIcon({
     className: 'tg-marker',
-    html: `<div class="${classes}">${stopNumber ?? ''}</div>`,
+    html: `<div class="${classes}">${glyph || (stopNumber ?? '')}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
     tooltipAnchor: [0, -size / 2 - 4],
@@ -172,7 +184,12 @@ export default function InteractiveMap({
           <Marker
             key={place.id}
             position={place.coords}
-            icon={pinIcon({ active: place.id === selectedId, dim: !!itinerary && !stopNumber, stopNumber })}
+            icon={pinIcon({
+              active: place.id === selectedId,
+              dim: !!itinerary && !stopNumber,
+              stopNumber,
+              category: place.category,
+            })}
             zIndexOffset={place.id === selectedId ? 1000 : stopNumber ? 500 : 0}
             eventHandlers={{ click: () => onSelect(place.id) }}
             keyboard

@@ -78,6 +78,10 @@ body {
 .tg-pin.is-dim {
   opacity: 0.25;
 }
+/* Camping and cycling spots: a small icon in their own colour, so they are spotted at a glance. */
+.tg-pin.has-glyph.cat-camping { background: #b04a30; }
+.tg-pin.has-glyph.cat-cycling { background: #5b6b4a; }
+.tg-pin.has-glyph.is-active { background: #e87a5d; }
 @keyframes tg-pulse {
   0% { transform: scale(0.85); opacity: 1; }
   100% { transform: scale(1.6); opacity: 0; }
