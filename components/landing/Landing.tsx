@@ -106,12 +106,18 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
         style={{ backgroundImage: GRAIN }}
       />
 
-      <header className="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-5 sm:px-10">
+      <header className="absolute inset-x-0 top-0 flex items-center justify-between px-4 py-5 sm:px-10">
         {/* Phones show the whole logo: the hero button below already opens the map. */}
         <BrandLogo tone="light" size={42} />
-        <nav className="flex items-center gap-5 sm:gap-6">
+        <nav className="flex items-center gap-3 sm:gap-6">
           <SoundToggle tone="light" />
           <LanguageSwitch tone="light" />
+          <a
+            href="/evenements"
+            className="whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline"
+          >
+            {copy.nav.events}
+          </a>
           <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a
             href="/explore"

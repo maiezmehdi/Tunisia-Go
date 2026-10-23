@@ -136,7 +136,7 @@ export const LANDING_PLACE_IDS = Array.from(
 /* ------------------------------------------------------------------ */
 
 export interface LandingCopy {
-  nav: { openMap: string };
+  nav: { openMap: string; events: string };
   hero: {
     eyebrow: string;
     titleLine1: string;
@@ -183,7 +183,7 @@ export interface LandingCopy {
 
 export const LANDING_COPY: Record<Locale, LandingCopy> = {
   fr: {
-    nav: { openMap: 'Ouvrir la carte' },
+    nav: { openMap: 'Ouvrir la carte', events: 'Événements' },
     hero: {
       eyebrow: 'Guide indépendant · Tunisie',
       titleLine1: 'La Tunisie,',
@@ -237,7 +237,7 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
     photoCredit: (author, license) => `Photo : ${author} · ${license}`,
   },
   en: {
-    nav: { openMap: 'Open the map' },
+    nav: { openMap: 'Open the map', events: 'Events' },
     hero: {
       eyebrow: 'Independent guide · Tunisia',
       titleLine1: 'Tunisia,',
