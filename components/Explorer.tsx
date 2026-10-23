@@ -281,6 +281,9 @@ function HeaderLinks() {
   return (
     <nav aria-label={t.travelTools} className="flex items-center gap-4">
       <MyTripLink className={link} />
+      <a href="/evenements" className={link}>
+        {t.events}
+      </a>
       <a href="/pratique" className={link}>
         {t.practical}
       </a>
@@ -344,6 +347,9 @@ function MobileMenu() {
           >
             <AddSpotLink from="mobile-menu" variant="primary" className="mb-2 mt-2 w-full justify-center" />
             <MyTripLink className={`${link} border-t border-sand-200`} />
+            <a href="/evenements" className={`${link} border-t border-sand-200`}>
+              {t.events}
+            </a>
             <a href="/pratique" className={`${link} border-t border-sand-200`}>
               {t.practical}
             </a>
