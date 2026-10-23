@@ -9,6 +9,7 @@ const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
   { path: '/', priority: 1, changeFrequency: 'weekly' },
   { path: '/explore', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/lieux', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/evenements', priority: 0.7, changeFrequency: 'weekly' },
   { path: '/pratique', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/spot-secret', priority: 0.4, changeFrequency: 'yearly' },
   { path: '/confidentialite', priority: 0.1, changeFrequency: 'yearly' },
