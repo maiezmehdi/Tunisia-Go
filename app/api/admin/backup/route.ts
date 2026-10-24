@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 // Everything editable from /admin. Admin accounts are left out on purpose (they hold password hashes).
-const TABLES = ['spot_submissions', 'events', 'place_overrides', 'lexicon_words', 'place_reports'];
+const TABLES = ['spot_submissions', 'events', 'place_overrides', 'lexicon_words', 'place_reports', 'trip_submissions'];
 
 /** A JSON copy of the site's data, downloaded from /admin. */
 export async function GET() {
