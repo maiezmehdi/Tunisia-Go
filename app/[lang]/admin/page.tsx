@@ -226,30 +226,34 @@ export default async function AdminPage() {
     ...Object.fromEntries(PLACES.map((p) => [p.id, p.name])),
     ...Object.fromEntries(rows.filter((r) => r.status === 'approved').map((r) => [`c-${r.id}`, r.name])),
   };
-  const trips: AdminTrip[] = await selectRows<TripRow>(
+  const tripRows: TripRow[] = await selectRows<TripRow>(
     cfg,
     'trip_submissions',
     'select=*&order=created_at.desc&limit=300',
-  )
-    .then((list) =>
-      list.map((r) => ({
-        id: r.id,
-        createdAt: r.created_at,
-        status: r.status,
-        name: r.name,
-        description: r.description,
-        days: r.days,
-        stops: r.stops.map((id) => placeNames[id] ?? '(lieu retiré)'),
-        author: r.author,
-        contact: r.contact,
-        nameEn: r.name_en ?? '',
-        descriptionEn: r.description_en ?? '',
-      })),
-    )
-    .catch(() => {
-      tripsMissing = true;
-      return [];
-    });
+  ).catch(() => {
+    tripsMissing = true;
+    return [];
+  });
+  const tripPhotoUrls = await signUrls(
+    cfg,
+    PRIVATE_BUCKET,
+    tripRows.flatMap((r) => r.photos ?? []),
+  ).catch(() => ({}) as Record<string, string>);
+  const trips: AdminTrip[] = tripRows.map((r) => ({
+    id: r.id,
+    createdAt: r.created_at,
+    status: r.status,
+    name: r.name,
+    description: r.description,
+    days: r.days,
+    stops: r.stops.map((id) => placeNames[id] ?? '(lieu retiré)'),
+    author: r.author,
+    contact: r.contact,
+    nameEn: r.name_en ?? '',
+    descriptionEn: r.description_en ?? '',
+    photos: (r.photos ?? []).map((path) => ({ path, url: tripPhotoUrls[path] ?? null })),
+    publicPhotos: r.public_photos ?? [],
+  }));
 
   return (
     <Shell>

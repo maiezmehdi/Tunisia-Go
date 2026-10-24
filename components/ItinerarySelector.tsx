@@ -153,6 +153,21 @@ export default function ItinerarySelector({
               <h3 className="font-serif text-2xl leading-tight text-charcoal">{active.name}</h3>
               <p className="mt-0.5 font-serif text-sm italic text-charcoal-500">{active.tagline}</p>
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-500">{active.description}</p>
+              {!!active.photos?.length && (
+                <ul className="mt-3 grid grid-cols-4 gap-1.5">
+                  {active.photos.map((src, i) => (
+                    <li key={src} className="aspect-[4/3] overflow-hidden rounded-xl bg-sand">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={src}
+                        alt={`${active.name} ${i + 1}`}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
               {active.community && (
                 <p className="mt-2 text-xs text-charcoal-300">
                   {active.community.author ? t.suggestedBy(active.community.author) : t.suggestedByVisitor}

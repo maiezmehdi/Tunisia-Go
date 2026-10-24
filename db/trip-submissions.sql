@@ -19,3 +19,8 @@ create table if not exists public.trip_submissions (
 );
 create index if not exists trip_submissions_status_idx on public.trip_submissions (status, created_at desc);
 alter table public.trip_submissions enable row level security;
+
+-- Photos: private copies in the "spot-photos" bucket (trips/…), and the approved ones copied to "community-photos".
+alter table public.trip_submissions
+  add column if not exists photos text[] not null default '{}',
+  add column if not exists public_photos text[] not null default '{}';

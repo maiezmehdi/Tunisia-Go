@@ -1,11 +1,15 @@
 import type { Itinerary } from '@/data/types';
 import type { Locale } from '@/lib/i18n/config';
-import { selectRows, supabaseConfig } from '@/lib/supabase';
+import { PUBLIC_BUCKET } from '@/lib/community';
+import { publicUrl, selectRows, supabaseConfig } from '@/lib/supabase';
 
 export const TRIPS_TAG = 'community-trips';
 export const MIN_STOPS = 2;
 export const MAX_STOPS = 12;
 export const MAX_DAYS = 30;
+export const MAX_TRIP_PHOTOS = 4;
+/** Folder of trip photos in the private bucket, and prefix in the public one, so they never mix with places. */
+export const TRIP_PHOTO_DIR = 'trips';
 
 /** A row of public.trip_submissions. */
 export interface TripRow {
@@ -22,6 +26,10 @@ export interface TripRow {
   name_en: string | null;
   description_en: string | null;
   reviewed_at: string | null;
+  /** Private copies of the visitor's photos (bucket spot-photos). */
+  photos: string[] | null;
+  /** Approved photos copied to the public bucket (community-photos). */
+  public_photos: string[] | null;
 }
 
 export interface TripSuggestion {
@@ -61,7 +69,12 @@ export function cleanTrip(input: Record<string, unknown>, builtIn: ReadonlySet<s
 }
 
 /** An approved suggestion as a road trip. Stops that no longer exist are dropped; fewer than two left: no trip. */
-export function toItinerary(row: TripRow, locale: Locale, placeNames: Record<string, string>): Itinerary | null {
+export function toItinerary(
+  row: TripRow,
+  locale: Locale,
+  placeNames: Record<string, string>,
+  photoUrl: (path: string) => string = () => '',
+): Itinerary | null {
   const stops = row.stops.filter((id) => placeNames[id]);
   if (stops.length < MIN_STOPS) return null;
   const en = locale === 'en';
@@ -76,6 +89,7 @@ export function toItinerary(row: TripRow, locale: Locale, placeNames: Record<str
     days: row.days,
     stops,
     community: { author: row.author?.trim() || null },
+    photos: (row.public_photos ?? []).map(photoUrl).filter(Boolean),
   };
 }
 
@@ -90,7 +104,9 @@ export async function loadCommunityTrips(locale: Locale, placeNames: Record<stri
       'select=*&status=eq.approved&order=reviewed_at.desc&limit=100',
       { revalidate: 3600, tags: [TRIPS_TAG] },
     );
-    return rows.map((r) => toItinerary(r, locale, placeNames)).filter((t): t is Itinerary => !!t);
+    return rows
+      .map((r) => toItinerary(r, locale, placeNames, (path) => publicUrl(cfg, PUBLIC_BUCKET, path)))
+      .filter((t): t is Itinerary => !!t);
   } catch (error) {
     console.error('trips: read', error);
     return [];
