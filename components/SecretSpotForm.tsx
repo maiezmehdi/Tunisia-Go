@@ -30,6 +30,8 @@ const COPY: Record<
   {
     errorRequired: string;
     errorSend: string;
+    errorTooMany: string;
+    errorPhotos: string;
     thanks: string;
     thanksBody: (name: string, author: string) => string;
     backToMap: string;
@@ -69,6 +71,8 @@ const COPY: Record<
   fr: {
     errorRequired: 'Indiquez au moins le nom du lieu, la région et ce qui le rend spécial.',
     errorSend: 'L’envoi n’a pas abouti. Réessayez dans un instant.',
+    errorTooMany: 'Vous avez déjà envoyé plusieurs propositions : réessayez dans une heure.',
+    errorPhotos: 'Les photos sont trop lourdes ou dans un format non accepté (JPEG, PNG ou WebP, 2 Mo maximum).',
     thanks: 'Merci, c’est noté.',
     thanksBody: (name, author) =>
       `On va voir ${name} de plus près. S’il rejoint la carte, vous serez crédité${author ? `, ${author}` : ''}.`,
@@ -108,6 +112,8 @@ const COPY: Record<
   en: {
     errorRequired: 'Please give at least the name of the place, the area and what makes it special.',
     errorSend: 'Sending did not work. Please try again in a moment.',
+    errorTooMany: 'You have already sent several suggestions: please try again in an hour.',
+    errorPhotos: 'The photos are too large or in an unsupported format (JPEG, PNG or WebP, 2 MB max).',
     thanks: 'Thank you, it’s on our list.',
     thanksBody: (name, author) =>
       `We’ll take a closer look at ${name}. If it makes it onto the map, you’ll be credited${author ? `, ${author}` : ''}.`,
@@ -215,7 +221,15 @@ export default function SecretSpotForm() {
     }
     setStatus({ kind: 'sending' });
     // Saving failed: hand the suggestion over to WhatsApp when a real number is set, else ask to retry.
-    const fallback = () => {
+    const fallback = (code?: number) => {
+      // Not a saving problem: say what to change instead of handing over to WhatsApp.
+      if (code === 429 || code === 413 || code === 400) {
+        setStatus({
+          kind: 'error',
+          message: code === 429 ? c.errorTooMany : code === 413 ? c.errorPhotos : c.errorRequired,
+        });
+        return;
+      }
       const url = secretSpotWhatsAppUrl(spotAsText(clean));
       setStatus(url ? { kind: 'whatsapp', url } : { kind: 'error', message: c.errorSend });
     };
@@ -231,7 +245,7 @@ export default function SecretSpotForm() {
         setStatus({ kind: 'sent' });
         return;
       }
-      fallback();
+      fallback(res.status);
     } catch {
       fallback();
     }
