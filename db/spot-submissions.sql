@@ -35,3 +35,9 @@ create index if not exists spot_submissions_status_idx on public.spot_submission
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('community-photos', 'community-photos', true, 2097152, array['image/jpeg','image/webp','image/png'])
 on conflict (id) do nothing;
+
+-- English version of an approved place, edited from /admin (empty: the French text is shown).
+alter table public.spot_submissions
+  add column if not exists name_en text,
+  add column if not exists why_en text,
+  add column if not exists best_time_en text;

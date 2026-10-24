@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 
 import { CATEGORIES_FR } from '@/data/i18n/catalog.fr';
 import type { CategoryId } from '@/data/types';
+import { resizeImage } from '@/lib/resizeImage';
 import { SPOT_TYPE_LABELS, SPOT_TYPES, type SpotType } from '@/lib/secretSpot';
 
 export interface AdminSubmission {
@@ -24,6 +25,11 @@ export interface AdminSubmission {
   coords: string;
   photos: { path: string; url: string | null }[];
   reviewedAt: string | null;
+  nameEn: string;
+  whyEn: string;
+  bestTimeEn: string;
+  /** Photos shown on the map (visitor photos copied on approval, and the ones added from here). */
+  publicPhotos: { path: string; url: string }[];
 }
 
 type Status = AdminSubmission['status'];
@@ -125,6 +131,10 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
   const [area, setArea] = useState(s.area);
   const [why, setWhy] = useState(s.why);
   const [category, setCategory] = useState(s.category);
+  const [bestTime, setBestTime] = useState(s.bestTime ?? '');
+  const [nameEn, setNameEn] = useState(s.nameEn);
+  const [whyEn, setWhyEn] = useState(s.whyEn);
+  const [bestTimeEn, setBestTimeEn] = useState(s.bestTimeEn);
   const [coords, setCoords] = useState(s.coords);
   const [keep, setKeep] = useState<Set<string>>(() => new Set(s.photos.map((p) => p.path)));
   const [busy, setBusy] = useState<string | null>(null);
@@ -146,6 +156,10 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
         area,
         why,
         category,
+        bestTime,
+        nameEn,
+        whyEn,
+        bestTimeEn,
         lat: point?.[0],
         lng: point?.[1],
         photos: s.photos.map((p) => p.path).filter((p) => keep.has(p)),
@@ -155,6 +169,38 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
     if (res?.ok) return onDone();
     const code = ((await res?.json().catch(() => null)) as { error?: string } | null)?.error ?? '';
     setError(ERRORS[code] ?? 'L’enregistrement a échoué. Réessayez.');
+  };
+
+  const upload = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setBusy('photo');
+    setError(null);
+    try {
+      for (const file of Array.from(files)) {
+        const blob = await resizeImage(file);
+        const res = await fetch(`/api/admin/submissions/${s.id}/photos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'image/jpeg' },
+          body: blob,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+      }
+      onDone();
+    } catch {
+      setError('Une photo n’a pas pu être ajoutée (8 maximum par lieu). Réessayez.');
+    }
+    setBusy(null);
+  };
+
+  const removePhoto = async (path: string) => {
+    if (!window.confirm('Retirer cette photo du lieu ?')) return;
+    setBusy('photo');
+    const res = await fetch(`/api/admin/submissions/${s.id}/photos?path=${encodeURIComponent(path)}`, {
+      method: 'DELETE',
+    }).catch(() => null);
+    setBusy(null);
+    if (res?.ok) onDone();
+    else setError('La photo n’a pas pu être retirée. Réessayez.');
   };
 
   const field =
@@ -274,6 +320,80 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
           maxLength={2000}
         />
       </label>
+
+      <label className="mt-4 block">
+        <span className="text-xs text-charcoal-500">Meilleure période (facultatif)</span>
+        <input className={field} value={bestTime} onChange={(e) => setBestTime(e.target.value)} maxLength={120} />
+      </label>
+
+      <details className="mt-4 rounded-2xl border border-sand-200 px-4 py-3">
+        <summary className="cursor-pointer text-sm text-charcoal-700">Version anglaise (facultatif)</summary>
+        <p className="mt-2 text-xs text-charcoal-300">
+          Laissez vide pour afficher le texte français aux visiteurs anglophones.
+        </p>
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-xs text-charcoal-500">Name</span>
+            <input className={field} value={nameEn} onChange={(e) => setNameEn(e.target.value)} maxLength={120} />
+          </label>
+          <label className="block">
+            <span className="text-xs text-charcoal-500">Best time</span>
+            <input
+              className={field}
+              value={bestTimeEn}
+              onChange={(e) => setBestTimeEn(e.target.value)}
+              maxLength={120}
+            />
+          </label>
+        </div>
+        <label className="mt-3 block">
+          <span className="text-xs text-charcoal-500">Why go</span>
+          <textarea
+            className={`${field} min-h-[80px]`}
+            value={whyEn}
+            onChange={(e) => setWhyEn(e.target.value)}
+            maxLength={2000}
+          />
+        </label>
+      </details>
+
+      {s.status === 'approved' && (
+        <div className="mt-4">
+          <p className="text-xs text-charcoal-500">Photos affichées sur la fiche</p>
+          {s.publicPhotos.length > 0 && (
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {s.publicPhotos.map((p, i) => (
+                <div key={p.path} className="relative overflow-hidden rounded-2xl bg-sand-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.url} alt={`Photo ${i + 1}`} className="aspect-[4/3] w-full object-cover" />
+                  <button
+                    type="button"
+                    disabled={!!busy}
+                    onClick={() => removePhoto(p.path)}
+                    className="absolute right-2 top-2 rounded-pill bg-cream/90 px-2.5 py-1 text-[11px] text-charcoal transition hover:bg-cream disabled:opacity-60"
+                  >
+                    Retirer
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <label className="mt-3 inline-block cursor-pointer rounded-pill border border-sand-200 px-4 py-2 text-sm text-charcoal-700 transition hover:border-charcoal">
+            {busy === 'photo' ? 'Envoi…' : 'Ajouter des photos'}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              className="sr-only"
+              disabled={!!busy}
+              onChange={(e) => {
+                void upload(e.target.files);
+                e.target.value = '';
+              }}
+            />
+          </label>
+        </div>
+      )}
 
       <dl className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
         {s.location && (
