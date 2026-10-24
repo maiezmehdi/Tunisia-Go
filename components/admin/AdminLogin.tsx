@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export default function AdminLogin() {
   const router = useRouter();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -16,14 +17,14 @@ export default function AdminLogin() {
     const res = await fetch('/api/admin/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ email, password }),
     }).catch(() => null);
     setBusy(false);
     if (res?.ok) router.refresh();
     else
       setError(
         res?.status === 401
-          ? 'Mot de passe incorrect.'
+          ? 'Email ou mot de passe incorrect.'
           : res?.status === 429
             ? 'Trop d’essais. Réessayez dans 15 minutes.'
             : 'Connexion impossible, réessayez.',
@@ -33,6 +34,17 @@ export default function AdminLogin() {
   return (
     <form onSubmit={submit} className="max-w-sm space-y-4">
       <h1 className="font-serif text-3xl text-charcoal">Lieux proposés</h1>
+      <label className="block">
+        <span className="text-sm text-charcoal-700">Email</span>
+        <input
+          type="email"
+          autoComplete="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Laissez vide avec le mot de passe principal"
+          className="mt-1 w-full rounded-2xl border border-sand-200 bg-white px-4 py-3 text-charcoal outline-none focus:border-charcoal"
+        />
+      </label>
       <label className="block">
         <span className="text-sm text-charcoal-700">Mot de passe</span>
         <input
