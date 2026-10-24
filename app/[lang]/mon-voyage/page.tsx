@@ -5,6 +5,8 @@ import { PLACES } from '@/data/tunisiaData';
 import { loadCommunityPlaces } from '@/lib/community';
 import { isLocale } from '@/lib/i18n/config';
 import { loadPhotos } from '@/lib/photos';
+import { getCatalog } from '@/lib/i18n/catalog';
+import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { pageMetadata } from '@/lib/seo';
 
 // Same data as the map: photos refreshed daily, community places rebuilt on approval.
@@ -27,9 +29,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function MyTripPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const [photos, community] = await Promise.all([
+  const locale = isLocale(lang) ? lang : 'fr';
+  const [basePhotos, community, overrides] = await Promise.all([
     loadPhotos(PLACES),
-    loadCommunityPlaces(isLocale(lang) ? lang : 'fr'),
+    loadCommunityPlaces(locale),
+    loadPlaceOverrides(),
   ]);
-  return <MyTripView photos={{ ...photos, ...community.photos }} community={community.places} />;
+  const names = Object.fromEntries(
+    applyOverrides(getCatalog(locale).places, overrides, locale).map((p) => [p.id, p.name]),
+  );
+  const photos = withOverridePhotos(basePhotos, overrides, names);
+  return <MyTripView photos={{ ...photos, ...community.photos }} community={community.places} overrides={overrides} />;
 }

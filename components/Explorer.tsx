@@ -17,6 +17,7 @@ import { track } from '@/lib/analytics';
 import CategoryGlyph from '@/components/CategoryGlyph';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Photo, Place } from '@/data/types';
+import { applyOverrides, type PlaceOverride } from '@/lib/placeOverrides';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { useMyTrip } from '@/lib/myTrip';
 import { SOUTH_TRIPS, useSound } from '@/lib/sound';
@@ -45,14 +46,20 @@ export interface ExplorerProps {
   photos: Record<string, Photo[]>;
   /** Places suggested by visitors and approved on the moderation page. */
   community?: Place[];
+  /** Texts of built-in places edited from /admin. */
+  overrides?: Record<string, PlaceOverride>;
 }
 
 const NO_PLACES: Place[] = [];
+const NO_OVERRIDES: Record<string, PlaceOverride> = {};
 
-export default function Explorer({ photos, community = NO_PLACES }: ExplorerProps) {
-  const { t, catalog } = useLocale();
+export default function Explorer({ photos, community = NO_PLACES, overrides = NO_OVERRIDES }: ExplorerProps) {
+  const { t, catalog, locale } = useLocale();
   const { itineraries: ITINERARIES, categories } = catalog;
-  const PLACES = useMemo(() => [...catalog.places, ...community], [catalog.places, community]);
+  const PLACES = useMemo(
+    () => [...applyOverrides(catalog.places, overrides, locale), ...community],
+    [catalog.places, community, overrides, locale],
+  );
   const PLACE_BY_ID = useMemo(() => Object.fromEntries(PLACES.map((p) => [p.id, p])), [PLACES]);
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [activeCategories, setActiveCategories] = useState<Set<CategoryId>>(ALL_CATEGORIES);

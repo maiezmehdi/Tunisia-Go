@@ -146,3 +146,18 @@ export async function deleteRow(cfg: SupabaseConfig, table: string, id: string):
   });
   if (!res.ok) throw new Error(`delete ${res.status}: ${await res.text().catch(() => '')}`);
 }
+
+/** Inserts a row, or replaces the one with the same primary key. */
+export async function upsertRow(cfg: SupabaseConfig, table: string, row: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`${cfg.url}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      ...authHeaders(cfg.key),
+      'Content-Type': 'application/json',
+      Prefer: 'resolution=merge-duplicates,return=minimal',
+    },
+    body: JSON.stringify(row),
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`upsert ${res.status}: ${await res.text().catch(() => '')}`);
+}

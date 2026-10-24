@@ -16,6 +16,7 @@ import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { loadPhotos } from '@/lib/photos';
+import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { formatUpdated, placePath } from '@/lib/placePages';
 import { pageMetadata } from '@/lib/seo';
 import { placePageData } from '@/lib/structuredData';
@@ -75,15 +76,18 @@ const COPY = {
   },
 } as const;
 
-function find(lang: string, id: string) {
+async function find(lang: string, id: string) {
   const locale: Locale = isLocale(lang) ? lang : 'fr';
   const catalog = getCatalog(locale);
-  return { locale, catalog, place: catalog.placeById[id] };
+  const overrides = await loadPlaceOverrides();
+  const base = catalog.placeById[id];
+  const place = base ? applyOverrides([base], overrides, locale)[0] : undefined;
+  return { locale, catalog, place, overrides };
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { lang, id } = await params;
-  const { locale, place } = find(lang, id);
+  const { locale, place } = await find(lang, id);
   if (!place) return {};
   return pageMetadata({
     lang: locale,
@@ -95,11 +99,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function PlacePage({ params }: Params) {
   const { lang, id } = await params;
-  const { locale, catalog, place } = find(lang, id);
+  const { locale, catalog, place, overrides } = await find(lang, id);
   if (!place) notFound();
   const c = COPY[locale];
 
-  const photos = (await loadPhotos([place]))[place.id] ?? [];
+  const photos = withOverridePhotos(await loadPhotos([place]), overrides, { [place.id]: place.name })[place.id] ?? [];
   const photo = photos[0];
   const itineraries = catalog.itineraries.filter((it) => it.stops.includes(place.id));
   const nearby = catalog.places.filter((p) => p.region === place.region && p.id !== place.id).slice(0, 6);
@@ -163,9 +167,13 @@ export default async function PlacePage({ params }: Params) {
               className="max-h-[480px] w-full rounded-3xl object-cover"
             />
             <figcaption className="mt-2 text-xs text-charcoal-300">
-              <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="hover:text-charcoal">
-                {photo.title} · {photo.author} · {photo.license}
-              </a>
+              {photo.sourceUrl ? (
+                <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="hover:text-charcoal">
+                  {photo.title} · {photo.author} · {photo.license}
+                </a>
+              ) : (
+                photo.author
+              )}
             </figcaption>
           </figure>
         )}

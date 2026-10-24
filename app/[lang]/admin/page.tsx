@@ -7,6 +7,7 @@ import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard'
 import UsersBoard, { type AdminUser } from '@/components/admin/UsersBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
 import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
+import PlaceOverridesBoard from '@/components/admin/PlaceOverridesBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
@@ -164,6 +165,10 @@ export default async function AdminPage() {
             return [];
           })
       : [];
+  // Edits of built-in places need place_overrides (db/place-overrides.sql).
+  const overridesMissing = await selectRows(cfg, 'place_overrides', 'select=place_id&limit=1')
+    .then(() => false)
+    .catch(() => true);
   const signed = await signUrls(
     cfg,
     PRIVATE_BUCKET,
@@ -205,6 +210,10 @@ export default async function AdminPage() {
         <>
           <AdminBoard submissions={submissions} />
           <AddPlaceForm />
+          <PlaceOverridesBoard
+            places={PLACES.map((p) => ({ id: p.id, name: p.name }))}
+            tableMissing={overridesMissing}
+          />
           <EventsBoard
             events={events}
             places={PLACES.map((p) => ({ id: p.id, name: p.name }))}

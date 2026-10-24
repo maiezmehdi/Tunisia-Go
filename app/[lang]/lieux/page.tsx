@@ -7,6 +7,7 @@ import MadeBy from '@/components/MadeBy';
 import SoundToggle from '@/components/SoundToggle';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
+import { applyOverrides, loadPlaceOverrides } from '@/lib/placeOverrides';
 import { placePath } from '@/lib/placePages';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
 
@@ -48,7 +49,8 @@ export default async function PlacesIndex({ params }: Params) {
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : 'fr';
   const c = COPY[locale];
-  const catalog = getCatalog(locale);
+  const base = getCatalog(locale);
+  const catalog = { ...base, places: applyOverrides(base.places, await loadPlaceOverrides(), locale) };
 
   const byRegion = new Map<string, typeof catalog.places>();
   for (const p of catalog.places) byRegion.set(p.region, [...(byRegion.get(p.region) ?? []), p]);
