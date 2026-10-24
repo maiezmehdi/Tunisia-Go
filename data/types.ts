@@ -64,7 +64,7 @@ export interface Place {
   images: PlaceImage[];
   contact: PlaceContact;
   /** Set on places suggested by visitors and approved on the moderation page. */
-  community?: { author: string | null };
+  community?: { author: string | null; /** Visitor keywords, already in the page language. */ tags?: string[] };
 }
 
 export interface Itinerary {

@@ -1,6 +1,6 @@
 import type { CategoryId, Photo, Place } from '@/data/types';
 import type { Locale } from '@/lib/i18n/config';
-import { SPOT_TYPE_LABELS, SPOT_TYPES, type SpotType } from '@/lib/secretSpot';
+import { SPOT_TYPE_LABELS, SPOT_TYPES, cleanTags, SPOT_TAG_LABELS, type SpotType } from '@/lib/secretSpot';
 import { publicUrl, selectRows, supabaseConfig } from '@/lib/supabase';
 
 /** A row of public.spot_submissions. */
@@ -113,7 +113,10 @@ export function toPlace(row: SubmissionRow, locale: Locale): Place {
     visitDuration: '',
     images: [{ caption: row.name }],
     contact: {},
-    community: { author: row.author?.trim() || null },
+    community: {
+      author: row.author?.trim() || null,
+      tags: cleanTags(row.tags).map((t) => SPOT_TAG_LABELS[locale][t]),
+    },
   };
 }
 

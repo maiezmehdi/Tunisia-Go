@@ -171,6 +171,15 @@ function DrawerContent({
               {place.community.author ? t.suggestedBy(place.community.author) : t.suggestedByVisitor}
             </p>
           )}
+          {!!place.community?.tags?.length && (
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {place.community.tags.map((tag) => (
+                <li key={tag} className="rounded-pill border border-sand-200 px-3 py-1 text-xs text-charcoal-500">
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          )}
           <TripButton placeId={place.id} />
         </header>
 
