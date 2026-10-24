@@ -39,6 +39,7 @@ function attraction(place: Place, photos: Photo[], lang: Locale) {
     geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
     address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
     ...(photos[0] && { image: photos[0].src }),
+    ...(place.community?.tags?.length && { keywords: place.community.tags.join(', ') }),
   };
 }
 
