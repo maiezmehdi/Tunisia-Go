@@ -2,10 +2,11 @@
 
 import { useRef, useState, type ReactNode } from 'react';
 
+import PhotoPicker, { type PickedPhoto } from '@/components/PhotoPicker';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import type { Locale } from '@/lib/i18n/config';
 import { track } from '@/lib/analytics';
-import { MAX_DAYS, MAX_STOPS, MIN_STOPS } from '@/lib/tripSuggest';
+import { MAX_DAYS, MAX_STOPS, MAX_TRIP_PHOTOS, MIN_STOPS } from '@/lib/tripSuggest';
 
 export interface PlaceChoice {
   id: string;
@@ -43,6 +44,7 @@ const COPY: Record<
     errorStops: (min: number) => string;
     errorSend: string;
     errorTooMany: string;
+    errorPhotos: string;
     thanks: string;
     thanksBody: (name: string) => string;
     backToMap: string;
@@ -76,6 +78,7 @@ const COPY: Record<
     errorStops: (min) => `Ajoutez au moins ${min} étapes.`,
     errorSend: 'L’envoi n’a pas abouti. Réessayez dans un instant.',
     errorTooMany: 'Vous avez déjà envoyé plusieurs propositions : réessayez dans une heure.',
+    errorPhotos: 'Les photos sont trop lourdes ou dans un format non accepté (JPEG, PNG ou WebP, 2 Mo maximum).',
     thanks: 'Merci, c’est noté.',
     thanksBody: (name) =>
       `On va regarder « ${name} » de près. S’il rejoint la carte, vous le retrouverez dans les road trips.`,
@@ -109,6 +112,7 @@ const COPY: Record<
     errorStops: (min) => `Please add at least ${min} stops.`,
     errorSend: 'Sending did not work. Please try again in a moment.',
     errorTooMany: 'You have already sent several suggestions: please try again in an hour.',
+    errorPhotos: 'The photos are too large or in an unsupported format (JPEG, PNG or WebP, 2 MB max).',
     thanks: 'Thank you, it’s on our list.',
     thanksBody: (name) =>
       `We’ll take a closer look at “${name}”. If it makes it onto the map, you’ll find it among the road trips.`,
@@ -132,6 +136,7 @@ export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
   const [description, setDescription] = useState('');
   const [days, setDays] = useState(3);
   const [stops, setStops] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<PickedPhoto[]>([]);
   const [author, setAuthor] = useState('');
   const [contact, setContact] = useState('');
   const [errors, setErrors] = useState<{ name?: string; description?: string; stops?: string }>({});
@@ -162,26 +167,26 @@ export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
     }
     setStatus({ kind: 'sending' });
     try {
-      const res = await fetch('/api/trip-suggest', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          description,
-          days,
-          stops,
-          author,
-          contact,
-          locale,
-          elapsed: Date.now() - openedAt.current,
-        }),
-      });
+      const body = new FormData();
+      body.append('name', name);
+      body.append('description', description);
+      body.append('days', String(days));
+      body.append('stops', stops.join(','));
+      body.append('author', author);
+      body.append('contact', contact);
+      body.append('locale', locale);
+      body.append('elapsed', String(Date.now() - openedAt.current));
+      photos.forEach((p, i) => body.append('photos', p.blob, `photo-${i + 1}.jpg`));
+      const res = await fetch('/api/trip-suggest', { method: 'POST', body });
       if (res.ok) {
         track('trip_suggested', { stops: stops.length, days });
         setStatus({ kind: 'sent' });
         return;
       }
-      setStatus({ kind: 'error', message: res.status === 429 ? c.errorTooMany : c.errorSend });
+      setStatus({
+        kind: 'error',
+        message: res.status === 429 ? c.errorTooMany : res.status === 413 ? c.errorPhotos : c.errorSend,
+      });
     } catch {
       setStatus({ kind: 'error', message: c.errorSend });
     }
@@ -206,6 +211,8 @@ export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
               setDescription('');
               setDays(3);
               setStops([]);
+              photos.forEach((ph) => URL.revokeObjectURL(ph.preview));
+              setPhotos([]);
               setStatus({ kind: 'idle' });
               openedAt.current = Date.now();
             }}
@@ -326,6 +333,8 @@ export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
           </p>
         )}
       </fieldset>
+
+      <PhotoPicker photos={photos} onChange={setPhotos} max={MAX_TRIP_PHOTOS} disabled={status.kind === 'sending'} />
 
       <div className="grid gap-8 sm:grid-cols-2">
         <Field label={c.author} hint={c.authorHint}>

@@ -77,4 +77,6 @@ export interface Itinerary {
   stops: string[];
   /** Set on road trips suggested by visitors and approved on the moderation page. */
   community?: { author: string | null };
+  /** Public photo URLs of an approved visitor trip. */
+  photos?: string[];
 }

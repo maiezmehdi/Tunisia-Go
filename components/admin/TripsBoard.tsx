@@ -16,6 +16,10 @@ export interface AdminTrip {
   contact: string | null;
   nameEn: string;
   descriptionEn: string;
+  /** Visitor photos (private bucket) with a temporary link to show them. */
+  photos: { path: string; url: string | null }[];
+  /** Paths of the photos currently public. */
+  publicPhotos: string[];
 }
 
 const DATE = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
@@ -85,8 +89,15 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
   const [days, setDays] = useState(String(t.days));
   const [nameEn, setNameEn] = useState(t.nameEn);
   const [descriptionEn, setDescriptionEn] = useState(t.descriptionEn);
+  const [keep, setKeep] = useState<Set<string>>(() => new Set(t.photos.map((p) => p.path)));
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const toggle = (path: string) =>
+    setKeep((k) => {
+      const next = new Set(k);
+      if (!next.delete(path)) next.add(path);
+      return next;
+    });
 
   const act = async (action: 'approve' | 'reject' | 'pending') => {
     setBusy(true);
@@ -94,7 +105,15 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
     const res = await fetch(`/api/admin/trips/${t.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, name, description, days, nameEn, descriptionEn }),
+      body: JSON.stringify({
+        action,
+        name,
+        description,
+        days,
+        nameEn,
+        descriptionEn,
+        photos: t.photos.map((p) => p.path).filter((p) => keep.has(p)),
+      }),
     }).catch(() => null);
     setBusy(false);
     if (res?.ok) router.refresh();
@@ -162,6 +181,34 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
           />
         </label>
       </div>
+
+      {t.photos.length > 0 && (
+        <div className="mt-4">
+          <span className={label}>Photos (décochez celles à ne pas publier)</span>
+          <ul className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
+            {t.photos.map((p) => (
+              <li key={p.path}>
+                <label className="block cursor-pointer">
+                  <span className="relative block aspect-[4/3] overflow-hidden rounded-xl bg-sand">
+                    {p.url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.url}
+                        alt=""
+                        className={`h-full w-full object-cover transition ${keep.has(p.path) ? '' : 'opacity-30'}`}
+                      />
+                    )}
+                  </span>
+                  <span className="mt-1 flex items-center gap-1.5 text-xs text-charcoal-500">
+                    <input type="checkbox" checked={keep.has(p.path)} onChange={() => toggle(p.path)} />
+                    Publier
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
         {t.status !== 'approved' && (
