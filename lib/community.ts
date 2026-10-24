@@ -23,6 +23,9 @@ export interface SubmissionRow {
   category: string | null;
   reviewed_at: string | null;
   public_photos: string[];
+  name_en: string | null;
+  why_en: string | null;
+  best_time_en: string | null;
 }
 
 export const PRIVATE_BUCKET = 'spot-photos';
@@ -50,6 +53,11 @@ export function defaultCategory(type: string | null): CategoryId {
     other: 'culture',
   };
   return map[(type ?? 'other') as SpotType] ?? 'culture';
+}
+
+/** Photos uploaded from /admin are stored as `<id>/a-<time>.jpg`, apart from the copies of visitor photos. */
+export function isAdminPhoto(id: string, path: string): boolean {
+  return path.startsWith(`${id}/a-`);
 }
 
 /** Tunisia, with a margin. */
@@ -88,17 +96,19 @@ function typeLabel(type: string | null, locale: Locale): string {
 /** Turns an approved suggestion into a place the map, the list and the place sheet understand. */
 export function toPlace(row: SubmissionRow, locale: Locale): Place {
   const label = typeLabel(row.type, locale);
+  const en = locale === 'en';
+  const bestTime = (en && row.best_time_en?.trim()) || row.best_time;
   return {
     id: `c-${row.id}`,
-    name: row.name,
+    name: (en && row.name_en?.trim()) || row.name,
     region: row.area,
     stayQuery: row.area,
     category: isCategory(row.category) ? row.category : defaultCategory(row.type),
     coords: [row.lat ?? 0, row.lng ?? 0],
-    tagline: row.best_time ? `${label} · ${row.best_time}` : label,
-    description: row.why,
+    tagline: bestTime ? `${label} · ${bestTime}` : label,
+    description: (en && row.why_en?.trim()) || row.why,
     didYouKnow: '',
-    insights: { history: '', customs: '', food: '', bestTime: row.best_time ?? '' },
+    insights: { history: '', customs: '', food: '', bestTime: bestTime ?? '' },
     visitDuration: '',
     images: [{ caption: row.name }],
     contact: {},

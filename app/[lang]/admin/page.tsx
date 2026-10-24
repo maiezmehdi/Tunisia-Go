@@ -8,10 +8,10 @@ import AdminLogin from '@/components/admin/AdminLogin';
 import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, isAdminToken } from '@/lib/adminAuth';
-import { PRIVATE_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
+import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
 import { PLACES } from '@/data/tunisiaData';
 import type { EventRow } from '@/lib/events';
-import { selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
+import { publicUrl, selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -161,6 +161,10 @@ export default async function AdminPage() {
       coords: guess ? `${guess[0]}, ${guess[1]}` : '',
       photos: (r.photos ?? []).map((path) => ({ path, url: (signed as Record<string, string>)[path] ?? null })),
       reviewedAt: r.reviewed_at,
+      nameEn: r.name_en ?? '',
+      whyEn: r.why_en ?? '',
+      bestTimeEn: r.best_time_en ?? '',
+      publicPhotos: (r.public_photos ?? []).map((path) => ({ path, url: publicUrl(cfg, PUBLIC_BUCKET, path) })),
     };
   });
 

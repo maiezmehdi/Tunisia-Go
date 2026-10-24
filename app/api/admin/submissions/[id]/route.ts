@@ -4,7 +4,14 @@ import { NextResponse } from 'next/server';
 import { ADMIN_COOKIE, isAdminToken } from '@/lib/adminAuth';
 import { refreshSite } from '@/lib/refresh';
 import { sameOrigin } from '@/lib/requestGuard';
-import { PRIVATE_BUCKET, PUBLIC_BUCKET, inTunisia, isCategory, type SubmissionRow } from '@/lib/community';
+import {
+  PRIVATE_BUCKET,
+  PUBLIC_BUCKET,
+  isAdminPhoto,
+  inTunisia,
+  isCategory,
+  type SubmissionRow,
+} from '@/lib/community';
 import { copyObject, deleteObjects, selectRows, supabaseConfig, updateRow } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
@@ -51,6 +58,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (area) patch.area = area;
   if (why) patch.why = why;
   if (isCategory(body?.category)) patch.category = body.category;
+  // Optional fields: an empty string clears them (the English ones then fall back to French).
+  for (const [key, column, max] of [
+    ['bestTime', 'best_time', 120],
+    ['nameEn', 'name_en', 120],
+    ['whyEn', 'why_en', 2000],
+    ['bestTimeEn', 'best_time_en', 120],
+  ] as const) {
+    if (typeof body?.[key] === 'string') patch[column] = text(body[key], max) ?? null;
+  }
 
   const lat = Number(body?.lat);
   const lng = Number(body?.lng);
@@ -80,8 +96,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       console.error('admin: copy photos', error);
       return NextResponse.json({ error: 'photos_failed' }, { status: 502 });
     }
-    patch.public_photos = publicPaths;
-    const stale = (row.public_photos ?? []).filter((p) => !publicPaths.includes(p));
+    // Photos added from the admin (named a-…) are kept; only the copies of visitor photos are replaced.
+    const own = (row.public_photos ?? []).filter((p) => isAdminPhoto(row.id, p));
+    patch.public_photos = [...publicPaths, ...own];
+    const stale = (row.public_photos ?? []).filter((p) => !publicPaths.includes(p) && !own.includes(p));
     await deleteObjects(cfg, PUBLIC_BUCKET, stale).catch((error) => console.error('admin: delete stale', error));
   } else {
     // Off the map: its photos stop being public.
