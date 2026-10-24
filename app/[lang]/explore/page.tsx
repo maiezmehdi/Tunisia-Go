@@ -5,6 +5,7 @@ import { PLACES } from '@/data/tunisiaData';
 import { loadCommunityPlaces } from '@/lib/community';
 import { isLocale } from '@/lib/i18n/config';
 import { loadPhotos } from '@/lib/photos';
+import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { pageMetadata } from '@/lib/seo';
 import JsonLd from '@/components/JsonLd';
 import { getCatalog } from '@/lib/i18n/catalog';
@@ -35,16 +36,19 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function ExplorePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const [photos, community] = await Promise.all([
+  const [basePhotos, community, overrides] = await Promise.all([
     loadPhotos(PLACES),
     loadCommunityPlaces(isLocale(lang) ? lang : 'fr'),
+    loadPlaceOverrides(),
   ]);
   const locale = isLocale(lang) ? lang : 'fr';
   const catalog = getCatalog(locale);
+  const places = applyOverrides(catalog.places, overrides, locale);
+  const photos = withOverridePhotos(basePhotos, overrides, Object.fromEntries(places.map((p) => [p.id, p.name])));
   return (
     <>
-      <JsonLd data={exploreData(catalog.places, catalog.itineraries, photos, locale)} />
-      <Explorer photos={{ ...photos, ...community.photos }} community={community.places} />
+      <JsonLd data={exploreData(places, catalog.itineraries, photos, locale)} />
+      <Explorer photos={{ ...photos, ...community.photos }} community={community.places} overrides={overrides} />
     </>
   );
 }

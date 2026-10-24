@@ -16,6 +16,7 @@ import { formatDuration, formatKm, haversineKm, summarizeRoute } from '@/lib/geo
 import TripPrintSheet from '@/components/trip/TripPrintSheet';
 import { GENERAL_GUIDE, guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { bestMonthsLabel } from '@/data/seasons';
+import { applyOverrides, type PlaceOverride } from '@/lib/placeOverrides';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { googleMapsRouteUrl } from '@/lib/links';
 import { SHARE_PARAM, parseShared, shareUrl, useMyTrip } from '@/lib/myTrip';
@@ -27,20 +28,22 @@ const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), {
 
 const ALL_CATEGORIES = new Set<CategoryId>(CATEGORIES.map((c) => c.id));
 const NO_PLACES: Place[] = [];
+const NO_OVERRIDES: Record<string, PlaceOverride> = {};
 
 export interface MyTripViewProps {
   photos: Record<string, Photo[]>;
   community?: Place[];
+  overrides?: Record<string, PlaceOverride>;
 }
 
-export default function MyTripView({ photos, community = NO_PLACES }: MyTripViewProps) {
+export default function MyTripView({ photos, community = NO_PLACES, overrides = NO_OVERRIDES }: MyTripViewProps) {
   const { t, locale, catalog } = useLocale();
   const trip = useMyTrip();
   const byId = useMemo(() => {
-    const map = new Map<string, Place>(catalog.places.map((p) => [p.id, p]));
+    const map = new Map<string, Place>(applyOverrides(catalog.places, overrides, locale).map((p) => [p.id, p]));
     for (const p of community) map.set(p.id, p);
     return map;
-  }, [catalog.places, community]);
+  }, [catalog.places, community, overrides, locale]);
 
   // A shared link (?p=…) shows that trip until the visitor keeps it or goes back to their own.
   const [shared, setShared] = useState<string[] | null>(null);
