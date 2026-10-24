@@ -49,7 +49,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'invalid' }, { status: 400 });
   }
   // Honeypot: real people never fill the hidden "fax_number" field (not "website": browsers autofill that one).
-  if (typeof fields.fax_number === 'string' && fields.fax_number) return NextResponse.json({ ok: true });
+  if (typeof fields.fax_number === 'string' && fields.fax_number) {
+    console.warn('spot-secret: honeypot filled, suggestion ignored');
+    return NextResponse.json({ ok: true });
+  }
 
   const spot = cleanSpot(fields);
   if (!spot) return NextResponse.json({ error: 'invalid' }, { status: 400 });
@@ -73,6 +76,7 @@ export async function POST(request: Request) {
         }),
       );
       await insertRow(supabase, 'spot_submissions', toRow(spot, locale, paths));
+      console.info(`spot-secret: saved in ${new URL(supabase.url).host} (${paths.length} photos)`);
     } catch (error) {
       console.error('spot-secret: supabase', error);
       return NextResponse.json({ error: 'save_failed' }, { status: 502 });
