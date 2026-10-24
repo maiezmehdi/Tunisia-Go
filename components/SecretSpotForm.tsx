@@ -8,7 +8,19 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { track } from '@/lib/analytics';
 import { secretSpotWhatsAppUrl } from '@/lib/links';
 import { resizeImage } from '@/lib/resizeImage';
-import { EMPTY_SPOT, SPOT_TYPES, SPOT_TYPE_LABELS, cleanSpot, spotAsText, type SecretSpot } from '@/lib/secretSpot';
+import { parseCoords } from '@/lib/community';
+import {
+  EMPTY_SPOT,
+  MAX_TAGS,
+  SPOT_TAGS,
+  SPOT_TAG_LABELS,
+  SPOT_TYPES,
+  SPOT_TYPE_LABELS,
+  cleanSpot,
+  spotAsText,
+  type SecretSpot,
+  type SpotTag,
+} from '@/lib/secretSpot';
 
 type Status =
   | { kind: 'idle' }
@@ -66,6 +78,17 @@ const COPY: Record<
     removePhoto: string;
     photoError: string;
     whatsappPhotos: string;
+    tags: string;
+    tagsHint: (max: number) => string;
+    errorName: string;
+    errorArea: string;
+    errorWhy: string;
+    whyCount: (n: number, max: number) => string;
+    photosRules: string;
+    photoCount: (n: number, max: number) => string;
+    photoLimit: (max: number) => string;
+    positionFound: (coords: string) => string;
+    positionUnknown: string;
   }
 > = {
   fr: {
@@ -108,6 +131,17 @@ const COPY: Record<
     removePhoto: 'Retirer la photo',
     photoError: 'Une photo n’a pas pu être lue. Essayez une autre image (JPEG ou PNG).',
     whatsappPhotos: 'Pensez à joindre vos photos dans la conversation.',
+    tags: 'Mots-clés',
+    tagsHint: (max) => `Jusqu’à ${max}, ils aident les voyageurs (et Google) à trouver ce lieu`,
+    errorName: 'Donnez un nom au lieu.',
+    errorArea: 'Indiquez la région ou la ville.',
+    errorWhy: 'Quelques mots de plus : au moins 10 caractères.',
+    whyCount: (n, max) => `${n} / ${max}`,
+    photosRules: 'JPEG, PNG, WebP ou HEIC. Elles sont réduites automatiquement, sans perte visible.',
+    photoCount: (n, max) => `${n} / ${max}`,
+    photoLimit: (max) => `${max} photos au maximum : les premières ont été gardées.`,
+    positionFound: (coords) => `Position reconnue : ${coords}`,
+    positionUnknown: 'Position non reconnue : on la placera à la main sur la carte.',
   },
   en: {
     errorRequired: 'Please give at least the name of the place, the area and what makes it special.',
@@ -149,6 +183,17 @@ const COPY: Record<
     removePhoto: 'Remove photo',
     photoError: 'One photo could not be read. Try another image (JPEG or PNG).',
     whatsappPhotos: 'Remember to attach your photos in the chat.',
+    tags: 'Keywords',
+    tagsHint: (max) => `Up to ${max}: they help travellers (and Google) find this place`,
+    errorName: 'Please give the place a name.',
+    errorArea: 'Please tell us the area or town.',
+    errorWhy: 'A few more words, please: at least 10 characters.',
+    whyCount: (n, max) => `${n} / ${max}`,
+    photosRules: 'JPEG, PNG, WebP or HEIC. They are shrunk automatically, with no visible loss.',
+    photoCount: (n, max) => `${n} / ${max}`,
+    photoLimit: (max) => `${max} photos at most: the first ones were kept.`,
+    positionFound: (coords) => `Location found: ${coords}`,
+    positionUnknown: 'Location not recognised: we will place it by hand on the map.',
   },
 };
 
@@ -165,6 +210,8 @@ export default function SecretSpotForm() {
   const [photos, setPhotos] = useState<PickedPhoto[]>([]);
   const [preparing, setPreparing] = useState(false);
   const [photoError, setPhotoError] = useState(false);
+  const [photoLimit, setPhotoLimit] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; area?: string; why?: string }>({});
   const fileInput = useRef<HTMLInputElement>(null);
   const previews = useRef<string[]>([]);
   previews.current = photos.map((p) => p.preview);
@@ -173,6 +220,7 @@ export default function SecretSpotForm() {
   const addPhotos = async (files: FileList | null) => {
     if (!files?.length) return;
     setPhotoError(false);
+    setPhotoLimit(files.length > MAX_PHOTOS - photos.length);
     setPreparing(true);
     const room = MAX_PHOTOS - photos.length;
     const picked: PickedPhoto[] = [];
@@ -196,8 +244,22 @@ export default function SecretSpotForm() {
       return prev.filter((p) => p.id !== id);
     });
 
-  const set = (key: keyof SecretSpot) => (e: { target: { value: string } }) =>
+  const set = (key: Exclude<keyof SecretSpot, 'tags'>) => (e: { target: { value: string } }) => {
     setSpot((s) => ({ ...s, [key]: e.target.value }));
+    if (key in errors) setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  const toggleTag = (tag: SpotTag) =>
+    setSpot((s) => ({
+      ...s,
+      tags: s.tags.includes(tag)
+        ? s.tags.filter((t) => t !== tag)
+        : s.tags.length < MAX_TAGS
+          ? [...s.tags, tag]
+          : s.tags,
+    }));
+
+  const coords = parseCoords(spot.location);
 
   const useMyPosition = () => {
     if (!('geolocation' in navigator)) return;
@@ -216,9 +278,19 @@ export default function SecretSpotForm() {
     e.preventDefault();
     const clean = cleanSpot(spot);
     if (!clean) {
-      setStatus({ kind: 'error', message: c.errorRequired });
+      const next = {
+        name: spot.name.trim() ? undefined : c.errorName,
+        area: spot.area.trim() ? undefined : c.errorArea,
+        why: spot.why.trim().length >= 10 ? undefined : c.errorWhy,
+      };
+      setErrors(next);
+      setStatus({ kind: 'idle' });
+      // Take the visitor to the first thing to fix.
+      const first = next.name ? 'spot-name' : next.area ? 'spot-area' : 'spot-why';
+      document.getElementById(first)?.focus();
       return;
     }
+    setErrors({});
     setStatus({ kind: 'sending' });
     // Saving failed: hand the suggestion over to WhatsApp when a real number is set, else ask to retry.
     const fallback = (code?: number) => {
@@ -235,7 +307,8 @@ export default function SecretSpotForm() {
     };
     try {
       const body = new FormData();
-      for (const [key, value] of Object.entries(clean)) body.append(key, value);
+      for (const [key, value] of Object.entries(clean)) if (typeof value === 'string') body.append(key, value);
+      body.append('tags', clean.tags.join(','));
       body.append('elapsed', String(Date.now() - openedAt.current));
       body.append('locale', locale);
       photos.forEach((p, i) => body.append('photos', p.blob, `photo-${i + 1}.jpg`));
@@ -284,9 +357,11 @@ export default function SecretSpotForm() {
 
   return (
     <form onSubmit={submit} className="mt-12 space-y-8 border-t border-sand-200 pt-10" noValidate>
-      <Field label={c.name} required>
+      <Field label={c.name} required error={errors.name}>
         <input
-          className={input}
+          id="spot-name"
+          aria-invalid={!!errors.name}
+          className={`${input} ${errors.name ? 'border-terracotta' : ''}`}
           value={spot.name}
           onChange={set('name')}
           placeholder={c.namePlaceholder}
@@ -318,9 +393,11 @@ export default function SecretSpotForm() {
       </fieldset>
 
       <div className="grid gap-8 sm:grid-cols-2">
-        <Field label={c.area} required>
+        <Field label={c.area} required error={errors.area}>
           <input
-            className={input}
+            id="spot-area"
+            aria-invalid={!!errors.area}
+            className={`${input} ${errors.area ? 'border-terracotta' : ''}`}
             value={spot.area}
             onChange={set('area')}
             placeholder={c.areaPlaceholder}
@@ -346,13 +423,22 @@ export default function SecretSpotForm() {
             onChange={set('location')}
             placeholder={c.positionPlaceholder}
             maxLength={300}
+            autoComplete="off"
+            inputMode="text"
           />
+          {spot.location.trim() && (
+            <span className="mt-2 block text-xs text-charcoal-500">
+              {coords ? c.positionFound(`${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`) : c.positionUnknown}
+            </span>
+          )}
         </Field>
       </div>
 
-      <Field label={c.why} required>
+      <Field label={c.why} required hint={c.whyCount(spot.why.length, 2000)} error={errors.why}>
         <textarea
-          className={`${input} min-h-[140px] resize-y`}
+          id="spot-why"
+          aria-invalid={!!errors.why}
+          className={`${input} min-h-[140px] resize-y ${errors.why ? 'border-terracotta' : ''}`}
           value={spot.why}
           onChange={set('why')}
           placeholder={c.whyPlaceholder}
@@ -360,6 +446,43 @@ export default function SecretSpotForm() {
           required
         />
       </Field>
+
+      <fieldset>
+        <legend className="flex w-full items-baseline justify-between gap-3 text-sm">
+          <span className="font-medium text-charcoal">{c.tags}</span>
+          <span className="text-xs text-charcoal-300">
+            {spot.tags.length} / {MAX_TAGS}
+          </span>
+        </legend>
+        <p className="mt-1 text-xs text-charcoal-300">{c.tagsHint(MAX_TAGS)}</p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {SPOT_TAGS.map((t) => {
+            const active = spot.tags.includes(t);
+            const full = !active && spot.tags.length >= MAX_TAGS;
+            return (
+              <label
+                key={t}
+                className={`rounded-pill border px-3.5 py-1.5 text-sm transition has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-charcoal ${
+                  active
+                    ? 'cursor-pointer border-charcoal bg-charcoal text-cream'
+                    : full
+                      ? 'cursor-not-allowed border-sand-200 text-charcoal-300'
+                      : 'cursor-pointer border-sand-200 text-charcoal-700 hover:border-charcoal-300'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={active}
+                  disabled={full}
+                  onChange={() => toggleTag(t)}
+                  className="sr-only"
+                />
+                {SPOT_TAG_LABELS[locale][t]}
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
 
       <Field label={c.bestTime}>
         <input
@@ -374,8 +497,10 @@ export default function SecretSpotForm() {
       <fieldset>
         <legend className="flex w-full items-baseline justify-between gap-3 text-sm">
           <span className="font-medium text-charcoal">{c.photos}</span>
-          <span className="text-xs text-charcoal-300">{c.photosHint(MAX_PHOTOS)}</span>
+          <span className="text-xs text-charcoal-300">{c.photoCount(photos.length, MAX_PHOTOS)}</span>
         </legend>
+        <p className="mt-1 text-xs text-charcoal-300">{c.photosHint(MAX_PHOTOS)}</p>
+        <p className="mt-0.5 text-xs text-charcoal-300">{c.photosRules}</p>
         <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
           {photos.map((p, i) => (
             <div key={p.id} className="relative aspect-square overflow-hidden rounded-2xl bg-sand">
@@ -412,6 +537,7 @@ export default function SecretSpotForm() {
           )}
         </div>
         {photoError && <p className="mt-2 text-xs text-charcoal-500">{c.photoError}</p>}
+        {photoLimit && <p className="mt-2 text-xs text-charcoal-500">{c.photoLimit(MAX_PHOTOS)}</p>}
       </fieldset>
 
       <div className="grid gap-8 sm:grid-cols-2">
@@ -475,11 +601,13 @@ function Field({
   label,
   required,
   hint,
+  error,
   children,
 }: {
   label: string;
   required?: boolean;
   hint?: ReactNode;
+  error?: string;
   children: ReactNode;
 }) {
   const requiredLabel = COPY[useLocale().locale].required;
@@ -493,6 +621,11 @@ function Field({
         {hint && <span className="text-xs text-charcoal-300">{hint}</span>}
       </span>
       <span className="mt-2 block">{children}</span>
+      {error && (
+        <span role="alert" className="mt-2 block text-xs text-terracotta">
+          {error}
+        </span>
+      )}
     </label>
   );
 }

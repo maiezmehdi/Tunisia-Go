@@ -26,6 +26,7 @@ export interface SubmissionRow {
   name_en: string | null;
   why_en: string | null;
   best_time_en: string | null;
+  tags: string[] | null;
 }
 
 export const PRIVATE_BUCKET = 'spot-photos';

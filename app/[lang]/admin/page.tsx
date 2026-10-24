@@ -204,6 +204,7 @@ export default async function AdminPage() {
       location: r.location,
       why: r.why,
       bestTime: r.best_time,
+      tags: r.tags ?? [],
       author: r.author,
       contact: r.contact,
       category: r.category ?? defaultCategory(r.type),

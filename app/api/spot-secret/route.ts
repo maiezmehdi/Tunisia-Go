@@ -122,6 +122,7 @@ function toRow(spot: SecretSpot, locale: string, photos: string[]) {
     author: spot.author || null,
     contact: spot.contact || null,
     photos,
+    tags: spot.tags,
     // Pre-filled for the moderation page when the visitor gave coordinates or a map link.
     lat: coords?.[0] ?? null,
     lng: coords?.[1] ?? null,

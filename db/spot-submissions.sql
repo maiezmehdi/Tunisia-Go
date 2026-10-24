@@ -41,3 +41,6 @@ alter table public.spot_submissions
   add column if not exists name_en text,
   add column if not exists why_en text,
   add column if not exists best_time_en text;
+
+-- Keywords ticked by the visitor (ids from SPOT_TAGS in lib/secretSpot.ts), kept for search engines and filters later.
+alter table public.spot_submissions add column if not exists tags text[] not null default '{}';
