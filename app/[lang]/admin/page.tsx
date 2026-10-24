@@ -4,10 +4,11 @@ import { cookies } from 'next/headers';
 import BrandLogo from '@/components/BrandLogo';
 import AddPlaceForm from '@/components/admin/AddPlaceForm';
 import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
+import UsersBoard, { type AdminUser } from '@/components/admin/UsersBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
 import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
-import { ADMIN_COOKIE, adminConfigured, isAdminToken } from '@/lib/adminAuth';
+import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
 import { PLACES } from '@/data/tunisiaData';
 import type { EventRow } from '@/lib/events';
@@ -55,7 +56,8 @@ export default async function AdminPage() {
   }
 
   const jar = await cookies();
-  if (!isAdminToken(jar.get(ADMIN_COOKIE)?.value)) {
+  const session = adminSession(jar.get(ADMIN_COOKIE)?.value);
+  if (!session) {
     return (
       <Shell>
         <AdminLogin />
@@ -137,6 +139,31 @@ export default async function AdminPage() {
       eventsMissing = true;
       return [];
     });
+  // Accounts are optional too, and only owners see them.
+  let usersMissing = false;
+  const users: AdminUser[] =
+    session.role === 'owner'
+      ? await selectRows<{
+          id: string;
+          email: string;
+          role: 'owner' | 'editor';
+          created_at: string;
+          last_login_at: string | null;
+        }>(cfg, 'admin_users', 'select=id,email,role,created_at,last_login_at&order=created_at.asc')
+          .then((list) =>
+            list.map((u) => ({
+              id: u.id,
+              email: u.email,
+              role: u.role,
+              createdAt: u.created_at,
+              lastLoginAt: u.last_login_at,
+            })),
+          )
+          .catch(() => {
+            usersMissing = true;
+            return [];
+          })
+      : [];
   const signed = await signUrls(
     cfg,
     PRIVATE_BUCKET,
@@ -184,6 +211,7 @@ export default async function AdminPage() {
             tableMissing={eventsMissing}
           />
           <ReportsBoard reports={reports} />
+          {session.role === 'owner' && <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />}
         </>
       )}
     </Shell>
