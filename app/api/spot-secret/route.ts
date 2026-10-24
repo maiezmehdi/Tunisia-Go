@@ -48,9 +48,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: 'invalid' }, { status: 400 });
   }
-  // Honeypot: real people never fill the hidden "fax_number" field (not "website": browsers autofill that one).
-  if (typeof fields.fax_number === 'string' && fields.fax_number) {
-    console.warn('spot-secret: honeypot filled, suggestion ignored');
+  // Sent faster than a person can fill the form: a bot. (A hidden field was tripped by browser autofill.)
+  if (typeof fields.elapsed === 'string' && Number(fields.elapsed) < 3000) {
+    console.warn('spot-secret: sent too fast, suggestion ignored');
     return NextResponse.json({ ok: true });
   }
 

@@ -159,7 +159,7 @@ export default function SecretSpotForm() {
   const { locale } = useLocale();
   const c = COPY[locale];
   const [spot, setSpot] = useState<SecretSpot>(EMPTY_SPOT);
-  const [website, setWebsite] = useState('');
+  const openedAt = useRef(Date.now());
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
   const [locating, setLocating] = useState(false);
   const [photos, setPhotos] = useState<PickedPhoto[]>([]);
@@ -236,7 +236,7 @@ export default function SecretSpotForm() {
     try {
       const body = new FormData();
       for (const [key, value] of Object.entries(clean)) body.append(key, value);
-      body.append('fax_number', website);
+      body.append('elapsed', String(Date.now() - openedAt.current));
       body.append('locale', locale);
       photos.forEach((p, i) => body.append('photos', p.blob, `photo-${i + 1}.jpg`));
       const res = await fetch('/api/spot-secret', { method: 'POST', body });
@@ -434,18 +434,6 @@ export default function SecretSpotForm() {
           />
         </Field>
       </div>
-
-      {/* Honeypot for bots, hidden from people and screen readers. */}
-      <input
-        type="text"
-        name="fax_number"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
-        className="absolute -left-[9999px] h-0 w-0 opacity-0"
-      />
 
       {status.kind === 'error' && (
         <p role="alert" className="border-l-2 border-terracotta pl-3 text-sm text-charcoal-700">

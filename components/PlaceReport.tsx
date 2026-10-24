@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
@@ -43,7 +43,7 @@ export default function PlaceReport({ placeId }: { placeId: string }) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [contact, setContact] = useState('');
-  const [website, setWebsite] = useState('');
+  const openedAt = useRef(Date.now());
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [error, setError] = useState('');
 
@@ -59,7 +59,7 @@ export default function PlaceReport({ placeId }: { placeId: string }) {
       const res = await fetch('/api/report-place', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ placeId, message, contact, fax_number: website, locale }),
+        body: JSON.stringify({ placeId, message, contact, elapsed: Date.now() - openedAt.current, locale }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus('sent');
@@ -113,16 +113,6 @@ export default function PlaceReport({ placeId }: { placeId: string }) {
         />
         <span className="mt-1 block text-xs font-normal text-charcoal-300">{c.contactHint}</span>
       </label>
-      <input
-        type="text"
-        name="fax_number"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
-        className="absolute -left-[9999px] h-0 w-0 opacity-0"
-      />
       {status === 'error' && (
         <p role="alert" className="border-l-2 border-terracotta pl-3 text-sm text-charcoal-700">
           {error}
