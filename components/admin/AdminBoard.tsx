@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react';
 import { CATEGORIES_FR } from '@/data/i18n/catalog.fr';
 import type { CategoryId } from '@/data/types';
 import { resizeImage } from '@/lib/resizeImage';
-import { SPOT_TYPE_LABELS, SPOT_TYPES, type SpotType } from '@/lib/secretSpot';
+import { SPOT_TAG_LABELS, SPOT_TYPE_LABELS, SPOT_TYPES, type SpotTag, type SpotType } from '@/lib/secretSpot';
 
 export interface AdminSubmission {
   id: string;
@@ -18,6 +18,7 @@ export interface AdminSubmission {
   location: string | null;
   why: string;
   bestTime: string | null;
+  tags: string[];
   author: string | null;
   contact: string | null;
   category: string;
@@ -406,6 +407,12 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
           <div>
             <dt className="text-xs text-charcoal-300">Meilleur moment</dt>
             <dd className="text-charcoal-700">{s.bestTime}</dd>
+          </div>
+        )}
+        {s.tags.length > 0 && (
+          <div>
+            <dt className="text-xs text-charcoal-300">Mots-clés</dt>
+            <dd className="text-charcoal-700">{s.tags.map((t) => SPOT_TAG_LABELS.fr[t as SpotTag] ?? t).join(', ')}</dd>
           </div>
         )}
         <div>
