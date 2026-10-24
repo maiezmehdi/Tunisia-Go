@@ -137,3 +137,12 @@ export async function deleteObjects(cfg: SupabaseConfig, bucket: string, paths: 
   });
   if (!res.ok) throw new Error(`delete ${res.status}: ${await res.text().catch(() => '')}`);
 }
+
+export async function deleteRow(cfg: SupabaseConfig, table: string, id: string): Promise<void> {
+  const res = await fetch(`${cfg.url}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: { ...authHeaders(cfg.key), Prefer: 'return=minimal' },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`delete ${res.status}: ${await res.text().catch(() => '')}`);
+}
