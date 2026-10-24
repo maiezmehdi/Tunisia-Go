@@ -236,7 +236,7 @@ export default function SecretSpotForm() {
     try {
       const body = new FormData();
       for (const [key, value] of Object.entries(clean)) body.append(key, value);
-      body.append('website', website);
+      body.append('fax_number', website);
       body.append('locale', locale);
       photos.forEach((p, i) => body.append('photos', p.blob, `photo-${i + 1}.jpg`));
       const res = await fetch('/api/spot-secret', { method: 'POST', body });
@@ -438,7 +438,7 @@ export default function SecretSpotForm() {
       {/* Honeypot for bots, hidden from people and screen readers. */}
       <input
         type="text"
-        name="website"
+        name="fax_number"
         tabIndex={-1}
         autoComplete="off"
         aria-hidden

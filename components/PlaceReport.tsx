@@ -59,7 +59,7 @@ export default function PlaceReport({ placeId }: { placeId: string }) {
       const res = await fetch('/api/report-place', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ placeId, message, contact, website, locale }),
+        body: JSON.stringify({ placeId, message, contact, fax_number: website, locale }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus('sent');
@@ -115,7 +115,7 @@ export default function PlaceReport({ placeId }: { placeId: string }) {
       </label>
       <input
         type="text"
-        name="website"
+        name="fax_number"
         tabIndex={-1}
         autoComplete="off"
         aria-hidden
