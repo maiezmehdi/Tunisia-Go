@@ -153,6 +153,11 @@ export default function ItinerarySelector({
               <h3 className="font-serif text-2xl leading-tight text-charcoal">{active.name}</h3>
               <p className="mt-0.5 font-serif text-sm italic text-charcoal-500">{active.tagline}</p>
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-500">{active.description}</p>
+              {active.community && (
+                <p className="mt-2 text-xs text-charcoal-300">
+                  {active.community.author ? t.suggestedBy(active.community.author) : t.suggestedByVisitor}
+                </p>
+              )}
 
               <dl className="mt-4 grid grid-cols-3 divide-x divide-sand-200 border-y border-sand-200 py-3 text-center">
                 <Stat label={t.distance} value={`~${formatKm(route.totalKm)}`} />

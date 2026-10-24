@@ -16,7 +16,7 @@ import { seasonFor } from '@/data/seasons';
 import { track } from '@/lib/analytics';
 import CategoryGlyph from '@/components/CategoryGlyph';
 import { CATEGORIES } from '@/data/tunisiaData';
-import type { CategoryId, Photo, Place } from '@/data/types';
+import type { CategoryId, Itinerary, Photo, Place } from '@/data/types';
 import { applyOverrides, type PlaceOverride } from '@/lib/placeOverrides';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { useMyTrip } from '@/lib/myTrip';
@@ -48,14 +48,23 @@ export interface ExplorerProps {
   community?: Place[];
   /** Texts of built-in places edited from /admin. */
   overrides?: Record<string, PlaceOverride>;
+  /** Road trips suggested by visitors and approved on the moderation page. */
+  communityTrips?: Itinerary[];
 }
 
 const NO_PLACES: Place[] = [];
 const NO_OVERRIDES: Record<string, PlaceOverride> = {};
+const NO_TRIPS: Itinerary[] = [];
 
-export default function Explorer({ photos, community = NO_PLACES, overrides = NO_OVERRIDES }: ExplorerProps) {
+export default function Explorer({
+  photos,
+  community = NO_PLACES,
+  overrides = NO_OVERRIDES,
+  communityTrips = NO_TRIPS,
+}: ExplorerProps) {
   const { t, catalog, locale } = useLocale();
-  const { itineraries: ITINERARIES, categories } = catalog;
+  const { categories } = catalog;
+  const ITINERARIES = useMemo(() => [...catalog.itineraries, ...communityTrips], [catalog.itineraries, communityTrips]);
   const PLACES = useMemo(
     () => [...applyOverrides(catalog.places, overrides, locale), ...community],
     [catalog.places, community, overrides, locale],

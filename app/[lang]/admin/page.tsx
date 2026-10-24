@@ -10,6 +10,8 @@ import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
 import PlaceOverridesBoard from '@/components/admin/PlaceOverridesBoard';
 import LexiconBoard, { type AdminWord } from '@/components/admin/LexiconBoard';
 import StatsBoard from '@/components/admin/StatsBoard';
+import TripsBoard, { type AdminTrip } from '@/components/admin/TripsBoard';
+import type { TripRow } from '@/lib/tripSuggest';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
@@ -218,6 +220,37 @@ export default async function AdminPage() {
     };
   });
 
+  // Suggested road trips: optional too (db/trip-submissions.sql).
+  let tripsMissing = false;
+  const placeNames: Record<string, string> = {
+    ...Object.fromEntries(PLACES.map((p) => [p.id, p.name])),
+    ...Object.fromEntries(rows.filter((r) => r.status === 'approved').map((r) => [`c-${r.id}`, r.name])),
+  };
+  const trips: AdminTrip[] = await selectRows<TripRow>(
+    cfg,
+    'trip_submissions',
+    'select=*&order=created_at.desc&limit=300',
+  )
+    .then((list) =>
+      list.map((r) => ({
+        id: r.id,
+        createdAt: r.created_at,
+        status: r.status,
+        name: r.name,
+        description: r.description,
+        days: r.days,
+        stops: r.stops.map((id) => placeNames[id] ?? '(lieu retiré)'),
+        author: r.author,
+        contact: r.contact,
+        nameEn: r.name_en ?? '',
+        descriptionEn: r.description_en ?? '',
+      })),
+    )
+    .catch(() => {
+      tripsMissing = true;
+      return [];
+    });
+
   return (
     <Shell>
       {failed ? (
@@ -233,10 +266,14 @@ export default async function AdminPage() {
               { label: 'Événements', value: events.length },
               { label: 'Mots ajoutés', value: words.length },
             ]}
-            pending={submissions.filter((x) => x.status === 'pending').length}
+            pending={
+              submissions.filter((x) => x.status === 'pending').length +
+              trips.filter((x) => x.status === 'pending').length
+            }
             openReports={reports.filter((x) => x.status === 'open').length}
           />
           <AdminBoard submissions={submissions} />
+          <TripsBoard trips={trips} tableMissing={tripsMissing} />
           <AddPlaceForm />
           <PlaceOverridesBoard
             places={PLACES.map((p) => ({ id: p.id, name: p.name }))}

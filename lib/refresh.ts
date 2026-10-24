@@ -1,7 +1,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 /** What the admin may ask the public site to rebuild. Shared with /api/revalidate, which checks against it. */
-export const REFRESH_TAGS = ['events', 'community-places', 'place-overrides', 'lexicon'] as const;
+export const REFRESH_TAGS = ['events', 'community-places', 'community-trips', 'place-overrides', 'lexicon'] as const;
 export const REFRESH_PATHS = [
   '/[lang]/evenements',
   '/[lang]/explore',

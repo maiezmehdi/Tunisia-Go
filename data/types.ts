@@ -75,4 +75,6 @@ export interface Itinerary {
   days: number;
   /** Ordered place ids */
   stops: string[];
+  /** Set on road trips suggested by visitors and approved on the moderation page. */
+  community?: { author: string | null };
 }

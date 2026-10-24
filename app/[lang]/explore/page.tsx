@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Explorer from '@/components/Explorer';
 import { PLACES } from '@/data/tunisiaData';
 import { loadCommunityPlaces } from '@/lib/community';
+import { loadCommunityTrips } from '@/lib/tripSuggest';
 import { isLocale } from '@/lib/i18n/config';
 import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
@@ -45,10 +46,17 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
   const catalog = getCatalog(locale);
   const places = applyOverrides(catalog.places, overrides, locale);
   const photos = withOverridePhotos(basePhotos, overrides, Object.fromEntries(places.map((p) => [p.id, p.name])));
+  const placeNames = Object.fromEntries([...places, ...community.places].map((p) => [p.id, p.name]));
+  const communityTrips = await loadCommunityTrips(locale, placeNames);
   return (
     <>
       <JsonLd data={exploreData(places, catalog.itineraries, photos, locale)} />
-      <Explorer photos={{ ...photos, ...community.photos }} community={community.places} overrides={overrides} />
+      <Explorer
+        photos={{ ...photos, ...community.photos }}
+        community={community.places}
+        overrides={overrides}
+        communityTrips={communityTrips}
+      />
     </>
   );
 }
