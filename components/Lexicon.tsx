@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { LEXICON, type Word } from '@/data/lexicon';
+import { LEXICON, type Word, type WordGroup } from '@/data/lexicon';
 import { track } from '@/lib/analytics';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { useSound } from '@/lib/sound';
@@ -72,7 +72,7 @@ function useSpeaker() {
   return { supported, hasArabic, playing, say };
 }
 
-export default function Lexicon() {
+export default function Lexicon({ groups = LEXICON }: { groups?: WordGroup[] }) {
   const { locale } = useLocale();
   const c = COPY[locale];
   const speaker = useSpeaker();
@@ -84,7 +84,7 @@ export default function Lexicon() {
       <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-charcoal-700">{c.intro}</p>
 
       <div className="mt-10 space-y-12">
-        {LEXICON.map((group) => (
+        {groups.map((group) => (
           <div key={group.id}>
             <h3 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-500">
               {group.title[locale]}

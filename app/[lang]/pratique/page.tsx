@@ -10,6 +10,10 @@ import { isLocale, type Locale } from '@/lib/i18n/config';
 
 import { PRATIQUE_COPY } from './copy';
 import { pageMetadata } from '@/lib/seo';
+import { loadLexicon } from '@/lib/lexiconExtra';
+
+// Words added from /admin refresh this page right away.
+export const revalidate = 86400;
 
 type Params = { params: Promise<{ lang: string }> };
 
@@ -27,6 +31,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function PratiquePage({ params }: Params) {
   const locale = await localeOf(params);
   const c = PRATIQUE_COPY[locale];
+  const lexicon = await loadLexicon();
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
       <header className="border-b border-sand-200">
@@ -128,7 +133,7 @@ export default async function PratiquePage({ params }: Params) {
         </div>
 
         <div className="mt-16">
-          <Lexicon />
+          <Lexicon groups={lexicon} />
         </div>
       </div>
       <footer className="border-t border-sand-200">

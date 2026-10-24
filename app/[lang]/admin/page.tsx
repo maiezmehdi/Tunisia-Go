@@ -8,9 +8,13 @@ import UsersBoard, { type AdminUser } from '@/components/admin/UsersBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
 import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
 import PlaceOverridesBoard from '@/components/admin/PlaceOverridesBoard';
+import LexiconBoard, { type AdminWord } from '@/components/admin/LexiconBoard';
+import StatsBoard from '@/components/admin/StatsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
+import { LEXICON } from '@/data/lexicon';
+import type { LexiconRow } from '@/lib/lexiconExtra';
 import { PLACES } from '@/data/tunisiaData';
 import type { EventRow } from '@/lib/events';
 import { publicUrl, selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
@@ -169,6 +173,19 @@ export default async function AdminPage() {
   const overridesMissing = await selectRows(cfg, 'place_overrides', 'select=place_id&limit=1')
     .then(() => false)
     .catch(() => true);
+  let lexiconMissing = false;
+  const words: AdminWord[] = await selectRows<LexiconRow>(
+    cfg,
+    'lexicon_words',
+    'select=*&order=created_at.asc&limit=300',
+  )
+    .then((list) =>
+      list.map((w) => ({ id: w.id, groupId: w.group_id, latin: w.latin, ar: w.ar, meaningFr: w.meaning_fr })),
+    )
+    .catch(() => {
+      lexiconMissing = true;
+      return [];
+    });
   const signed = await signUrls(
     cfg,
     PRIVATE_BUCKET,
@@ -208,6 +225,16 @@ export default async function AdminPage() {
         </Notice>
       ) : (
         <>
+          <StatsBoard
+            counts={[
+              { label: 'Lieux du site', value: PLACES.length },
+              { label: 'Lieux ajoutés', value: submissions.filter((x) => x.status === 'approved').length },
+              { label: 'Événements', value: events.length },
+              { label: 'Mots ajoutés', value: words.length },
+            ]}
+            pending={submissions.filter((x) => x.status === 'pending').length}
+            openReports={reports.filter((x) => x.status === 'open').length}
+          />
           <AdminBoard submissions={submissions} />
           <AddPlaceForm />
           <PlaceOverridesBoard
@@ -218,6 +245,11 @@ export default async function AdminPage() {
             events={events}
             places={PLACES.map((p) => ({ id: p.id, name: p.name }))}
             tableMissing={eventsMissing}
+          />
+          <LexiconBoard
+            groups={LEXICON.map((g) => ({ id: g.id, title: g.title.fr }))}
+            words={words}
+            tableMissing={lexiconMissing}
           />
           <ReportsBoard reports={reports} />
           {session.role === 'owner' && <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />}
