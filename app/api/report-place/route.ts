@@ -30,8 +30,8 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: 'invalid' }, { status: 400 });
-  // Honeypot: real people never fill the hidden "fax_number" field (not "website": browsers autofill that one).
-  if (typeof body.fax_number === 'string' && body.fax_number) return NextResponse.json({ ok: true });
+  // Sent faster than a person can type: a bot. (A hidden field was tripped by browser autofill.)
+  if (typeof body.elapsed === 'number' && body.elapsed < 3000) return NextResponse.json({ ok: true });
 
   const placeId = text(body.placeId, 80);
   const message = text(body.message, 1500);
