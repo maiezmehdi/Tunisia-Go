@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
 import BrandLogo from '@/components/BrandLogo';
+import AddPlaceForm from '@/components/admin/AddPlaceForm';
 import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
 import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
@@ -172,6 +173,7 @@ export default async function AdminPage() {
       ) : (
         <>
           <AdminBoard submissions={submissions} />
+          <AddPlaceForm />
           <EventsBoard
             events={events}
             places={PLACES.map((p) => ({ id: p.id, name: p.name }))}
