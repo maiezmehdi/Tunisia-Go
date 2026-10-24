@@ -1,17 +1,10 @@
-import { revalidatePath, revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { ADMIN_COOKIE, isAdminToken } from '@/lib/adminAuth';
+import { refreshSite } from '@/lib/refresh';
 import { sameOrigin } from '@/lib/requestGuard';
-import {
-  COMMUNITY_TAG,
-  PRIVATE_BUCKET,
-  PUBLIC_BUCKET,
-  inTunisia,
-  isCategory,
-  type SubmissionRow,
-} from '@/lib/community';
+import { PRIVATE_BUCKET, PUBLIC_BUCKET, inTunisia, isCategory, type SubmissionRow } from '@/lib/community';
 import { copyObject, deleteObjects, selectRows, supabaseConfig, updateRow } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
@@ -108,7 +101,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 
   // The map is a cached page: rebuild it so the change shows right away.
-  revalidateTag(COMMUNITY_TAG);
-  revalidatePath('/[lang]/explore', 'page');
+  await refreshSite(['community-places'], ['/[lang]/explore']);
   return NextResponse.json({ ok: true });
 }

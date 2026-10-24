@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { LOCALE_COOKIE, isLocale, localeFromAcceptLanguage } from '@/lib/i18n/config';
+import { isAdminPath, siteMode } from '@/lib/siteMode';
 
 /**
  * Pages live under app/[lang]/. French is served without a prefix (/explore), English also has
@@ -12,6 +13,19 @@ import { LOCALE_COOKIE, isLocale, localeFromAcceptLanguage } from '@/lib/i18n/co
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const [, first] = pathname.split('/');
+
+  // Separate admin site (ADMIN_MODE=only) and public site without /admin (ADMIN_MODE=off).
+  const mode = siteMode();
+  if (mode === 'off' && isAdminPath(pathname)) return new NextResponse('Not found', { status: 404 });
+  if (mode === 'only' && !isAdminPath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/admin';
+    url.search = '';
+    return NextResponse.redirect(url);
+  }
+
+  // The API is only matched here for the mode check above: no locale handling.
+  if (pathname.startsWith('/api/')) return NextResponse.next();
 
   if (first === 'en') {
     const res = NextResponse.next();
@@ -43,5 +57,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Pages only: skip the API, Next internals, the service worker, the manifest and static files.
-  matcher: ['/((?!api|_next|icons|sw\\.js|manifest\\.webmanifest|favicon\\.ico|.*\\..*).*)'],
+  matcher: ['/api/admin/:path*', '/((?!api|_next|icons|sw\\.js|manifest\\.webmanifest|favicon\\.ico|.*\\..*).*)'],
 };

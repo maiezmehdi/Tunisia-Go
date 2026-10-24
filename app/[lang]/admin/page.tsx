@@ -4,9 +4,12 @@ import { cookies } from 'next/headers';
 import BrandLogo from '@/components/BrandLogo';
 import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
 import AdminLogin from '@/components/admin/AdminLogin';
+import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, isAdminToken } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
+import { PLACES } from '@/data/tunisiaData';
+import type { EventRow } from '@/lib/events';
 import { selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
@@ -103,6 +106,36 @@ export default async function AdminPage() {
       })),
     )
     .catch(() => []);
+  // Events are optional too: without the table (db/events.sql) the admin shows how to create it.
+  let eventsMissing = false;
+  const events: AdminEvent[] = await selectRows<EventRow>(
+    cfg,
+    'events',
+    'select=*&order=sort.asc,created_at.asc&limit=300',
+  )
+    .then((list) =>
+      list.map((r) => ({
+        id: r.id,
+        published: r.published,
+        kind: r.kind,
+        placeId: r.place_id,
+        titleFr: r.title_fr,
+        titleEn: r.title_en,
+        descFr: r.desc_fr,
+        descEn: r.desc_en,
+        whenFr: r.when_fr,
+        whenEn: r.when_en,
+        confirmed: r.confirmed,
+        startDate: r.start_date ?? '',
+        endDate: r.end_date ?? '',
+        ticketUrl: r.ticket_url ?? '',
+        infoUrl: r.info_url ?? '',
+      })),
+    )
+    .catch(() => {
+      eventsMissing = true;
+      return [];
+    });
   const signed = await signUrls(
     cfg,
     PRIVATE_BUCKET,
@@ -139,6 +172,11 @@ export default async function AdminPage() {
       ) : (
         <>
           <AdminBoard submissions={submissions} />
+          <EventsBoard
+            events={events}
+            places={PLACES.map((p) => ({ id: p.id, name: p.name }))}
+            tableMissing={eventsMissing}
+          />
           <ReportsBoard reports={reports} />
         </>
       )}

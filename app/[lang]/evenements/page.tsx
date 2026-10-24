@@ -5,10 +5,11 @@ import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
 import SoundToggle from '@/components/SoundToggle';
-import { EVENTS, type EventAction, type EventKind, type TunisiaEvent } from '@/data/events';
+import { type EventAction, type EventKind, type TunisiaEvent } from '@/data/events';
 import { PLACES } from '@/data/tunisiaData';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
+import { loadEvents } from '@/lib/events';
 import { bookingUrl } from '@/lib/links';
 import { loadPhotos } from '@/lib/photos';
 import { placePath } from '@/lib/placePages';
@@ -75,11 +76,12 @@ export default async function EventsPage({ params }: Params) {
   const catalog = getCatalog(locale);
   const places = new Map(catalog.places.map((p) => [p.id, p]));
   const raw = new Map(PLACES.map((p) => [p.id, p]));
+  const events = await loadEvents();
   const photos = await loadPhotos(
-    [...new Set(EVENTS.map((e) => e.placeId))].map((id) => raw.get(id)).filter((p): p is NonNullable<typeof p> => !!p),
+    [...new Set(events.map((e) => e.placeId))].map((id) => raw.get(id)).filter((p): p is NonNullable<typeof p> => !!p),
   );
 
-  const jsonLd = EVENTS.filter((e) => e.confirmed && e.start).map((e) => {
+  const jsonLd = events.filter((e) => e.confirmed && e.start).map((e) => {
     const place = places.get(e.placeId);
     return {
       '@context': 'https://schema.org',
@@ -136,7 +138,7 @@ export default async function EventsPage({ params }: Params) {
 
         <div className="mt-12 space-y-14">
           {ORDER.map((kind) => {
-            const list = EVENTS.filter((e) => e.kind === kind).sort(
+            const list = events.filter((e) => e.kind === kind).sort(
               (a, b) => Number(b.confirmed) - Number(a.confirmed),
             );
             if (list.length === 0) return null;
