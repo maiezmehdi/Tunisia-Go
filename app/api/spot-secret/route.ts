@@ -48,8 +48,8 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: 'invalid' }, { status: 400 });
   }
-  // Honeypot: real people never fill the hidden "website" field.
-  if (typeof fields.website === 'string' && fields.website) return NextResponse.json({ ok: true });
+  // Honeypot: real people never fill the hidden "fax_number" field (not "website": browsers autofill that one).
+  if (typeof fields.fax_number === 'string' && fields.fax_number) return NextResponse.json({ ok: true });
 
   const spot = cleanSpot(fields);
   if (!spot) return NextResponse.json({ error: 'invalid' }, { status: 400 });

@@ -30,8 +30,8 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: 'invalid' }, { status: 400 });
-  // Honeypot: real people never fill the hidden "website" field.
-  if (typeof body.website === 'string' && body.website) return NextResponse.json({ ok: true });
+  // Honeypot: real people never fill the hidden "fax_number" field (not "website": browsers autofill that one).
+  if (typeof body.fax_number === 'string' && body.fax_number) return NextResponse.json({ ok: true });
 
   const placeId = text(body.placeId, 80);
   const message = text(body.message, 1500);
