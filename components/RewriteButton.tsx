@@ -103,8 +103,9 @@ export default function RewriteButton({
         type="button"
         onClick={ask}
         disabled={busy || value.trim().length < 20}
-        className="rounded-pill border border-sand-200 px-3 py-1 text-xs text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 rounded-pill border border-sand-200 px-3 py-1 text-xs text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-40"
       >
+        <Sparkles />
         {busy ? copy.busy : copy.button}
       </button>
       {copy.note && !proposal && <p className="mt-2 max-w-prose text-xs text-charcoal-500">{copy.note}</p>}
@@ -139,5 +140,14 @@ export default function RewriteButton({
         </div>
       )}
     </div>
+  );
+}
+
+/** Small "sparkles" mark: tells visitors that the text is rewritten automatically. */
+function Sparkles() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor">
+      <path d="M6.5 1.5l1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3L2 6l3.3-1.2zM12.5 9l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" />
+    </svg>
   );
 }
