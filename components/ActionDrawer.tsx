@@ -7,6 +7,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import AddSpotLink from '@/components/AddSpotLink';
 import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
+import PlaceRating from '@/components/PlaceRating';
 import SeasonStrip from '@/components/SeasonStrip';
 import TripButton from '@/components/TripButton';
 import type { Itinerary, Photo, Place } from '@/data/types';
@@ -165,6 +166,7 @@ function DrawerContent({
           </div>
           <p className="mt-1 text-sm text-charcoal-500">{place.region}</p>
           <p className="mt-4 font-serif text-lg italic text-charcoal-700">{place.tagline}</p>
+          {!place.id.startsWith('c-') && <PlaceRating placeId={place.id} />}
           <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-charcoal-700">{place.description}</p>
           {place.community && (
             <p className="mt-3 text-sm text-charcoal-500">

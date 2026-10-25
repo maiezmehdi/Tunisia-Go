@@ -2,7 +2,7 @@ import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { PLACES } from '@/data/tunisiaData';
-import { RATINGS_TAG, voterHash } from '@/lib/ratings';
+import { RATINGS_TAG, loadRatingStats, voterHash } from '@/lib/ratings';
 import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { selectRows, supabaseConfig, upsertRow } from '@/lib/supabase';
 
@@ -14,6 +14,17 @@ export const runtime = 'nodejs';
 
 const HOUR = 60 * 60 * 1000;
 const PLACE_IDS = new Set(PLACES.map((p) => p.id));
+
+/** Average and number of votes of one place (the map panel asks for them when it opens). */
+export async function GET(request: Request) {
+  const placeId = new URL(request.url).searchParams.get('placeId') ?? '';
+  if (!PLACE_IDS.has(placeId)) return NextResponse.json({ error: 'invalid' }, { status: 400 });
+  const stat = (await loadRatingStats())[placeId];
+  return NextResponse.json(
+    { average: stat?.average ?? null, votes: stat?.votes ?? 0 },
+    { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } },
+  );
+}
 
 export async function POST(request: Request) {
   const cfg = supabaseConfig();
