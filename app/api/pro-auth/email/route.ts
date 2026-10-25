@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as { email?: unknown; lang?: unknown } | null;
   const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
   if (!EMAIL.test(email) || email.length > 254) return NextResponse.json({ error: 'invalid' }, { status: 400 });
-  if (!allow(`proauth:ip:${clientIp(request)}`, 5, HOUR) || !allow(`proauth:to:${email}`, 3, HOUR)) {
+  if (!allow(`proauth:ip:${clientIp(request)}`, 10, HOUR) || !allow(`proauth:to:${email}`, 6, HOUR)) {
     return NextResponse.json({ error: 'too_many' }, { status: 429, headers: { 'Retry-After': '3600' } });
   }
 

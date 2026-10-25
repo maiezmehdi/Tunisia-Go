@@ -10,13 +10,14 @@ const COPY = {
   fr: {
     loading: 'Chargement…',
     intro:
-      'Connectez-vous avec Google pour inscrire votre fiche ou la modifier. Votre compte Google n’est utilisé que pour vous reconnaître.',
+      'Entrez votre adresse e-mail : vous recevez un lien pour ouvrir votre fiche (ou la créer). Pas de mot de passe.',
     email: 'Votre adresse e-mail',
     sendLink: 'Recevoir mon lien',
     sending: 'Envoi…',
     sent: 'Un lien de connexion vient d’être envoyé. Ouvrez votre boîte e-mail (et les courriers indésirables), puis cliquez sur le lien.',
     badEmail: 'Cette adresse e-mail ne semble pas valide.',
-    tooMany: 'Trop de demandes pour le moment. Réessayez plus tard.',
+    tooMany:
+      'Un lien vient déjà d’être envoyé. Cherchez-le dans votre boîte e-mail (et les courriers indésirables), ou réessayez dans une heure.',
     sendFailed: 'L’envoi n’a pas abouti. Réessayez dans un instant.',
     off: 'La connexion n’est pas encore disponible. Réessayez plus tard.',
     signedIn: 'Connecté',
@@ -27,14 +28,13 @@ const COPY = {
   },
   en: {
     loading: 'Loading…',
-    intro:
-      'Sign in with Google to register your listing or change it. Your Google account is only used to recognise you.',
+    intro: 'Enter your e-mail address: you get a link to open your listing (or create it). No password.',
     email: 'Your e-mail address',
     sendLink: 'Get my link',
     sending: 'Sending…',
     sent: 'A sign-in link has just been sent. Check your inbox (and spam), then click the link.',
     badEmail: 'This e-mail address does not look valid.',
-    tooMany: 'Too many requests for now. Please try again later.',
+    tooMany: 'A link was just sent. Look for it in your inbox (and spam), or try again in an hour.',
     sendFailed: 'Sending did not work. Please try again in a moment.',
     off: 'Sign-in is not available yet. Please try again later.',
     signedIn: 'Signed in',
