@@ -11,14 +11,14 @@ const COPY = {
   fr: {
     tag: 'Ma fiche',
     title: 'Modifier ma fiche',
-    lead: 'Ouvrez votre fiche avec votre adresse e-mail.',
+    lead: 'Créez votre compte ou connectez-vous pour gérer votre fiche.',
     back: 'Guides et agences',
     href: '/guides',
   },
   en: {
     tag: 'My listing',
     title: 'Edit my listing',
-    lead: 'Open your listing with your e-mail address.',
+    lead: 'Create your account or sign in to manage your listing.',
     back: 'Guides and agencies',
     href: '/en/guides',
   },
