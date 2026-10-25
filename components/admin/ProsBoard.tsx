@@ -14,6 +14,9 @@ export interface AdminPro {
   socials: string | null;
   autoPublished: boolean;
   reports: number;
+  bio: string | null;
+  placeName: string | null;
+  photoUrl: string | null;
 }
 
 const DATE = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short' });
@@ -87,7 +90,15 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
           {list.map((p) => (
             <li key={p.id} className="py-4">
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="min-w-0 max-w-2xl text-sm text-charcoal-700">
+                {p.photoUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={p.photoUrl}
+                    alt=""
+                    className="h-16 w-16 shrink-0 rounded-2xl border border-sand-200 object-cover"
+                  />
+                )}
+                <div className="min-w-0 max-w-2xl flex-1 text-sm text-charcoal-700">
                   <p className="font-medium text-charcoal">
                     {p.name}
                     <span className="ml-2 text-xs font-normal text-charcoal-300">
@@ -105,8 +116,10 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                       +{p.whatsapp}
                     </a>
                   </p>
+                  {p.placeName && <p>Lieu d’exercice : {p.placeName}</p>}
                   {p.card && <p>Carte déclarée : {p.card}</p>}
                   {p.socials && <p className="break-all">Réseaux : {p.socials}</p>}
+                  {p.bio && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.bio}</p>}
                   {p.reports > 0 && (
                     <p className="mt-1 font-medium text-terracotta-700">Signalée {p.reports} fois par des visiteurs</p>
                   )}

@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 
+import ProProfileFields from '@/components/ProProfileFields';
+import { BIO_MAX } from '@/lib/pros';
+
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 const COPY = {
@@ -61,6 +64,10 @@ export interface Entry {
   whatsapp: string;
   card: string;
   socials: string;
+  bio: string;
+  placeId: string;
+  photoPath: string;
+  photoUrl: string;
 }
 
 /** The private page behind a guide's link: the secret is in the address after #, so it never reaches the server logs. */
@@ -173,6 +180,14 @@ export default function ProEdit({
           onChange={(e) => set({ socials: e.target.value })}
         />
       </label>
+
+      <ProProfileFields
+        accessToken={accessToken}
+        value={entry}
+        onChange={(patch) => set(patch)}
+        onExpired={onExpired}
+        bioMax={BIO_MAX}
+      />
 
       <div className="flex flex-wrap items-center gap-4">
         <button

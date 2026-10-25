@@ -30,14 +30,19 @@ async function findFlashModel(key: string): Promise<string | null> {
 
 let foundModel: string | null = null;
 
-export type RewriteKind = 'place' | 'trip';
+export type RewriteKind = 'place' | 'trip' | 'bio';
 
 export function geminiConfigured(): boolean {
   return Boolean(process.env.GEMINI_API_KEY);
 }
 
 function instructions(kind: RewriteKind, name: string): string {
-  const subject = kind === 'trip' ? 'a road trip in Tunisia' : 'a place in Tunisia';
+  const subject =
+    kind === 'trip'
+      ? 'a road trip in Tunisia'
+      : kind === 'bio'
+        ? 'a tour guide or a travel agency in Tunisia, written by that person'
+        : 'a place in Tunisia';
   return [
     `You edit the text of a Tunisia travel site. The text describes ${subject}${name ? ` called "${name}"` : ''}.`,
     'Rewrite it in clear, natural, correct language, in a sober and warm tone. Keep the language of the original text (French stays French, English stays English): never translate.',

@@ -2,6 +2,9 @@
 
 import { useRef, useState } from 'react';
 
+import ProProfileFields, { type ProProfile } from '@/components/ProProfileFields';
+
+import { BIO_MAX } from '@/lib/pros';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 const COPY = {
@@ -77,6 +80,7 @@ export default function ProSignup({ accessToken, onExpired }: { accessToken: str
   const [card, setCard] = useState('');
   const [socials, setSocials] = useState('');
   const [consent, setConsent] = useState(false);
+  const [profile, setProfile] = useState<ProProfile>({ bio: '', placeId: '', photoPath: '', photoUrl: '' });
   const [state, setState] = useState<'idle' | 'sending' | 'published' | 'pending' | 'change' | 'error'>('idle');
   const [error, setError] = useState('');
 
@@ -97,6 +101,9 @@ export default function ProSignup({ accessToken, onExpired }: { accessToken: str
           kind,
           name,
           whatsapp,
+          bio: profile.bio,
+          placeId: profile.placeId,
+          photoPath: profile.photoPath,
           card: kind === 'guide' ? card : '',
           socials: kind === 'agency' ? socials : '',
           consent,
@@ -219,6 +226,14 @@ export default function ProSignup({ accessToken, onExpired }: { accessToken: str
           <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.socialsHint}</span>
         </label>
       )}
+
+      <ProProfileFields
+        accessToken={accessToken}
+        value={profile}
+        onChange={(patch) => setProfile((p) => ({ ...p, ...patch }))}
+        onExpired={onExpired}
+        bioMax={BIO_MAX}
+      />
 
       <label className="flex items-start gap-3 text-sm leading-relaxed text-charcoal-700">
         <input

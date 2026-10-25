@@ -1,8 +1,12 @@
-import { selectRows, supabaseConfig, type SupabaseConfig } from '@/lib/supabase';
+import { PLACE_BY_ID } from '@/data/tunisiaData';
+import { publicUrl, selectRows, supabaseConfig, type SupabaseConfig } from '@/lib/supabase';
 
 export const PROS_TAG = 'pros';
 
 export type ProKind = 'guide' | 'agency';
+
+export const PRO_PHOTO_BUCKET = 'pro-photos';
+export const BIO_MAX = 600;
 
 export interface PublicPro {
   id: string;
@@ -13,6 +17,20 @@ export interface PublicPro {
   socials: string | null;
   /** True when a professional card number was given. The number itself is never published. */
   cardDeclared: boolean;
+  bio: string | null;
+  /** One of the site's places: where the person works, and where they appear on the map. */
+  placeId: string | null;
+  photoUrl: string | null;
+}
+
+/** The place id is only kept when it is one of the site's places. */
+export function cleanPlaceId(value: unknown): string | null {
+  return typeof value === 'string' && value in PLACE_BY_ID ? value : null;
+}
+
+/** A photo path is only kept when it is inside the person's own folder: `<user id>/<uuid>.jpg`. */
+export function cleanPhotoPath(value: unknown, owner: string): string | null {
+  return typeof value === 'string' && new RegExp(`^${owner}/[0-9a-f-]{36}\\.jpg$`).test(value) ? value : null;
 }
 
 /**
@@ -52,6 +70,9 @@ interface ProRow {
   whatsapp: string;
   socials: string | null;
   card_number: string | null;
+  bio: string | null;
+  place_id: string | null;
+  photo_path: string | null;
 }
 
 /** Published guides and agencies (db/pros.sql). Empty when the table is missing or not configured. */
@@ -62,7 +83,7 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
     const rows = await selectRows<ProRow>(
       cfg,
       'pro_listings',
-      'select=id,kind,name,whatsapp,socials,card_number&status=eq.published&order=created_at.asc&limit=500',
+      'select=id,kind,name,whatsapp,socials,card_number,bio,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
       { revalidate: 3600, tags: [PROS_TAG] },
     );
     return rows.map((r) => ({
@@ -72,6 +93,9 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
       whatsapp: r.whatsapp,
       socials: r.socials,
       cardDeclared: !!r.card_number,
+      bio: r.bio,
+      placeId: r.place_id,
+      photoUrl: r.photo_path ? publicUrl(cfg, PRO_PHOTO_BUCKET, r.photo_path) : null,
     }));
   } catch {
     return [];
