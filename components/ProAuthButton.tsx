@@ -4,8 +4,8 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { useProAuth } from '@/lib/proAuth';
 
 const COPY = {
-  fr: { signIn: 'Se connecter', mine: 'Ma fiche' },
-  en: { signIn: 'Sign in', mine: 'My listing' },
+  fr: { signIn: 'Se connecter', mine: 'Mon compte' },
+  en: { signIn: 'Sign in', mine: 'My account' },
 } as const;
 
 /** Menu entry that opens the sign-in / sign-up window for guides and agencies. */
