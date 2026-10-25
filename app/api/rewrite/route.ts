@@ -22,14 +22,13 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
   const text = typeof body?.text === 'string' ? body.text.trim() : '';
-  const lang = body?.lang === 'en' ? 'en' : 'fr';
   const kind: RewriteKind = body?.kind === 'trip' ? 'trip' : 'place';
   const name = typeof body?.name === 'string' ? body.name.slice(0, 120) : '';
   if (text.length < 20 || text.length > REWRITE_MAX_CHARS) {
     return NextResponse.json({ error: 'invalid' }, { status: 400 });
   }
   try {
-    return NextResponse.json({ text: await rewriteText({ text, lang, kind, name }) });
+    return NextResponse.json({ text: await rewriteText({ text, kind, name }) });
   } catch (error) {
     console.error('admin: rewrite', error);
     return NextResponse.json({ error: 'failed' }, { status: 502 });

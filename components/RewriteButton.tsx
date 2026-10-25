@@ -36,6 +36,7 @@ const VISITOR: Record<'fr' | 'en', Copy> = {
     accept: 'Utiliser cette version',
     ignore: 'Garder la mienne',
     errors: {
+      not_configured: 'Cette aide n’est pas encore disponible. Vous pouvez envoyer votre texte tel quel.',
       too_many: 'Vous avez beaucoup essayé, réessayez un peu plus tard.',
       invalid: 'Écrivez d’abord quelques phrases (20 caractères au moins).',
     },
@@ -49,6 +50,7 @@ const VISITOR: Record<'fr' | 'en', Copy> = {
     accept: 'Use this version',
     ignore: 'Keep mine',
     errors: {
+      not_configured: 'This help is not available yet. You can send your text as it is.',
       too_many: 'You have tried a lot, please try again a little later.',
       invalid: 'Write a few sentences first (at least 20 characters).',
     },
