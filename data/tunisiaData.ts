@@ -491,6 +491,7 @@ export const PLACES: Place[] = [
   {
     id: 'el-haouaria',
     wiki: 'El Haouaria',
+    wikiFr: 'El Haouaria',
     name: 'El Haouaria',
     nameAr: 'الهوارية',
     region: 'Nabeul',
@@ -785,6 +786,7 @@ export const PLACES: Place[] = [
   {
     id: 'guellala',
     wiki: 'Guellala',
+    wikiFr: 'Guellala',
     name: 'Guellala Potters',
     nameAr: 'قلالة',
     region: 'Médenine',
@@ -834,6 +836,7 @@ export const PLACES: Place[] = [
   {
     id: 'ghar-el-melh',
     wiki: 'Ghar el-Melh',
+    wikiFr: 'Ghar El Melh',
     name: 'Ghar El Melh',
     nameAr: 'غار الملح',
     region: 'Bizerte',
@@ -858,6 +861,7 @@ export const PLACES: Place[] = [
   {
     id: 'korbous',
     wiki: 'Korbous',
+    wikiFr: 'Korbous',
     name: 'Korbous',
     nameAr: 'قربص',
     region: 'Nabeul',
@@ -881,6 +885,7 @@ export const PLACES: Place[] = [
   {
     id: 'zarzis',
     wiki: 'Zarzis',
+    wikiFr: 'Zarzis',
     name: 'Zarzis',
     nameAr: 'جرجيس',
     region: 'Médenine',
@@ -906,6 +911,7 @@ export const PLACES: Place[] = [
   {
     id: 'souk-el-attarine',
     wiki: 'Souk El Attarine',
+    wikiFr: 'Souk El Attarine',
     name: 'Souk El Attarine',
     nameAr: 'سوق العطارين',
     region: 'Tunis',
@@ -1106,6 +1112,7 @@ export const PLACES: Place[] = [
   {
     id: 'sejnane',
     wiki: 'Sejnane',
+    wikiFr: 'Sejnane',
     name: 'Sejnane',
     nameAr: 'سجنان',
     region: 'Bizerte',
@@ -1131,6 +1138,7 @@ export const PLACES: Place[] = [
   {
     id: 'ain-draham',
     wiki: 'Aïn Draham',
+    wikiFr: 'Aïn Draham',
     name: 'Aïn Draham',
     nameAr: 'عين دراهم',
     region: 'Jendouba',
@@ -1154,6 +1162,7 @@ export const PLACES: Place[] = [
   {
     id: 'oudna',
     wiki: 'Uthina',
+    wikiFr: 'Oudna',
     name: 'Oudna (Uthina)',
     nameAr: 'أوذنة',
     region: 'Ben Arous',
@@ -1231,6 +1240,7 @@ export const PLACES: Place[] = [
   {
     id: 'testour',
     wiki: 'Testour',
+    wikiFr: 'Testour',
     name: 'Testour',
     nameAr: 'تستور',
     region: 'Béja',
@@ -1301,6 +1311,7 @@ export const PLACES: Place[] = [
   {
     id: 'chemtou',
     wiki: 'Chemtou',
+    wikiFr: 'Chemtou',
     name: 'Chemtou',
     nameAr: 'شمتو',
     region: 'Jendouba',
@@ -1325,6 +1336,7 @@ export const PLACES: Place[] = [
   {
     id: 'tamerza',
     wiki: 'Tamerza',
+    wikiFr: 'Tamerza',
     name: 'Tamerza',
     nameAr: 'تمغزة',
     region: 'Tozeur',
@@ -1350,6 +1362,7 @@ export const PLACES: Place[] = [
   {
     id: 'nefta',
     wiki: 'Nefta, Tunisia',
+    wikiFr: 'Nefta',
     name: 'Nefta',
     nameAr: 'نفطة',
     region: 'Tozeur',
@@ -1398,6 +1411,7 @@ export const PLACES: Place[] = [
   {
     id: 'gammarth',
     wiki: 'Gammarth',
+    wikiFr: 'Gammarth',
     name: 'Gammarth',
     nameAr: 'قمرت',
     region: 'Tunis',
