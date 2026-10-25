@@ -43,7 +43,7 @@ const COPY = {
     loadingMap: 'Chargement de la carte…',
     joinTitle: 'Vous êtes guide ou agence ?',
     joinLead:
-      'Inscrivez-vous en quelques lignes avec votre e-mail, sans mot de passe. Vous pourrez modifier votre fiche quand vous voulez.',
+      'Créez votre compte avec votre e-mail et un mot de passe, puis gérez votre fiche quand vous voulez.',
     join: 'Inscrire ou modifier ma fiche',
     openMap: 'Ouvrir la carte',
   },
@@ -70,7 +70,7 @@ const COPY = {
     mapEmpty: 'Listings without a place of work are not on the map.',
     loadingMap: 'Loading the map…',
     joinTitle: 'Are you a guide or an agency?',
-    joinLead: 'Register in a few lines with your e-mail, no password. You can change your listing whenever you like.',
+    joinLead: 'Create your account with your e-mail and a password, then manage your listing whenever you like.',
     join: 'Register or edit my listing',
     openMap: 'Open the map',
   },
@@ -137,13 +137,15 @@ export default async function GuidesPage({ params }: Params) {
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />
-          <div className="flex items-center gap-5">
-            <SoundToggle />
+          <div className="flex items-center gap-3 sm:gap-5">
+            <span className="hidden sm:inline-flex">
+              <SoundToggle />
+            </span>
             <LanguageSwitch />
             <ProAuthButton className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline" />
             <a
               href="/explore"
-              className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
+              className="hidden whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline sm:block"
             >
               {c.openMap}
             </a>

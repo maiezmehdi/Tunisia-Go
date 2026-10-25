@@ -35,7 +35,7 @@ export default async function EditProPage({ params }: Params) {
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.tag} size={40} compact />
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitch />
             <a
               href={c.href}

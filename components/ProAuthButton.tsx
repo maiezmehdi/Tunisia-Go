@@ -14,7 +14,7 @@ export default function ProAuthButton({ className = '' }: { className?: string }
   const { tokens, open } = useProAuth();
   const c = COPY[locale];
   return (
-    <button type="button" onClick={() => open('login')} className={className}>
+    <button type="button" onClick={() => open('login')} className={`whitespace-nowrap ${className}`}>
       {tokens ? c.mine : c.signIn}
     </button>
   );

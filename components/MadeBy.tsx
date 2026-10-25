@@ -3,7 +3,7 @@
 import { openConsent } from '@/lib/consent';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
-/** "Created with love by Mehdi Maiez", with a link to his site. */
+/** "Created with love by Mehdi Maiez", then the site's small links in a wrapping row. */
 export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark' | 'light'; className?: string }) {
   const { t } = useLocale();
   const text = tone === 'light' ? 'text-cream/50' : 'text-charcoal-300';
@@ -11,47 +11,43 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
     tone === 'light'
       ? 'text-cream/80 decoration-cream/30 hover:text-cream hover:decoration-cream'
       : 'text-charcoal-500 decoration-sand-300 hover:text-charcoal hover:decoration-charcoal';
+  const anchor = `whitespace-nowrap underline underline-offset-4 transition ${link}`;
   return (
-    <p className={`text-xs ${text} ${className}`}>
-      {t.madeBy}{' '}
-      <a
-        href="https://mehdimaiez.com"
-        target="_blank"
-        rel="noopener"
-        className={`underline underline-offset-4 transition ${link}`}
-      >
-        Mehdi Maiez
-      </a>
-      <span aria-hidden className="mx-2">
-        ·
-      </span>
-      <a href="/lieux" className={`underline underline-offset-4 transition ${link}`}>
-        {t.allPlaces}
-      </a>
-      <span aria-hidden className="mx-2">
-        ·
-      </span>
-      <a href="/evenements" className={`underline underline-offset-4 transition ${link}`}>
-        {t.events}
-      </a>
-      <span aria-hidden className="mx-2">
-        ·
-      </span>
-      <a href="/guides" className={`underline underline-offset-4 transition ${link}`}>
-        {t.guides}
-      </a>
-      <span aria-hidden className="mx-2">
-        ·
-      </span>
-      <a href="/confidentialite" className={`underline underline-offset-4 transition ${link}`}>
-        {t.privacy}
-      </a>
-      <span aria-hidden className="mx-2">
-        ·
-      </span>
-      <button type="button" onClick={openConsent} className={`underline underline-offset-4 transition ${link}`}>
-        {t.cookies}
-      </button>
-    </p>
+    // The bottom space on phones keeps the floating "Une question ?" button off the last links.
+    <div className={`text-xs ${text} ${className}`}>
+      <p>
+        {t.madeBy}{' '}
+        <a href="https://mehdimaiez.com" target="_blank" rel="noopener" className={anchor}>
+          Mehdi Maiez
+        </a>
+      </p>
+      <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2.5 pb-16 sm:pb-0">
+        <li>
+          <a href="/lieux" className={anchor}>
+            {t.allPlaces}
+          </a>
+        </li>
+        <li>
+          <a href="/evenements" className={anchor}>
+            {t.events}
+          </a>
+        </li>
+        <li>
+          <a href="/guides" className={anchor}>
+            {t.guides}
+          </a>
+        </li>
+        <li>
+          <a href="/confidentialite" className={anchor}>
+            {t.privacy}
+          </a>
+        </li>
+        <li>
+          <button type="button" onClick={openConsent} className={anchor}>
+            {t.cookies}
+          </button>
+        </li>
+      </ul>
+    </div>
   );
 }
