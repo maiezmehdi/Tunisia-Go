@@ -6,7 +6,7 @@ import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { insertRow, supabaseConfig } from '@/lib/supabase';
 
 /**
- * Guides and agencies register themselves, signed in with Google (db/pros.sql): one entry per Google account.
+ * Guides and agencies register themselves, signed in by e-mail (db/pros.sql): one entry per Google account.
  * With a professional card number the entry is published at once, as "card declared" (not verified);
  * without one it waits in the admin for a manual check.
  * The person then edits or removes the entry from the same page (/api/pro-edit).

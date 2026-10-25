@@ -26,5 +26,5 @@ create table if not exists public.pro_reports (
 alter table public.pro_reports enable row level security;
 create index if not exists pro_reports_listing_idx on public.pro_reports (listing_id);
 
--- The guide or agency signs in with Google (Supabase Auth) and edits only their own entry: owner_id is their Supabase user id.
+-- The guide or agency signs in with an e-mail link (Supabase Auth) and edits only their own entry: owner_id is their Supabase user id.
 alter table public.pro_listings add column if not exists owner_id uuid unique;

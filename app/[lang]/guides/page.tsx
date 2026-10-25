@@ -31,7 +31,7 @@ const COPY = {
     empty: 'Aucune fiche publiée pour le moment.',
     joinTitle: 'Vous êtes guide ou agence ?',
     joinLead:
-      'Inscrivez-vous en quelques lignes avec votre compte Google. Vous pourrez modifier votre fiche quand vous voulez.',
+      'Inscrivez-vous en quelques lignes avec votre e-mail, sans mot de passe. Vous pourrez modifier votre fiche quand vous voulez.',
     join: 'Inscrire ou modifier ma fiche',
     openMap: 'Ouvrir la carte',
   },
@@ -49,7 +49,7 @@ const COPY = {
     contact: 'Write on WhatsApp',
     empty: 'No listing published yet.',
     joinTitle: 'Are you a guide or an agency?',
-    joinLead: 'Register in a few lines with your Google account. You can change your listing whenever you like.',
+    joinLead: 'Register in a few lines with your e-mail, no password. You can change your listing whenever you like.',
     join: 'Register or edit my listing',
     openMap: 'Open the map',
   },

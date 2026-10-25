@@ -11,9 +11,15 @@ const COPY = {
     loading: 'Chargement…',
     intro:
       'Connectez-vous avec Google pour inscrire votre fiche ou la modifier. Votre compte Google n’est utilisé que pour vous reconnaître.',
-    google: 'Continuer avec Google',
+    email: 'Votre adresse e-mail',
+    sendLink: 'Recevoir mon lien',
+    sending: 'Envoi…',
+    sent: 'Un lien de connexion vient d’être envoyé. Ouvrez votre boîte e-mail (et les courriers indésirables), puis cliquez sur le lien.',
+    badEmail: 'Cette adresse e-mail ne semble pas valide.',
+    tooMany: 'Trop de demandes pour le moment. Réessayez plus tard.',
+    sendFailed: 'L’envoi n’a pas abouti. Réessayez dans un instant.',
     off: 'La connexion n’est pas encore disponible. Réessayez plus tard.',
-    signedIn: 'Connecté avec Google',
+    signedIn: 'Connecté',
     signOut: 'Se déconnecter',
     createTitle: 'Votre fiche',
     createLead: 'Remplissez ce court formulaire pour apparaître sur le site.',
@@ -23,9 +29,15 @@ const COPY = {
     loading: 'Loading…',
     intro:
       'Sign in with Google to register your listing or change it. Your Google account is only used to recognise you.',
-    google: 'Continue with Google',
+    email: 'Your e-mail address',
+    sendLink: 'Get my link',
+    sending: 'Sending…',
+    sent: 'A sign-in link has just been sent. Check your inbox (and spam), then click the link.',
+    badEmail: 'This e-mail address does not look valid.',
+    tooMany: 'Too many requests for now. Please try again later.',
+    sendFailed: 'Sending did not work. Please try again in a moment.',
     off: 'Sign-in is not available yet. Please try again later.',
-    signedIn: 'Signed in with Google',
+    signedIn: 'Signed in',
     signOut: 'Sign out',
     createTitle: 'Your listing',
     createLead: 'Fill in this short form to appear on the site.',
@@ -35,7 +47,7 @@ const COPY = {
 
 const KEY = 'tg-pro-token';
 
-/** Where guides and agencies sign in with Google, then register their entry or edit the one they have. */
+/** Where guides and agencies sign in with an e-mail link, then register their entry or edit the one they have. */
 export default function ProAccount() {
   const { locale } = useLocale();
   const c = COPY[locale];
@@ -43,6 +55,9 @@ export default function ProAccount() {
   const [state, setState] = useState<'loading' | 'signedOut' | 'none' | 'ready' | 'error'>('loading');
   const [entry, setEntry] = useState<Entry | null>(null);
   const [off, setOff] = useState(false);
+  const [email, setEmail] = useState('');
+  const [mail, setMail] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [mailError, setMailError] = useState('');
 
   const signOut = () => {
     try {
@@ -91,24 +106,67 @@ export default function ProAccount() {
       .catch(() => setState('error'));
   }, []);
 
+  const sendLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMail('sending');
+    try {
+      const res = await fetch('/api/pro-auth/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, lang: locale }),
+      });
+      if (res.ok) return setMail('sent');
+      setMail('error');
+      setMailError(
+        res.status === 400 ? c.badEmail : res.status === 429 ? c.tooMany : res.status === 503 ? c.off : c.sendFailed,
+      );
+    } catch {
+      setMail('error');
+      setMailError(c.sendFailed);
+    }
+  };
+
   if (state === 'loading') return <p className="text-sm text-charcoal-500">{c.loading}</p>;
 
   if (state === 'signedOut') {
     return (
       <div className="space-y-5">
         <p className="max-w-md text-[15px] leading-relaxed text-charcoal-500">{c.intro}</p>
-        <a
-          href={`/api/pro-auth/start?lang=${locale}`}
-          className="inline-flex items-center gap-3 rounded-pill border border-charcoal px-5 py-2.5 text-sm text-charcoal transition hover:bg-charcoal hover:text-cream"
-        >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
-            <path
-              fill="currentColor"
-              d="M21.35 11.1H12v3.2h5.35c-.5 2.4-2.5 3.8-5.35 3.8a6.1 6.1 0 1 1 0-12.2c1.5 0 2.8.5 3.8 1.4l2.3-2.3A9.3 9.3 0 0 0 12 2.7a9.3 9.3 0 1 0 0 18.6c5.4 0 8.9-3.8 8.9-9.1 0-.4 0-.8-.1-1.1z"
-            />
-          </svg>
-          {c.google}
-        </a>
+        {mail === 'sent' ? (
+          <p
+            role="status"
+            className="max-w-md rounded-2xl border border-sand-200 bg-white p-4 text-sm leading-relaxed text-charcoal"
+          >
+            {c.sent}
+          </p>
+        ) : (
+          <form onSubmit={sendLink} className="max-w-md space-y-3" noValidate>
+            <label className="block text-sm font-medium text-charcoal">
+              {c.email}
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                maxLength={254}
+                required
+                className="mt-1.5 w-full rounded-2xl border border-sand-200 bg-white px-4 py-2.5 text-[15px] font-normal text-charcoal outline-none transition placeholder:text-charcoal-300 focus:border-charcoal"
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={mail === 'sending'}
+              className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-60"
+            >
+              {mail === 'sending' ? c.sending : c.sendLink}
+            </button>
+            {mail === 'error' && (
+              <p role="alert" className="text-sm text-terracotta-700">
+                {mailError}
+              </p>
+            )}
+          </form>
+        )}
         {off && <p className="text-sm text-terracotta-700">{c.off}</p>}
       </div>
     );

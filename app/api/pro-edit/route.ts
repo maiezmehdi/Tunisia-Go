@@ -6,7 +6,7 @@ import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { deleteWhere, selectRows, supabaseConfig, updateRow } from '@/lib/supabase';
 
 /**
- * A guide or agency, signed in with Google, reads, changes or removes their own entry
+ * A guide or agency, signed in by e-mail, reads, changes or removes their own entry
  * (the one whose owner_id is their Supabase user id).
  */
 export const runtime = 'nodejs';

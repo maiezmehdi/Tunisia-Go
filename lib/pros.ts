@@ -79,7 +79,7 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
 }
 
 /**
- * Who is signed in: asks Supabase Auth about the access token the browser got after "Continue with Google".
+ * Who is signed in: asks Supabase Auth about the access token the browser got after the e-mail sign-in link.
  * Returns the user's id (never stored together with the e-mail here), or null when the token is not valid.
  */
 export async function authUserId(cfg: SupabaseConfig, accessToken: unknown): Promise<string | null> {

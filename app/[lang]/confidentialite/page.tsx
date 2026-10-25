@@ -37,7 +37,7 @@ const COPY: Record<
         title: 'Les guides et agences inscrits',
         body: [
           'Si vous vous inscrivez comme guide ou agence, nous enregistrons votre nom, votre numéro WhatsApp, le numéro de votre carte professionnelle (facultatif) et vos réseaux sociaux. Votre nom et votre numéro WhatsApp sont affichés publiquement sur la page Guides et agences, avec votre accord explicite donné dans le formulaire. Le numéro de carte n’est jamais publié : la fiche indique seulement « carte professionnelle déclarée », sans que Tunisia Go l’ait vérifiée officiellement.',
-          'L’inscription se fait avec votre compte Google, par le service d’authentification de Supabase : il enregistre votre adresse e-mail Google pour vous reconnaître, et nous ne la lisons pas. Vous pouvez ainsi modifier ou retirer votre fiche à tout moment ; le retrait supprime votre fiche. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
+          'La connexion se fait par un lien envoyé à votre adresse e-mail, via le service d’authentification de Supabase : il enregistre cette adresse pour vous reconnaître, et nous ne la publions pas. Vous pouvez ainsi modifier ou retirer votre fiche à tout moment ; le retrait supprime votre fiche. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
         ],
       },
       {
@@ -99,7 +99,7 @@ const COPY: Record<
         title: 'Registered guides and agencies',
         body: [
           'If you register as a guide or agency, we store your name, your WhatsApp number, your professional card number (optional) and your social networks. Your name and WhatsApp number are shown publicly on the Guides and agencies page, with the explicit consent you give in the form. The card number is never published: the listing only says “professional card declared”, which Tunisia Go has not officially checked.',
-          'Registration uses your Google account, through Supabase’s authentication service: it stores your Google e-mail address to recognise you, and we do not read it. You can change or remove your listing at any time; removing it deletes the listing. The data is hosted in the European Union (Supabase, Frankfurt).',
+          'Sign-in uses a link sent to your e-mail address, through Supabase’s authentication service: it stores that address to recognise you, and we do not publish it. You can change or remove your listing at any time; removing it deletes the listing. The data is hosted in the European Union (Supabase, Frankfurt).',
         ],
       },
       {
