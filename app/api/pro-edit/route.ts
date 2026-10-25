@@ -4,6 +4,10 @@ import { NextResponse } from 'next/server';
 import {
   BIO_MAX,
   EXPERIENCE_MAX,
+  PRICE_MAX,
+  PRO_ACTIVITIES,
+  PRO_LANGUAGES,
+  cleanIds,
   PRO_PHOTO_BUCKET,
   PROS_TAG,
   authUserId,
@@ -32,6 +36,9 @@ interface Row {
   socials: string | null;
   bio: string | null;
   experience: string | null;
+  languages: string[] | null;
+  activities: string[] | null;
+  price_note: string | null;
   place_id: string | null;
   photo_path: string | null;
 }
@@ -55,7 +62,7 @@ export async function POST(request: Request) {
     const [row] = await selectRows<Row>(
       cfg,
       'pro_listings',
-      `select=id,status,kind,name,whatsapp,card_number,socials,bio,experience,place_id,photo_path&owner_id=eq.${owner}&limit=1`,
+      `select=id,status,kind,name,whatsapp,card_number,socials,bio,experience,languages,activities,price_note,place_id,photo_path&owner_id=eq.${owner}&limit=1`,
     );
     if (!row) return NextResponse.json({ error: 'none' }, { status: 404 });
 
@@ -73,6 +80,9 @@ export async function POST(request: Request) {
       const socials = text(body.socials, 200);
       const bio = text(body.bio, BIO_MAX);
       const experience = text(body.experience, EXPERIENCE_MAX);
+      const languages = cleanIds(body.languages, PRO_LANGUAGES);
+      const activities = cleanIds(body.activities, PRO_ACTIVITIES);
+      const priceNote = text(body.priceNote, PRICE_MAX);
       const placeId = cleanPlaceId(body.placeId);
       const photoPath = cleanPhotoPath(body.photoPath, owner) ?? row.photo_path;
       if (name.length < 2) return NextResponse.json({ error: 'invalid' }, { status: 400 });
@@ -86,6 +96,9 @@ export async function POST(request: Request) {
         socials: socials || null,
         bio: bio || null,
         experience: experience || null,
+        languages,
+        activities,
+        price_note: priceNote || null,
         place_id: placeId,
         photo_path: photoPath,
         status,
@@ -108,6 +121,9 @@ export async function POST(request: Request) {
       socials: row.socials ?? '',
       bio: row.bio ?? '',
       experience: row.experience ?? '',
+      languages: row.languages ?? [],
+      activities: row.activities ?? [],
+      priceNote: row.price_note ?? '',
       placeId: row.place_id ?? '',
       photoPath: row.photo_path ?? '',
       photoUrl: row.photo_path ? publicUrl(cfg, PRO_PHOTO_BUCKET, row.photo_path) : '',

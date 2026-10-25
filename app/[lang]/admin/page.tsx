@@ -21,6 +21,7 @@ import { LEXICON } from '@/data/lexicon';
 import type { LexiconRow } from '@/lib/lexiconExtra';
 import { PLACES } from '@/data/tunisiaData';
 import type { EventRow } from '@/lib/events';
+import { PRO_ACTIVITIES, PRO_LANGUAGES } from '@/lib/pros';
 import { loadRatingStatsFresh, type RatingStat } from '@/lib/ratings';
 import { publicUrl, selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
 
@@ -148,6 +149,9 @@ export default async function AdminPage() {
     auto_published: boolean;
     bio: string | null;
     experience: string | null;
+    languages: string[] | null;
+    activities: string[] | null;
+    price_note: string | null;
     place_id: string | null;
     photo_path: string | null;
   }>(cfg, 'pro_listings', 'select=*&order=created_at.desc&limit=500')
@@ -165,6 +169,11 @@ export default async function AdminPage() {
         reports: proReports.filter((x) => x.listing_id === r.id).length,
         bio: r.bio,
         experience: r.experience,
+        details: [
+          ...(r.languages ?? []).map((id) => PRO_LANGUAGES.find((l) => l.id === id)?.fr ?? id),
+          ...(r.activities ?? []).map((id) => PRO_ACTIVITIES.find((a) => a.id === id)?.fr ?? id),
+          ...(r.price_note ? [r.price_note] : []),
+        ].join(' · '),
         placeName: r.place_id ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null) : null,
         photoUrl: r.photo_path ? publicUrl(cfg, 'pro-photos', r.photo_path) : null,
       })),

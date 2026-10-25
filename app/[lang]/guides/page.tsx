@@ -10,7 +10,7 @@ import { PLACE_BY_ID } from '@/data/tunisiaData';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { proWhatsAppUrl } from '@/lib/links';
-import { loadPublishedPros, socialsHref } from '@/lib/pros';
+import { loadPublishedPros, PRO_ACTIVITIES, PRO_LANGUAGES, socialsHref } from '@/lib/pros';
 import { pageMetadata } from '@/lib/seo';
 
 export const revalidate = 3600;
@@ -30,6 +30,9 @@ const COPY = {
     agency: 'Agence',
     declared: 'Carte professionnelle déclarée',
     experience: 'Expérience',
+    languages: 'Langues parlées',
+    activities: 'Types de sorties',
+    price: 'Prix indicatif',
     declaredHint: 'Le numéro a été indiqué par la personne, nous ne l’avons pas vérifié officiellement.',
     contact: 'Écrire sur WhatsApp',
     empty: 'Aucune fiche publiée pour le moment.',
@@ -54,6 +57,9 @@ const COPY = {
     agency: 'Agency',
     declared: 'Professional card declared',
     experience: 'Experience',
+    languages: 'Languages spoken',
+    activities: 'Kinds of trips',
+    price: 'Indicative price',
     declaredHint: 'The number was given by the person; we have not checked it officially.',
     contact: 'Write on WhatsApp',
     empty: 'No listing published yet.',
@@ -98,6 +104,9 @@ export default async function GuidesPage({ params }: Params) {
       cardDeclared: p.cardDeclared,
       bio: p.bio,
       experience: p.experience,
+      languageNames: PRO_LANGUAGES.filter((l) => p.languages.includes(l.id)).map((l) => l[locale]),
+      activityNames: PRO_ACTIVITIES.filter((a) => p.activities.includes(a.id)).map((a) => a[locale]),
+      priceNote: p.priceNote,
       placeName: p.placeId ? (catalog.placeById[p.placeId]?.name ?? null) : null,
       coords,
       photoUrl: p.photoUrl,
@@ -108,6 +117,9 @@ export default async function GuidesPage({ params }: Params) {
     agency: c.agency,
     declared: c.declared,
     experience: c.experience,
+    languages: c.languages,
+    activities: c.activities,
+    price: c.price,
     declaredHint: c.declaredHint,
     contact: c.contact,
     empty: c.empty,

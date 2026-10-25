@@ -16,6 +16,7 @@ export interface AdminPro {
   reports: number;
   bio: string | null;
   experience: string | null;
+  details: string;
   placeName: string | null;
   photoUrl: string | null;
 }
@@ -122,6 +123,7 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                   {p.socials && <p className="break-all">Réseaux : {p.socials}</p>}
                   {p.bio && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.bio}</p>}
                   {p.experience && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.experience}</p>}
+                  {p.details && <p className="mt-1 text-charcoal-500">{p.details}</p>}
                   {p.reports > 0 && (
                     <p className="mt-1 font-medium text-terracotta-700">Signalée {p.reports} fois par des visiteurs</p>
                   )}
