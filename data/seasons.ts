@@ -70,6 +70,22 @@ const RAW: Record<string, string> = {
   'nabeul-market': 'ooBBoooooBBo',
   'kairouan-souks': 'BBBBoxxxoBBB',
   'gabes-jara': 'BBBBoxxxoBBB',
+  utique: 'ooBBBoxxoBBo',
+  bizerte: 'xxooBBBBBBoo',
+  ichkeul: 'BBBBooooooBB',
+  sejnane: 'ooBBBooooBBo',
+  'ain-draham': 'xxoBBBBBBBoo',
+  oudna: 'ooBBBoxxoBBo',
+  zaghouan: 'ooBBBoxxoBBo',
+  'thuburbo-majus': 'ooBBBoxxoBBo',
+  testour: 'ooBBBoooBBoo',
+  makthar: 'ooBBBBooBBBo',
+  'el-kef': 'ooBBBBooBBBo',
+  chemtou: 'ooBBBoxxoBBo',
+  tamerza: 'BBBBoxxxoBBB',
+  nefta: 'BBBBoxxxoBBB',
+  chenini: 'BBBBoxxxoBBB',
+  gammarth: 'xxooBBBBBoxx',
 };
 
 const LETTER: Record<string, SeasonRating> = { B: 'best', o: 'fine', x: 'avoid' };
