@@ -137,13 +137,13 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
 
       <header className="absolute inset-x-0 top-0 flex items-center justify-between px-4 py-5 sm:px-10">
         {/* Phones show the whole logo: the hero button below already opens the map. */}
-        <BrandLogo tone="light" size={42} />
-        <nav className="flex items-center gap-3 sm:gap-6">
+        <BrandLogo tone="light" size={38} compact />
+        <nav className="flex items-center gap-2.5 sm:gap-6">
           <SoundToggle tone="light" />
           <LanguageSwitch tone="light" />
           <a
             href="/evenements"
-            className="whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline"
+            className="whitespace-nowrap text-[13px] text-cream/85 underline-offset-4 sm:text-sm transition hover:text-cream hover:underline"
           >
             {copy.nav.events}
           </a>
