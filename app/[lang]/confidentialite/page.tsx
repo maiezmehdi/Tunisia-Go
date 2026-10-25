@@ -37,7 +37,7 @@ const COPY: Record<
         title: 'Les guides et agences inscrits',
         body: [
           'Si vous vous inscrivez comme guide ou agence, nous enregistrons votre nom, votre numéro WhatsApp, le numéro de votre carte professionnelle (facultatif), vos réseaux sociaux, la photo de votre lieu ou enseigne, votre présentation, votre expérience et le lieu où vous exercez. Votre nom, votre numéro WhatsApp, la photo, votre présentation, votre expérience et votre lieu sont affichés publiquement sur la page Guides et agences (liste et carte), avec votre accord explicite donné dans le formulaire. Le numéro de carte n’est jamais publié : la fiche indique seulement « carte professionnelle déclarée », sans que Tunisia Go l’ait vérifiée officiellement.',
-          'La connexion se fait par un lien envoyé à votre adresse e-mail, via le service d’authentification de Supabase : il enregistre cette adresse pour vous reconnaître, et nous ne la publions pas. Vous pouvez ainsi modifier ou retirer votre fiche à tout moment ; le retrait supprime votre fiche. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
+          'La connexion se fait avec votre adresse e-mail et un mot de passe, via le service d’authentification de Supabase : il enregistre cette adresse et une empreinte chiffrée du mot de passe pour vous reconnaître, et nous ne les publions pas. Vous pouvez ainsi modifier ou retirer votre fiche à tout moment ; le retrait supprime votre fiche. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
         ],
       },
       {
@@ -99,7 +99,7 @@ const COPY: Record<
         title: 'Registered guides and agencies',
         body: [
           'If you register as a guide or agency, we store your name, your WhatsApp number, your professional card number (optional), your social networks, the photo of your place or storefront, your bio, your experience and the place where you work. Your name, WhatsApp number, photo, bio, experience and place are shown publicly on the Guides and agencies page (list and map), with the explicit consent you give in the form. The card number is never published: the listing only says “professional card declared”, which Tunisia Go has not officially checked.',
-          'Sign-in uses a link sent to your e-mail address, through Supabase’s authentication service: it stores that address to recognise you, and we do not publish it. You can change or remove your listing at any time; removing it deletes the listing. The data is hosted in the European Union (Supabase, Frankfurt).',
+          'Sign-in uses your e-mail address and a password, through Supabase’s authentication service: it stores that address and an encrypted fingerprint of the password to recognise you, and we do not publish them. You can change or remove your listing at any time; removing it deletes the listing. The data is hosted in the European Union (Supabase, Frankfurt).',
         ],
       },
       {
