@@ -4,7 +4,27 @@
  */
 export const REWRITE_MAX_CHARS = 2000;
 
-const DEFAULT_MODEL = 'gemini-2.5-flash';
+/** The alias follows the current Flash model, so it does not break when a version is retired. */
+const DEFAULT_MODEL = 'gemini-flash-latest';
+const API = 'https://generativelanguage.googleapis.com/v1beta';
+
+/** Asks the API which Flash model this key can use; used only when the chosen model answers 404. */
+async function findFlashModel(key: string): Promise<string | null> {
+  const res = await fetch(`${API}/models?pageSize=200`, {
+    headers: { 'x-goog-api-key': key },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!res.ok) return null;
+  const data = (await res.json()) as { models?: { name?: string; supportedGenerationMethods?: string[] }[] };
+  const names = (data.models ?? [])
+    .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
+    .map((m) => (m.name ?? '').replace(/^models\//, ''))
+    .filter((n) => /^gemini-[\d.]+-flash$/.test(n))
+    .sort((a, b) => b.localeCompare(a, 'en', { numeric: true }));
+  return names[0] ?? null;
+}
+
+let foundModel: string | null = null;
 
 export type RewriteKind = 'place' | 'trip';
 
@@ -29,22 +49,33 @@ function instructions(kind: RewriteKind, name: string): string {
 export async function rewriteText(input: { text: string; kind: RewriteKind; name?: string }): Promise<string> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error('not_configured');
-  const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: instructions(input.kind, input.name?.trim() ?? '') }] },
-      contents: [{ role: 'user', parts: [{ text: input.text }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 2000,
-        // The 2.5 models "think" first and the thinking counts against the output limit: turn it off.
-        ...(model.startsWith('gemini-2.5-flash') ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
-      },
-    }),
-    signal: AbortSignal.timeout(20000),
-  });
+  const call = (model: string) =>
+    fetch(`${API}/models/${model}:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: instructions(input.kind, input.name?.trim() ?? '') }] },
+        contents: [{ role: 'user', parts: [{ text: input.text }] }],
+        generationConfig: {
+          temperature: 0.3,
+          // Thinking models count their thinking against this limit.
+          maxOutputTokens: 4000,
+          ...(model.startsWith('gemini-2.5-flash') ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+        },
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+
+  let model = process.env.GEMINI_MODEL || foundModel || DEFAULT_MODEL;
+  let res = await call(model);
+  if (res.status === 404) {
+    const found = await findFlashModel(key);
+    if (found && found !== model) {
+      console.warn(`gemini: model ${model} not found, using ${found}`);
+      foundModel = model = found;
+      res = await call(model);
+    }
+  }
   if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text().catch(() => '')).slice(0, 300)}`);
   const data = (await res.json()) as {
     candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[];
