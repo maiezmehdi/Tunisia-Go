@@ -150,6 +150,12 @@ async function photosForPlace(place: Place): Promise<Photo[]> {
   if (photos.length < 2) {
     photos = unique([...photos, ...(await searchCommons(place.photoSearch ?? `${place.name} ${place.stayQuery}`))]);
   }
+  // Still short (small places have few free photos): try the plain name, with Tunisia and the region.
+  const plain = place.name.replace(/\s*\(.*?\)/g, '').trim();
+  for (const search of [`${plain} Tunisia`, `${plain} ${place.region} Tunisia`]) {
+    if (photos.length >= 2) break;
+    photos = unique([...photos, ...(await searchCommons(search))]);
+  }
   return photos.slice(0, MAX_PHOTOS);
 }
 
