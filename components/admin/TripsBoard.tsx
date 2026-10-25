@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import RewriteButton from '@/components/RewriteButton';
 import { useState } from 'react';
 
 export interface AdminTrip {
@@ -166,20 +167,30 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
           onChange={(e) => setDescription(e.target.value)}
         />
       </label>
+      <RewriteButton value={description} kind="trip" name={name} onAccept={setDescription} />
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label>
           <span className={label}>Nom en anglais (facultatif)</span>
           <input className={input} value={nameEn} maxLength={100} onChange={(e) => setNameEn(e.target.value)} />
         </label>
-        <label>
-          <span className={label}>Description en anglais (facultatif)</span>
-          <textarea
-            className={`${input} min-h-[60px]`}
+        <div>
+          <label>
+            <span className={label}>Description en anglais (facultatif)</span>
+            <textarea
+              className={`${input} min-h-[60px]`}
+              value={descriptionEn}
+              maxLength={1500}
+              onChange={(e) => setDescriptionEn(e.target.value)}
+            />
+          </label>
+          <RewriteButton
             value={descriptionEn}
-            maxLength={1500}
-            onChange={(e) => setDescriptionEn(e.target.value)}
+            lang="en"
+            kind="trip"
+            name={nameEn || name}
+            onAccept={setDescriptionEn}
           />
-        </label>
+        </div>
       </div>
 
       {t.photos.length > 0 && (

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import RewriteButton from '@/components/RewriteButton';
 import { resizeImage } from '@/lib/resizeImage';
 
 type Fields = Record<string, string>;
@@ -179,27 +180,38 @@ export default function PlaceOverridesBoard({
 
               <div className="grid gap-4 sm:grid-cols-2">
                 {FIELDS.map((f) => (
-                  <label key={f.key} className={`${label} ${f.long ? 'sm:col-span-2' : ''}`}>
-                    {f.label}
-                    {changed(lang, f.key) && (
-                      <span className="ml-2 normal-case tracking-normal text-terracotta-700">modifié</span>
-                    )}
-                    {f.long ? (
-                      <textarea
-                        className={`${input} min-h-28`}
-                        maxLength={2000}
+                  <div key={f.key} className={f.long ? 'sm:col-span-2' : ''}>
+                    <label className={label}>
+                      {f.label}
+                      {changed(lang, f.key) && (
+                        <span className="ml-2 normal-case tracking-normal text-terracotta-700">modifié</span>
+                      )}
+                      {f.long ? (
+                        <textarea
+                          className={`${input} min-h-28`}
+                          maxLength={2000}
+                          value={draft[lang][f.key] ?? ''}
+                          onChange={(e) => setDraft((d) => ({ ...d, [lang]: { ...d[lang], [f.key]: e.target.value } }))}
+                        />
+                      ) : (
+                        <input
+                          className={input}
+                          maxLength={2000}
+                          value={draft[lang][f.key] ?? ''}
+                          onChange={(e) => setDraft((d) => ({ ...d, [lang]: { ...d[lang], [f.key]: e.target.value } }))}
+                        />
+                      )}
+                    </label>
+                    {f.long && (
+                      <RewriteButton
                         value={draft[lang][f.key] ?? ''}
-                        onChange={(e) => setDraft((d) => ({ ...d, [lang]: { ...d[lang], [f.key]: e.target.value } }))}
-                      />
-                    ) : (
-                      <input
-                        className={input}
-                        maxLength={2000}
-                        value={draft[lang][f.key] ?? ''}
-                        onChange={(e) => setDraft((d) => ({ ...d, [lang]: { ...d[lang], [f.key]: e.target.value } }))}
+                        lang={lang}
+                        kind="place"
+                        name={places.find((p) => p.id === id)?.name}
+                        onAccept={(text) => setDraft((d) => ({ ...d, [lang]: { ...d[lang], [f.key]: text } }))}
                       />
                     )}
-                  </label>
+                  </div>
                 ))}
               </div>
 
