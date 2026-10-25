@@ -15,6 +15,7 @@ export interface AdminPro {
   autoPublished: boolean;
   reports: number;
   bio: string | null;
+  experience: string | null;
   placeName: string | null;
   photoUrl: string | null;
 }
@@ -120,6 +121,7 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                   {p.card && <p>Carte déclarée : {p.card}</p>}
                   {p.socials && <p className="break-all">Réseaux : {p.socials}</p>}
                   {p.bio && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.bio}</p>}
+                  {p.experience && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.experience}</p>}
                   {p.reports > 0 && (
                     <p className="mt-1 font-medium text-terracotta-700">Signalée {p.reports} fois par des visiteurs</p>
                   )}

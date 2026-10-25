@@ -31,4 +31,5 @@ alter table public.pro_listings add column if not exists owner_id uuid unique;
 
 -- Profile: a main photo, the place where the guide or agency works (one of the site's places) and a short bio.
 alter table public.pro_listings add column if not exists bio text, add column if not exists place_id text, add column if not exists photo_path text;
+alter table public.pro_listings add column if not exists experience text;
 insert into storage.buckets (id, name, public) values ('pro-photos', 'pro-photos', true) on conflict (id) do nothing;

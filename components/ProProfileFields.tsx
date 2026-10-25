@@ -8,6 +8,7 @@ import { resizeImage } from '@/lib/resizeImage';
 
 export interface ProProfile {
   bio: string;
+  experience: string;
   placeId: string;
   /** Path of the uploaded photo in storage, sent back when the entry is saved. */
   photoPath: string;
@@ -17,8 +18,9 @@ export interface ProProfile {
 
 const COPY = {
   fr: {
-    photo: 'Photo principale',
-    photoHint: 'Une photo de vous ou de votre agence. Elle est réduite automatiquement.',
+    photo: 'Photo du lieu ou de l’enseigne',
+    photoHint:
+      'La photo de votre agence, de votre bureau ou du lieu où vous accueillez les voyageurs. Elle est réduite automatiquement.',
     choose: 'Choisir une photo',
     change: 'Changer la photo',
     uploading: 'Envoi de la photo…',
@@ -28,10 +30,13 @@ const COPY = {
     placeNone: 'Choisir un lieu',
     bio: 'Présentation',
     bioHint: 'Qui vous êtes, ce que vous proposez, les langues que vous parlez.',
+    experience: 'Expérience',
+    experienceHint: 'Depuis combien de temps, les régions et types de voyages que vous connaissez bien.',
   },
   en: {
-    photo: 'Main photo',
-    photoHint: 'A photo of you or of your agency. It is shrunk automatically.',
+    photo: 'Photo of the place or storefront',
+    photoHint:
+      'A photo of your agency, your office or the place where you welcome travellers. It is shrunk automatically.',
     choose: 'Choose a photo',
     change: 'Change the photo',
     uploading: 'Sending the photo…',
@@ -41,6 +46,8 @@ const COPY = {
     placeNone: 'Choose a place',
     bio: 'About you',
     bioHint: 'Who you are, what you offer, the languages you speak.',
+    experience: 'Experience',
+    experienceHint: 'How long you have been doing this, the regions and kinds of trips you know well.',
   },
 } as const;
 
@@ -54,12 +61,14 @@ export default function ProProfileFields({
   onChange,
   onExpired,
   bioMax,
+  experienceMax,
 }: {
   accessToken: string;
   value: ProProfile;
   onChange: (patch: Partial<ProProfile>) => void;
   onExpired: () => void;
   bioMax: number;
+  experienceMax: number;
 }) {
   const { locale, catalog } = useLocale();
   const c = COPY[locale];
@@ -92,7 +101,7 @@ export default function ProProfileFields({
       <div>
         <p className="text-sm font-medium text-charcoal">{c.photo}</p>
         <div className="mt-2 flex items-center gap-4">
-          <span className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-sand-200 bg-sand-50">
+          <span className="grid h-20 w-32 shrink-0 place-items-center overflow-hidden rounded-2xl border border-sand-200 bg-sand-50">
             {value.photoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={value.photoUrl} alt="" className="h-full w-full object-cover" />
@@ -173,6 +182,32 @@ export default function ProProfileFields({
           lang={locale}
           kind="bio"
           onAccept={(text) => onChange({ bio: text.slice(0, bioMax) })}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-charcoal" htmlFor="pro-experience">
+          {c.experience}
+        </label>
+        <textarea
+          id="pro-experience"
+          className={`${field} min-h-[90px] resize-y font-normal`}
+          value={value.experience}
+          maxLength={experienceMax}
+          onChange={(e) => onChange({ experience: e.target.value })}
+        />
+        <div className="flex items-start justify-between gap-4">
+          <p className="mt-1 text-xs text-charcoal-500">{c.experienceHint}</p>
+          <span className="mt-1 shrink-0 text-xs text-charcoal-300">
+            {value.experience.length}/{experienceMax}
+          </span>
+        </div>
+        <RewriteButton
+          audience="visitor"
+          value={value.experience}
+          lang={locale}
+          kind="bio"
+          onAccept={(text) => onChange({ experience: text.slice(0, experienceMax) })}
         />
       </div>
     </>

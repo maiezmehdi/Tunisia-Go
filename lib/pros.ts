@@ -7,6 +7,7 @@ export type ProKind = 'guide' | 'agency';
 
 export const PRO_PHOTO_BUCKET = 'pro-photos';
 export const BIO_MAX = 600;
+export const EXPERIENCE_MAX = 400;
 
 export interface PublicPro {
   id: string;
@@ -18,6 +19,7 @@ export interface PublicPro {
   /** True when a professional card number was given. The number itself is never published. */
   cardDeclared: boolean;
   bio: string | null;
+  experience: string | null;
   /** One of the site's places: where the person works, and where they appear on the map. */
   placeId: string | null;
   photoUrl: string | null;
@@ -71,6 +73,7 @@ interface ProRow {
   socials: string | null;
   card_number: string | null;
   bio: string | null;
+  experience: string | null;
   place_id: string | null;
   photo_path: string | null;
 }
@@ -83,7 +86,7 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
     const rows = await selectRows<ProRow>(
       cfg,
       'pro_listings',
-      'select=id,kind,name,whatsapp,socials,card_number,bio,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
+      'select=id,kind,name,whatsapp,socials,card_number,bio,experience,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
       { revalidate: 3600, tags: [PROS_TAG] },
     );
     return rows.map((r) => ({
@@ -94,6 +97,7 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
       socials: r.socials,
       cardDeclared: !!r.card_number,
       bio: r.bio,
+      experience: r.experience,
       placeId: r.place_id,
       photoUrl: r.photo_path ? publicUrl(cfg, PRO_PHOTO_BUCKET, r.photo_path) : null,
     }));

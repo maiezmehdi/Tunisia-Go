@@ -15,6 +15,7 @@ export interface DirectoryPro {
   socialsHref: string | null;
   cardDeclared: boolean;
   bio: string | null;
+  experience: string | null;
   placeName: string | null;
   /** Where the pin goes: the place where the person works, nudged so pins at the same place do not overlap. */
   coords: [number, number] | null;
@@ -25,6 +26,7 @@ export interface DirectoryLabels {
   guide: string;
   agency: string;
   declared: string;
+  experience: string;
   declaredHint: string;
   contact: string;
   empty: string;
@@ -80,15 +82,21 @@ export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; 
         <ul className="mt-6 grid gap-5 sm:grid-cols-2">
           {pros.map((p) => (
             <li key={p.id} className="flex flex-col rounded-3xl border border-sand-200 bg-white p-6">
+              {p.photoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={p.photoUrl}
+                  alt=""
+                  loading="lazy"
+                  className="-mx-6 -mt-6 mb-5 h-44 w-[calc(100%+3rem)] max-w-none rounded-t-3xl object-cover"
+                />
+              )}
               <div className="flex items-start gap-4">
-                <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl border border-sand-200 bg-sand-50 font-serif text-2xl italic text-charcoal-300">
-                  {p.photoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.photoUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
-                  ) : (
-                    p.name.trim().charAt(0).toUpperCase()
-                  )}
-                </span>
+                {!p.photoUrl && (
+                  <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl border border-sand-200 bg-sand-50 font-serif text-2xl italic text-charcoal-300">
+                    {p.name.trim().charAt(0).toUpperCase()}
+                  </span>
+                )}
                 <div className="min-w-0">
                   <p className="text-[11px] uppercase tracking-[0.16em] text-charcoal-300">{labels[p.kind]}</p>
                   <h2 className="mt-0.5 font-serif text-2xl leading-tight">{p.name}</h2>
@@ -101,6 +109,12 @@ export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; 
                 </p>
               )}
               {p.bio && <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-charcoal-700">{p.bio}</p>}
+              {p.experience && (
+                <div className="mt-3">
+                  <p className="text-[11px] uppercase tracking-[0.16em] text-charcoal-300">{labels.experience}</p>
+                  <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-charcoal-700">{p.experience}</p>
+                </div>
+              )}
               {p.socials &&
                 (p.socialsHref ? (
                   <a
