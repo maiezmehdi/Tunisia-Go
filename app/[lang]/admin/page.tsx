@@ -12,6 +12,7 @@ import LexiconBoard, { type AdminWord } from '@/components/admin/LexiconBoard';
 import StatsBoard from '@/components/admin/StatsBoard';
 import TripsBoard, { type AdminTrip } from '@/components/admin/TripsBoard';
 import type { TripRow } from '@/lib/tripSuggest';
+import ProsBoard, { type AdminPro } from '@/components/admin/ProsBoard';
 import RatingsBoard, { type AdminRating } from '@/components/admin/RatingsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
@@ -130,6 +131,40 @@ export default async function AdminPage() {
     average: ratingStats[p.id]?.average ?? null,
     votes: ratingStats[p.id]?.votes ?? 0,
   }));
+  // Guides and agencies are optional too: without db/pros.sql the section says how to create the tables.
+  let prosMissing = false;
+  const proReports = await selectRows<{ listing_id: string }>(cfg, 'pro_reports', 'select=listing_id&limit=5000').catch(
+    () => [],
+  );
+  const pros: AdminPro[] = await selectRows<{
+    id: string;
+    created_at: string;
+    status: AdminPro['status'];
+    kind: AdminPro['kind'];
+    name: string;
+    whatsapp: string;
+    card_number: string | null;
+    socials: string | null;
+    auto_published: boolean;
+  }>(cfg, 'pro_listings', 'select=*&order=created_at.desc&limit=500')
+    .then((list) =>
+      list.map((r) => ({
+        id: r.id,
+        createdAt: r.created_at,
+        status: r.status,
+        kind: r.kind,
+        name: r.name,
+        whatsapp: r.whatsapp,
+        card: r.card_number,
+        socials: r.socials,
+        autoPublished: r.auto_published,
+        reports: proReports.filter((x) => x.listing_id === r.id).length,
+      })),
+    )
+    .catch(() => {
+      prosMissing = true;
+      return [];
+    });
   // Events are optional too: without the table (db/events.sql) the admin shows how to create it.
   let eventsMissing = false;
   const events: AdminEvent[] = await selectRows<EventRow>(
@@ -307,6 +342,7 @@ export default async function AdminPage() {
             words={words}
             tableMissing={lexiconMissing}
           />
+          <ProsBoard pros={pros} tableMissing={prosMissing} />
           <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />
           <ReportsBoard reports={reports} />
           {session.role === 'owner' && <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />}

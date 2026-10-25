@@ -105,3 +105,14 @@ export function secretSpotWhatsAppUrl(text: string): string | null {
   const number = GUIDE_WHATSAPP || TRANSFER_WHATSAPP;
   return number ? waLink(number, text) : null;
 }
+
+/** A guide's or agency's own WhatsApp number (digits with country code), as they registered it. */
+export function proWhatsAppUrl(number: string, name: string, locale: 'fr' | 'en'): string | null {
+  if (!/^\d{8,15}$/.test(number)) return null;
+  return waLink(
+    number,
+    locale === 'fr'
+      ? `Bonjour ${name}, je vous écris depuis Tunisia Go pour préparer un voyage en Tunisie.`
+      : `Hello ${name}, I am writing from Tunisia Go to plan a trip to Tunisia.`,
+  );
+}
