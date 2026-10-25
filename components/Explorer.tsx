@@ -76,6 +76,7 @@ export default function Explorer({
   const [itineraryId, setItineraryId] = useState<string | null>(null);
   /** 0 = January. null shows every place whatever the season. */
   const [month, setMonth] = useState<number | null>(null);
+  const [query, setQuery] = useState('');
 
   // Deep links from the landing page: /explore?trip=<itinerary id>&place=<place id>
   useEffect(() => {
@@ -117,14 +118,19 @@ export default function Explorer({
 
   const feedPlaces = useMemo(() => {
     if (itinerary) return itinerary.stops.map((id) => PLACE_BY_ID[id]).filter((p): p is Place => !!p);
-    const inCategory = PLACES.filter((p) => activeCategories.has(p.category));
+    const needle = normalize(query);
+    const inCategory = PLACES.filter(
+      (p) =>
+        activeCategories.has(p.category) &&
+        (!needle || normalize(`${p.name} ${p.nameAr ?? ''} ${p.region} ${p.tagline}`).includes(needle)),
+    );
     if (month === null) return inCategory;
     // Hide places to avoid that month and put the best ones first.
     const rank = { best: 0, fine: 1, avoid: 2 } as const;
     return inCategory
       .filter((p) => seasonFor(p.id, month) !== 'avoid')
       .sort((a, b) => rank[seasonFor(a.id, month)] - rank[seasonFor(b.id, month)]);
-  }, [activeCategories, itinerary, month, PLACES, PLACE_BY_ID]);
+  }, [activeCategories, itinerary, month, query, PLACES, PLACE_BY_ID]);
 
   const mapPlaces = useMemo(() => {
     if (month === null) return PLACES;
@@ -165,6 +171,16 @@ export default function Explorer({
   // not in the top bar.
   const filters = (
     <div role="group" aria-label={t.mapLayers} className="flex flex-wrap items-center gap-1.5">
+      <label className="relative block w-full">
+        <span className="sr-only">{t.searchPlaces}</span>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t.searchPlaces}
+          className="w-full rounded-pill border border-sand-200 bg-transparent px-4 py-1.5 text-sm text-charcoal placeholder:text-charcoal-500 focus:border-charcoal-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal"
+        />
+      </label>
       <MonthSelect value={month} onChange={setMonth} />
       <FilterPill active={allOn} onClick={() => setActiveCategories(new Set(ALL_CATEGORIES))}>
         {t.all} <Count>{PLACES.length}</Count>
@@ -379,6 +395,14 @@ function MobileMenu() {
       )}
     </div>
   );
+}
+
+/** Lowercase and without accents, so "tabarka" finds "Tabarka" and "ile" finds "Île". */
+function normalize(text: string) {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
 function MonthSelect({ value, onChange }: { value: number | null; onChange: (m: number | null) => void }) {
