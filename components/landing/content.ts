@@ -10,6 +10,11 @@ import type { Locale } from '@/lib/i18n/config';
 /** Hero photo: the first of these spots that has a photo is used. */
 export const HERO_CANDIDATES = ['douz', 'dougga', 'chott-el-jerid', 'ksar-ouled-soltane'];
 
+/** Further photos that fade in and out behind the hero (the Star Wars set of Mos Espa). */
+export const HERO_EXTRA = ['mos-espa'];
+/** Most photos the hero cycles through. */
+export const HERO_MAX_SLIDES = 3;
+
 export interface TripStory {
   /** Itinerary id in data/tunisiaData.ts */
   id: string;
@@ -128,7 +133,7 @@ export const ATLAS: Record<Locale, Vignette[]> = {
 
 /** Every spot the landing page needs a photo for (same in every language). */
 export const LANDING_PLACE_IDS = Array.from(
-  new Set<string>([...HERO_CANDIDATES, ...TRIPS.map((t) => t.cover), ...ATLAS_IDS]),
+  new Set<string>([...HERO_CANDIDATES, ...HERO_EXTRA, ...TRIPS.map((t) => t.cover), ...ATLAS_IDS]),
 );
 
 /* ------------------------------------------------------------------ */
@@ -242,7 +247,8 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
       eyebrow: 'Independent guide · Tunisia',
       titleLine1: 'Tunisia,',
       titleLine2: 'the other journey.',
-      subtitle: (spots, trips) => `${spots} spots off the beaten track, ${trips} great road trips, not a single cliché.`,
+      subtitle: (spots, trips) =>
+        `${spots} spots off the beaten track, ${trips} great road trips, not a single cliché.`,
       cta: 'Start exploring',
       readManifesto: 'Read the manifesto',
       scrollLabel: 'Scroll to the manifesto',

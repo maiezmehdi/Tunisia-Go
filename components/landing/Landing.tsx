@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
 import BrandLogo from '@/components/BrandLogo';
@@ -9,7 +9,15 @@ import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import LineArtPortrait from '@/components/landing/LineArtPortrait';
-import { ATLAS, HERO_CANDIDATES, LANDING_COPY, TRIP_STORIES, type TripStory } from '@/components/landing/content';
+import {
+  ATLAS,
+  HERO_CANDIDATES,
+  HERO_EXTRA,
+  HERO_MAX_SLIDES,
+  LANDING_COPY,
+  TRIP_STORIES,
+  type TripStory,
+} from '@/components/landing/content';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { formatKm, summarizeRoute } from '@/lib/geo';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
@@ -35,7 +43,14 @@ export default function Landing({ photos }: LandingProps) {
   const { locale, catalog } = useLanding();
   const firstPhoto = (id: string): Photo | undefined => photos[id]?.[0];
   const heroId = HERO_CANDIDATES.find((id) => firstPhoto(id));
-  const heroPhoto = heroId ? firstPhoto(heroId) : undefined;
+  // The first hero photo, then Mos Espa, then another landscape; they fade into each other.
+  const slideIds = [heroId, ...HERO_EXTRA, ...HERO_CANDIDATES]
+    .filter((id, i, all): id is string => !!id && all.indexOf(id) === i && !!firstPhoto(id))
+    .slice(0, HERO_MAX_SLIDES);
+  const slides = slideIds.map((id) => ({
+    photo: firstPhoto(id)!,
+    placeName: catalog.placeById[id]?.name ?? '',
+  }));
 
   const usedPhotos = new Map<string, Photo>();
   const use = (id: string) => {
@@ -43,7 +58,7 @@ export default function Landing({ photos }: LandingProps) {
     if (p) usedPhotos.set(p.src, p);
     return p;
   };
-  if (heroPhoto) usedPhotos.set(heroPhoto.src, heroPhoto);
+  for (const slide of slides) usedPhotos.set(slide.photo.src, slide.photo);
 
   const trips = TRIP_STORIES[locale]
     .map((story) => {
@@ -58,7 +73,7 @@ export default function Landing({ photos }: LandingProps) {
 
   return (
     <div lang={locale} className="bg-cream text-charcoal">
-      <Hero photo={heroPhoto} placeName={heroId ? catalog.placeById[heroId]?.name : undefined} />
+      <Hero slides={slides} />
       <Manifesto />
       <Escapes trips={trips} />
       <Atlas vignettes={vignettes} />
@@ -72,7 +87,9 @@ export default function Landing({ photos }: LandingProps) {
 /* 1. Hero                                                             */
 /* ------------------------------------------------------------------ */
 
-function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
+const SLIDE_MS = 6500;
+
+function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -80,19 +97,31 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const { catalog, copy } = useLanding();
   const c = copy.hero;
+  // Plain fade between photos, no buttons; still on the first photo for people who prefer less motion.
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    if (reduce || slides.length < 2) return;
+    const timer = window.setInterval(() => setSlide((i) => (i + 1) % slides.length), SLIDE_MS);
+    return () => window.clearInterval(timer);
+  }, [reduce, slides.length]);
 
   return (
     <section ref={ref} className="relative isolate h-[100svh] min-h-[560px] overflow-hidden bg-charcoal text-cream">
       <motion.div style={{ y }} className="absolute inset-0 -z-20">
-        {photo ? (
-          <motion.img
-            src={photo.src}
-            alt={placeName ?? ''}
-            initial={{ scale: reduce ? 1 : 1.08 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 2.4, ease: EASE }}
-            className="h-full w-full object-cover"
-          />
+        {slides.length ? (
+          slides.map(({ photo, placeName }, i) => (
+            <motion.img
+              key={photo.src}
+              src={photo.src}
+              alt={i === slide ? placeName : ''}
+              aria-hidden={i !== slide}
+              initial={{ scale: reduce ? 1 : 1.08 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 2.4, ease: EASE }}
+              style={{ opacity: i === slide ? 1 : 0, transition: 'opacity 1.8s ease-in-out' }}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ))
         ) : (
           <div className="h-full w-full bg-[radial-gradient(ellipse_at_70%_80%,#8A3B27_0%,#1A1A1A_60%)]" />
         )}
@@ -192,9 +221,9 @@ function Hero({ photo, placeName }: { photo?: Photo; placeName?: string }) {
         </span>
       </a>
 
-      {photo && (
+      {slides[slide] && (
         <Credit
-          photo={photo}
+          photo={slides[slide].photo}
           className="absolute bottom-6 right-5 hidden max-w-[40%] text-right sm:right-10 lg:block"
         />
       )}
