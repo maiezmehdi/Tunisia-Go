@@ -52,15 +52,33 @@ export default function PlaceRating({
   votes,
 }: {
   placeId: string;
-  average: number | null;
-  votes: number;
+  average?: number | null;
+  votes?: number;
 }) {
   const { locale } = useLocale();
   const c = COPY[locale];
-  const [stat, setStat] = useState({ average, votes });
+  const [stat, setStat] = useState<{ average: number | null; votes: number }>({
+    average: average ?? null,
+    votes: votes ?? 0,
+  });
   const [mine, setMine] = useState(0);
   const [hover, setHover] = useState(0);
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limit'>('idle');
+
+  // On the map panel the numbers are not known in advance: ask for them.
+  useEffect(() => {
+    if (average !== undefined) return;
+    let live = true;
+    fetch(`/api/rate-place?placeId=${encodeURIComponent(placeId)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { average: number | null; votes: number } | null) => {
+        if (live && d) setStat(d);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [placeId, average]);
 
   useEffect(() => {
     try {
