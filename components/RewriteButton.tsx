@@ -36,6 +36,7 @@ const VISITOR: Record<'fr' | 'en', Copy> = {
     accept: 'Utiliser cette version',
     ignore: 'Garder la mienne',
     errors: {
+      not_configured: 'Cette aide n’est pas encore disponible. Vous pouvez envoyer votre texte tel quel.',
       too_many: 'Vous avez beaucoup essayé, réessayez un peu plus tard.',
       invalid: 'Écrivez d’abord quelques phrases (20 caractères au moins).',
     },
@@ -49,6 +50,7 @@ const VISITOR: Record<'fr' | 'en', Copy> = {
     accept: 'Use this version',
     ignore: 'Keep mine',
     errors: {
+      not_configured: 'This help is not available yet. You can send your text as it is.',
       too_many: 'You have tried a lot, please try again a little later.',
       invalid: 'Write a few sentences first (at least 20 characters).',
     },
@@ -101,8 +103,9 @@ export default function RewriteButton({
         type="button"
         onClick={ask}
         disabled={busy || value.trim().length < 20}
-        className="rounded-pill border border-sand-200 px-3 py-1 text-xs text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 rounded-pill border border-sand-200 px-3 py-1 text-xs text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-40"
       >
+        <Sparkles />
         {busy ? copy.busy : copy.button}
       </button>
       {copy.note && !proposal && <p className="mt-2 max-w-prose text-xs text-charcoal-500">{copy.note}</p>}
@@ -137,5 +140,14 @@ export default function RewriteButton({
         </div>
       )}
     </div>
+  );
+}
+
+/** Small "sparkles" mark: tells visitors that the text is rewritten automatically. */
+function Sparkles() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor">
+      <path d="M6.5 1.5l1.2 3.3 3.3 1.2-3.3 1.2-1.2 3.3-1.2-3.3L2 6l3.3-1.2zM12.5 9l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" />
+    </svg>
   );
 }
