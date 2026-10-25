@@ -65,7 +65,7 @@ export default function ProsMap({ pros, labels }: { pros: DirectoryPro[]; labels
               <p className="mt-0.5 font-serif text-xl leading-tight text-charcoal">{p.name}</p>
               {p.placeName && <p className="mt-0.5 text-xs text-charcoal-500">{p.placeName}</p>}
               {p.cardDeclared && <p className="mt-1 text-xs text-charcoal-700">{labels.declared}</p>}
-              {p.bio && <p className="mt-2 line-clamp-4 text-sm leading-snug text-charcoal-700">{p.bio}</p>}
+              {p.bio && <p className="mt-2 line-clamp-3 text-sm leading-snug text-charcoal-700">{p.bio}</p>}
               {p.whatsappUrl && (
                 <a
                   href={p.whatsappUrl}

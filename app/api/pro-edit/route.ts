@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import {
   BIO_MAX,
+  EXPERIENCE_MAX,
   PRO_PHOTO_BUCKET,
   PROS_TAG,
   authUserId,
@@ -30,6 +31,7 @@ interface Row {
   card_number: string | null;
   socials: string | null;
   bio: string | null;
+  experience: string | null;
   place_id: string | null;
   photo_path: string | null;
 }
@@ -53,7 +55,7 @@ export async function POST(request: Request) {
     const [row] = await selectRows<Row>(
       cfg,
       'pro_listings',
-      `select=id,status,kind,name,whatsapp,card_number,socials,bio,place_id,photo_path&owner_id=eq.${owner}&limit=1`,
+      `select=id,status,kind,name,whatsapp,card_number,socials,bio,experience,place_id,photo_path&owner_id=eq.${owner}&limit=1`,
     );
     if (!row) return NextResponse.json({ error: 'none' }, { status: 404 });
 
@@ -70,6 +72,7 @@ export async function POST(request: Request) {
       const card = cardRaw ? normalizeCard(cardRaw) : null;
       const socials = text(body.socials, 200);
       const bio = text(body.bio, BIO_MAX);
+      const experience = text(body.experience, EXPERIENCE_MAX);
       const placeId = cleanPlaceId(body.placeId);
       const photoPath = cleanPhotoPath(body.photoPath, owner) ?? row.photo_path;
       if (name.length < 2) return NextResponse.json({ error: 'invalid' }, { status: 400 });
@@ -82,6 +85,7 @@ export async function POST(request: Request) {
         card_number: card,
         socials: socials || null,
         bio: bio || null,
+        experience: experience || null,
         place_id: placeId,
         photo_path: photoPath,
         status,
@@ -103,6 +107,7 @@ export async function POST(request: Request) {
       card: row.card_number ?? '',
       socials: row.socials ?? '',
       bio: row.bio ?? '',
+      experience: row.experience ?? '',
       placeId: row.place_id ?? '',
       photoPath: row.photo_path ?? '',
       photoUrl: row.photo_path ? publicUrl(cfg, PRO_PHOTO_BUCKET, row.photo_path) : '',

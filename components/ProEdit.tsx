@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import ProProfileFields from '@/components/ProProfileFields';
-import { BIO_MAX } from '@/lib/pros';
+import { BIO_MAX, EXPERIENCE_MAX } from '@/lib/pros';
 
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
@@ -65,6 +65,7 @@ export interface Entry {
   card: string;
   socials: string;
   bio: string;
+  experience: string;
   placeId: string;
   photoPath: string;
   photoUrl: string;
@@ -187,6 +188,7 @@ export default function ProEdit({
         onChange={(patch) => set(patch)}
         onExpired={onExpired}
         bioMax={BIO_MAX}
+        experienceMax={EXPERIENCE_MAX}
       />
 
       <div className="flex flex-wrap items-center gap-4">
