@@ -4,7 +4,6 @@ import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
 import ProReportButton from '@/components/ProReportButton';
-import ProSignup from '@/components/ProSignup';
 import SoundToggle from '@/components/SoundToggle';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { proWhatsAppUrl } from '@/lib/links';
@@ -31,7 +30,9 @@ const COPY = {
     contact: 'Écrire sur WhatsApp',
     empty: 'Aucune fiche publiée pour le moment.',
     joinTitle: 'Vous êtes guide ou agence ?',
-    joinLead: 'Inscrivez-vous en quelques lignes, sans créer de compte.',
+    joinLead:
+      'Inscrivez-vous en quelques lignes avec votre compte Google. Vous pourrez modifier votre fiche quand vous voulez.',
+    join: 'Inscrire ou modifier ma fiche',
     openMap: 'Ouvrir la carte',
   },
   en: {
@@ -48,7 +49,8 @@ const COPY = {
     contact: 'Write on WhatsApp',
     empty: 'No listing published yet.',
     joinTitle: 'Are you a guide or an agency?',
-    joinLead: 'Register in a few lines, without creating an account.',
+    joinLead: 'Register in a few lines with your Google account. You can change your listing whenever you like.',
+    join: 'Register or edit my listing',
     openMap: 'Open the map',
   },
 } as const;
@@ -140,7 +142,12 @@ export default async function GuidesPage({ params }: Params) {
         <section className="mt-20 max-w-xl border-t border-sand-200 pt-10" aria-label={c.joinTitle}>
           <h2 className="font-serif text-3xl leading-tight">{c.joinTitle}</h2>
           <p className="mt-2 mb-6 text-charcoal-500">{c.joinLead}</p>
-          <ProSignup />
+          <a
+            href={locale === 'fr' ? '/guides/modifier' : '/en/guides/modifier'}
+            className="inline-block rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
+          >
+            {c.join}
+          </a>
         </section>
       </div>
       <div className="border-t border-sand-200">

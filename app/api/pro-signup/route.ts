@@ -1,15 +1,15 @@
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
-import { PROS_TAG, newEditToken, normalizeCard, normalizeWhatsApp } from '@/lib/pros';
+import { PROS_TAG, authUserId, normalizeCard, normalizeWhatsApp } from '@/lib/pros';
 import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { insertRow, supabaseConfig } from '@/lib/supabase';
 
 /**
- * Guides and agencies register themselves, with no account (db/pros.sql).
+ * Guides and agencies register themselves, signed in with Google (db/pros.sql): one entry per Google account.
  * With a professional card number the entry is published at once, as "card declared" (not verified);
  * without one it waits in the admin for a manual check.
- * The answer carries a private edit link's secret, shown once: it is how the person changes or removes the entry later.
+ * The person then edits or removes the entry from the same page (/api/pro-edit).
  */
 export const runtime = 'nodejs';
 
@@ -34,6 +34,8 @@ export async function POST(request: Request) {
   if (typeof body.elapsed === 'number' && body.elapsed < 4000)
     return NextResponse.json({ ok: true, status: 'pending' });
 
+  const owner = await authUserId(cfg, body.accessToken);
+  if (!owner) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const kind = body.kind === 'agency' ? 'agency' : body.kind === 'guide' ? 'guide' : null;
   const name = text(body.name, 80);
   const whatsapp = normalizeWhatsApp(text(body.whatsapp, 30));
@@ -47,7 +49,6 @@ export async function POST(request: Request) {
   if (kind === 'agency' && socials.length < 3) return NextResponse.json({ error: 'invalid' }, { status: 400 });
 
   const published = !!card;
-  const { token, hash } = newEditToken();
   try {
     await insertRow(cfg, 'pro_listings', {
       kind,
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
       consent: true,
       status: published ? 'published' : 'pending',
       auto_published: published,
-      edit_token_hash: hash,
+      owner_id: owner,
     });
   } catch (error) {
     if (String(error).includes('23505') || String(error).includes('409')) {
@@ -68,5 +69,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'save_failed' }, { status: 502 });
   }
   if (published) revalidateTag(PROS_TAG);
-  return NextResponse.json({ ok: true, status: published ? 'published' : 'pending', token });
+  return NextResponse.json({ ok: true, status: published ? 'published' : 'pending' });
 }

@@ -21,14 +21,9 @@ const COPY = {
       'J’accepte que mon nom et mon numéro WhatsApp soient affichés publiquement sur Tunisia Go, pour que les voyageurs puissent me contacter.',
     send: 'Envoyer',
     sending: 'Envoi…',
-    changeHint: 'Après l’envoi, vous recevez un lien privé pour modifier ou retirer votre fiche quand vous voulez.',
-    exists: 'Ce numéro est déjà inscrit. Utilisez votre lien privé pour modifier votre fiche.',
-    linkTitle: 'Gardez ce lien : il ouvre votre fiche pour la modifier ou la retirer',
-    linkWarn:
-      'Il ne sera plus affiché. Copiez-le ou envoyez-le vous sur WhatsApp : sans lui, vous ne pourrez plus modifier la fiche seul.',
-    copy: 'Copier le lien',
-    copied: 'Lien copié',
-    toWhatsApp: 'M’envoyer le lien sur WhatsApp',
+    changeHint: 'Vous pourrez modifier ou retirer votre fiche à tout moment en vous reconnectant avec Google.',
+    exists: 'Ce numéro ou ce compte est déjà inscrit.',
+    expired: 'Votre connexion a expiré. Reconnectez-vous avec Google.',
     published: 'Merci, votre fiche est publiée. Elle apparaît comme « carte déclarée ».',
     pending: 'Merci, c’est reçu. Nous vérifions votre fiche avant de la publier.',
     seeList: 'Voir les guides et agences',
@@ -53,14 +48,9 @@ const COPY = {
     consent: 'I agree that my name and WhatsApp number are shown publicly on Tunisia Go, so travellers can contact me.',
     send: 'Send',
     sending: 'Sending…',
-    changeHint: 'After sending, you get a private link to change or remove your listing whenever you like.',
-    exists: 'This number is already registered. Use your private link to change your listing.',
-    linkTitle: 'Keep this link: it opens your listing so you can change or remove it',
-    linkWarn:
-      'It will not be shown again. Copy it or send it to yourself on WhatsApp: without it you cannot change the listing on your own.',
-    copy: 'Copy the link',
-    copied: 'Link copied',
-    toWhatsApp: 'Send me the link on WhatsApp',
+    changeHint: 'You can change or remove your listing at any time by signing in with Google again.',
+    exists: 'This number or this account is already registered.',
+    expired: 'Your sign-in has expired. Please sign in with Google again.',
     published: 'Thank you, your listing is published. It appears as “card declared”.',
     pending: 'Thank you, we have it. We check your listing before publishing it.',
     seeList: 'See guides and agencies',
@@ -77,7 +67,7 @@ const field =
   'mt-1.5 w-full rounded-2xl border border-sand-200 bg-white px-4 py-2.5 text-[15px] text-charcoal outline-none transition placeholder:text-charcoal-300 focus:border-charcoal';
 
 /** Guides and agencies register themselves: no account, a short form. */
-export default function ProSignup() {
+export default function ProSignup({ accessToken, onExpired }: { accessToken: string; onExpired: () => void }) {
   const { locale } = useLocale();
   const c = COPY[locale];
   const openedAt = useRef(Date.now());
@@ -87,8 +77,6 @@ export default function ProSignup() {
   const [card, setCard] = useState('');
   const [socials, setSocials] = useState('');
   const [consent, setConsent] = useState(false);
-  const [link, setLink] = useState('');
-  const [copied, setCopied] = useState(false);
   const [state, setState] = useState<'idle' | 'sending' | 'published' | 'pending' | 'change' | 'error'>('idle');
   const [error, setError] = useState('');
 
@@ -112,17 +100,19 @@ export default function ProSignup() {
           card: kind === 'guide' ? card : '',
           socials: kind === 'agency' ? socials : '',
           consent,
+          accessToken,
           elapsed: Date.now() - openedAt.current,
         }),
       });
       if (res.ok) {
-        const data = (await res.json()) as { status?: string; token?: string };
-        if (data.token) {
-          setLink(`${window.location.origin}${locale === 'fr' ? '' : '/en'}/guides/modifier#${data.token}`);
-        }
+        const data = (await res.json()) as { status?: string };
         return setState(data.status === 'published' ? 'published' : 'pending');
       }
       const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (res.status === 401) {
+        onExpired();
+        return fail(c.expired);
+      }
       if (res.status === 429) return fail(c.tooMany);
       if (data.error === 'invalid_card') return fail(c.invalidCard);
       if (data.error === 'exists') return fail(c.exists);
@@ -138,35 +128,6 @@ export default function ProSignup() {
     return (
       <div role="status" className="rounded-3xl border border-sand-200 bg-white p-6">
         <p className="text-[15px] leading-relaxed text-charcoal">{state === 'published' ? c.published : c.pending}</p>
-        {link && (
-          <div className="mt-5 rounded-2xl border border-sand-200 bg-sand-50 p-4">
-            <p className="text-sm font-medium text-charcoal">{c.linkTitle}</p>
-            <p className="mt-2 break-all rounded-xl bg-white px-3 py-2 text-xs text-charcoal-700">{link}</p>
-            <p className="mt-2 text-xs leading-relaxed text-charcoal-500">{c.linkWarn}</p>
-            <div className="mt-3 flex flex-wrap gap-4 text-sm">
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard?.writeText(link).then(
-                    () => setCopied(true),
-                    () => undefined,
-                  );
-                }}
-                className="text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
-              >
-                {copied ? c.copied : c.copy}
-              </button>
-              <a
-                href={`https://wa.me/?text=${encodeURIComponent(link)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
-              >
-                {c.toWhatsApp}
-              </a>
-            </div>
-          </div>
-        )}
         <a
           href={locale === 'fr' ? '/guides' : '/en/guides'}
           className="mt-4 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"

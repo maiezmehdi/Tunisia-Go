@@ -1,6 +1,4 @@
-import { createHash, randomBytes } from 'node:crypto';
-
-import { selectRows, supabaseConfig } from '@/lib/supabase';
+import { selectRows, supabaseConfig, type SupabaseConfig } from '@/lib/supabase';
 
 export const PROS_TAG = 'pros';
 
@@ -35,16 +33,6 @@ export function normalizeWhatsApp(raw: string): string | null {
 export function normalizeCard(raw: string): string | null {
   const card = raw.trim().replace(/\s+/g, ' ');
   return /^(?=.*\d)[\p{L}\d][\p{L}\d /.\-]{2,24}$/u.test(card) ? card : null;
-}
-
-/** The secret behind a guide's private edit link. Only its hash is stored. */
-export function newEditToken(): { token: string; hash: string } {
-  const token = randomBytes(32).toString('base64url');
-  return { token, hash: hashToken(token) };
-}
-
-export function hashToken(token: string): string {
-  return createHash('sha256').update(token).digest('hex');
 }
 
 /** A link only for a plain https address; any other text is shown as typed. */
@@ -87,5 +75,25 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
     }));
   } catch {
     return [];
+  }
+}
+
+/**
+ * Who is signed in: asks Supabase Auth about the access token the browser got after "Continue with Google".
+ * Returns the user's id (never stored together with the e-mail here), or null when the token is not valid.
+ */
+export async function authUserId(cfg: SupabaseConfig, accessToken: unknown): Promise<string | null> {
+  if (typeof accessToken !== 'string' || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(accessToken)) return null;
+  try {
+    const res = await fetch(`${cfg.url}/auth/v1/user`, {
+      headers: { apikey: cfg.key, Authorization: `Bearer ${accessToken}` },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const user = (await res.json()) as { id?: unknown };
+    return typeof user.id === 'string' && /^[0-9a-f-]{36}$/i.test(user.id) ? user.id : null;
+  } catch {
+    return null;
   }
 }

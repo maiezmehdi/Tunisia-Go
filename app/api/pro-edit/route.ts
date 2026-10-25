@@ -1,13 +1,13 @@
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
-import { PROS_TAG, hashToken, normalizeCard } from '@/lib/pros';
+import { PROS_TAG, authUserId, normalizeCard } from '@/lib/pros';
 import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { deleteWhere, selectRows, supabaseConfig, updateRow } from '@/lib/supabase';
 
 /**
- * A guide or agency reads, changes or removes their own entry with the secret of their private link
- * (no account). Only a hash of the secret is stored, so a leaked database does not leak the links.
+ * A guide or agency, signed in with Google, reads, changes or removes their own entry
+ * (the one whose owner_id is their Supabase user id).
  */
 export const runtime = 'nodejs';
 
@@ -35,16 +35,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'too_many' }, { status: 429, headers: { 'Retry-After': '3600' } });
   }
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
-  const token = typeof body?.token === 'string' ? body.token : '';
-  if (!/^[\w-]{20,80}$/.test(token)) return NextResponse.json({ error: 'unknown' }, { status: 404 });
+  const owner = await authUserId(cfg, body?.accessToken);
+  if (!owner) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   try {
     const [row] = await selectRows<Row>(
       cfg,
       'pro_listings',
-      `select=id,status,kind,name,whatsapp,card_number,socials&edit_token_hash=eq.${hashToken(token)}&limit=1`,
+      `select=id,status,kind,name,whatsapp,card_number,socials&owner_id=eq.${owner}&limit=1`,
     );
-    if (!row) return NextResponse.json({ error: 'unknown' }, { status: 404 });
+    if (!row) return NextResponse.json({ error: 'none' }, { status: 404 });
 
     if (body?.action === 'remove') {
       await deleteWhere(cfg, 'pro_listings', `id=eq.${row.id}`);

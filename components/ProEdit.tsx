@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 const COPY = {
   fr: {
-    loading: 'Chargement…',
-    unknown: 'Ce lien n’est pas valide. Vérifiez que vous l’avez copié en entier.',
     kind: { guide: 'Guide indépendant', agency: 'Agence' },
     name: 'Nom',
     card: 'Numéro de carte professionnelle de guide',
@@ -30,8 +28,6 @@ const COPY = {
     back: 'Voir les guides et agences',
   },
   en: {
-    loading: 'Loading…',
-    unknown: 'This link is not valid. Check that you copied all of it.',
     kind: { guide: 'Independent guide', agency: 'Agency' },
     name: 'Name',
     card: 'Professional guide card number',
@@ -58,7 +54,7 @@ const COPY = {
 const field =
   'mt-1.5 w-full rounded-2xl border border-sand-200 bg-white px-4 py-2.5 text-[15px] text-charcoal outline-none transition placeholder:text-charcoal-300 focus:border-charcoal';
 
-interface Entry {
+export interface Entry {
   kind: 'guide' | 'agency';
   status: 'published' | 'pending' | 'hidden';
   name: string;
@@ -68,12 +64,19 @@ interface Entry {
 }
 
 /** The private page behind a guide's link: the secret is in the address after #, so it never reaches the server logs. */
-export default function ProEdit() {
+export default function ProEdit({
+  accessToken,
+  entry: first,
+  onExpired,
+}: {
+  accessToken: string;
+  entry: Entry;
+  onExpired: () => void;
+}) {
   const { locale } = useLocale();
   const c = COPY[locale];
-  const [token, setToken] = useState('');
-  const [entry, setEntry] = useState<Entry | null>(null);
-  const [state, setState] = useState<'loading' | 'unknown' | 'ready' | 'saving' | 'saved' | 'removed'>('loading');
+  const [entry, setEntry] = useState<Entry>(first);
+  const [state, setState] = useState<'ready' | 'saving' | 'saved' | 'removed'>('ready');
   const [error, setError] = useState('');
   const [confirm, setConfirm] = useState(false);
 
@@ -84,33 +87,27 @@ export default function ProEdit() {
       body: JSON.stringify(body),
     });
 
-  useEffect(() => {
-    const t = window.location.hash.replace(/^#/, '');
-    setToken(t);
-    call({ token: t, action: 'get' })
-      .then(async (res) => {
-        if (!res.ok) return setState('unknown');
-        setEntry((await res.json()) as Entry);
-        setState('ready');
-      })
-      .catch(() => setState('unknown'));
-  }, []);
-
-  const set = (patch: Partial<Entry>) => setEntry((e) => (e ? { ...e, ...patch } : e));
+  const set = (patch: Partial<Entry>) => setEntry((e) => ({ ...e, ...patch }));
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!entry) return;
     setState('saving');
     setError('');
     try {
-      const res = await call({ token, action: 'save', name: entry.name, card: entry.card, socials: entry.socials });
+      const res = await call({
+        accessToken,
+        action: 'save',
+        name: entry.name,
+        card: entry.card,
+        socials: entry.socials,
+      });
       const data = (await res.json().catch(() => ({}))) as { error?: string; status?: Entry['status'] };
       if (res.ok) {
         if (data.status) set({ status: data.status });
         return setState('saved');
       }
       setState('ready');
+      if (res.status === 401) return onExpired();
       setError(data.error === 'invalid_card' ? c.invalidCard : data.error === 'invalid' ? c.invalid : c.failed);
     } catch {
       setState('ready');
@@ -119,13 +116,13 @@ export default function ProEdit() {
   };
 
   const remove = async () => {
-    const res = await call({ token, action: 'remove' }).catch(() => null);
-    if (res?.ok) setState('removed');
+    const res = await call({ accessToken, action: 'remove' }).catch(() => null);
+    if (res?.ok) {
+      setState('removed');
+    } else if (res?.status === 401) onExpired();
     else setError(c.failed);
   };
 
-  if (state === 'loading') return <p className="text-sm text-charcoal-500">{c.loading}</p>;
-  if (state === 'unknown') return <p className="text-sm text-terracotta-700">{c.unknown}</p>;
   if (state === 'removed') {
     return (
       <p role="status" className="text-sm text-charcoal-700">
@@ -133,8 +130,6 @@ export default function ProEdit() {
       </p>
     );
   }
-  if (!entry) return null;
-
   return (
     <form onSubmit={save} className="space-y-5 rounded-3xl border border-sand-200 bg-white p-6" noValidate>
       <p className="text-[11px] uppercase tracking-[0.16em] text-charcoal-300">

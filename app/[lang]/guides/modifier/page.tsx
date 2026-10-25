@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
-import ProEdit from '@/components/ProEdit';
+import ProAccount from '@/components/ProAccount';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
 type Params = { params: Promise<{ lang: string }> };
@@ -49,7 +49,7 @@ export default async function EditProPage({ params }: Params) {
       <div className="mx-auto max-w-xl px-4 pb-24 pt-12 sm:px-6">
         <h1 className="font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{c.title}</h1>
         <p className="mb-8 mt-3 text-charcoal-500">{c.lead}</p>
-        <ProEdit />
+        <ProAccount />
       </div>
     </main>
   );

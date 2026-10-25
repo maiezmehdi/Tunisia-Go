@@ -8,7 +8,7 @@ import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
-import ProSignup from '@/components/ProSignup';
+import ProAccount from '@/components/ProAccount';
 import LineArtPortrait from '@/components/landing/LineArtPortrait';
 import {
   ATLAS,
@@ -461,12 +461,12 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
 const PRO_COPY = {
   fr: {
     title: 'Vous êtes guide ou agence ?',
-    text: 'Faites-vous connaître des voyageurs : une inscription en quelques lignes, sans compte à créer. Les voyageurs vous écrivent directement sur WhatsApp.',
+    text: 'Faites-vous connaître des voyageurs : une inscription en quelques lignes avec votre compte Google, et vous modifiez votre fiche quand vous voulez. Les voyageurs vous écrivent directement sur WhatsApp.',
     list: 'Voir les guides et agences',
   },
   en: {
     title: 'Are you a guide or an agency?',
-    text: 'Get known by travellers: register in a few lines, with no account to create. Travellers write to you directly on WhatsApp.',
+    text: 'Get known by travellers: register in a few lines with your Google account, and change your listing whenever you like. Travellers write to you directly on WhatsApp.',
     list: 'See guides and agencies',
   },
 } as const;
@@ -487,7 +487,7 @@ function ProSection() {
             {c.list}
           </a>
         </div>
-        <ProSignup />
+        <ProAccount />
       </Reveal>
     </section>
   );
