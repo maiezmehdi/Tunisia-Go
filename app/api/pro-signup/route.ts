@@ -1,7 +1,15 @@
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
-import { PROS_TAG, authUserId, normalizeCard, normalizeWhatsApp } from '@/lib/pros';
+import {
+  BIO_MAX,
+  PROS_TAG,
+  authUserId,
+  cleanPhotoPath,
+  cleanPlaceId,
+  normalizeCard,
+  normalizeWhatsApp,
+} from '@/lib/pros';
 import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { insertRow, supabaseConfig } from '@/lib/supabase';
 
@@ -42,6 +50,9 @@ export async function POST(request: Request) {
   const cardRaw = text(body.card, 40);
   const card = cardRaw ? normalizeCard(cardRaw) : null;
   const socials = text(body.socials, 200);
+  const bio = text(body.bio, BIO_MAX);
+  const placeId = cleanPlaceId(body.placeId);
+  const photoPath = cleanPhotoPath(body.photoPath, owner);
   if (!kind || name.length < 2 || !whatsapp) return NextResponse.json({ error: 'invalid' }, { status: 400 });
   if (cardRaw && !card) return NextResponse.json({ error: 'invalid_card' }, { status: 400 });
   if (body.consent !== true) return NextResponse.json({ error: 'consent' }, { status: 400 });
@@ -56,6 +67,9 @@ export async function POST(request: Request) {
       whatsapp,
       card_number: card,
       socials: socials || null,
+      bio: bio || null,
+      place_id: placeId,
+      photo_path: photoPath,
       consent: true,
       status: published ? 'published' : 'pending',
       auto_published: published,

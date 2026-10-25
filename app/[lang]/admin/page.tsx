@@ -146,6 +146,9 @@ export default async function AdminPage() {
     card_number: string | null;
     socials: string | null;
     auto_published: boolean;
+    bio: string | null;
+    place_id: string | null;
+    photo_path: string | null;
   }>(cfg, 'pro_listings', 'select=*&order=created_at.desc&limit=500')
     .then((list) =>
       list.map((r) => ({
@@ -159,6 +162,9 @@ export default async function AdminPage() {
         socials: r.socials,
         autoPublished: r.auto_published,
         reports: proReports.filter((x) => x.listing_id === r.id).length,
+        bio: r.bio,
+        placeName: r.place_id ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null) : null,
+        photoUrl: r.photo_path ? publicUrl(cfg, 'pro-photos', r.photo_path) : null,
       })),
     )
     .catch(() => {

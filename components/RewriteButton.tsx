@@ -73,7 +73,7 @@ export default function RewriteButton({
   audience?: 'admin' | 'visitor';
   value: string;
   lang?: 'fr' | 'en';
-  kind: 'place' | 'trip';
+  kind: 'place' | 'trip' | 'bio';
   name?: string;
   onAccept: (text: string) => void;
 }) {
