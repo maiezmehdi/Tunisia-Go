@@ -34,6 +34,13 @@ const COPY: Record<
         ],
       },
       {
+        title: 'Les notes sur les lieux',
+        body: [
+          'Vous pouvez noter un lieu de 1 à 5 étoiles, sans créer de compte. Pour qu’une personne ne vote qu’une fois par lieu, nous calculons une empreinte chiffrée de votre adresse IP avec une clé secrète. L’adresse IP elle-même n’est pas enregistrée, et l’empreinte ne permet pas de la retrouver.',
+          'Nous gardons seulement cette empreinte, le lieu et votre note, hébergés dans l’Union européenne (Supabase, Francfort). Votre note est aussi mémorisée dans votre navigateur (tg-rating-…) pour afficher votre choix.',
+        ],
+      },
+      {
         title: 'Mesure d’audience',
         body: [
           'Avec votre accord seulement, nous mesurons les visites (pages vues, lieux et road trips consultés, type d’appareil, pays) avec PostHog, hébergé dans l’Union européenne. Cela nous aide à savoir quels contenus vous sont utiles. Aucune donnée n’est vendue ni utilisée pour de la publicité.',
@@ -79,6 +86,13 @@ const COPY: Record<
         body: [
           'When you suggest a place, we store what you type (name of the place, area, location, description, first name and contact if you give them) and your photos. Photos are resized and their metadata, including GPS location, is removed in your browser before upload.',
           'This is only used to review the suggestion and, if it is accepted, to add it to the map with your first name as credit. It is hosted in the European Union (Supabase, Frankfurt). Your contact details are never published. Suggestions that are not kept are deleted after 12 months.',
+        ],
+      },
+      {
+        title: 'Ratings on places',
+        body: [
+          'You can rate a place from 1 to 5 stars without creating an account. So that one person votes only once per place, we compute an encrypted fingerprint of your IP address with a secret key. The IP address itself is not stored, and the fingerprint cannot be turned back into it.',
+          'We keep only that fingerprint, the place and your rating, hosted in the European Union (Supabase, Frankfurt). Your rating is also remembered in your browser (tg-rating-…) to show your choice.',
         ],
       },
       {

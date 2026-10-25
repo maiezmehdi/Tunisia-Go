@@ -6,6 +6,7 @@ import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
 import PlaceClose from '@/components/PlaceClose';
+import PlaceRating from '@/components/PlaceRating';
 import PlaceReport from '@/components/PlaceReport';
 import SeasonStrip from '@/components/SeasonStrip';
 import SoundToggle from '@/components/SoundToggle';
@@ -18,6 +19,7 @@ import { getCatalog } from '@/lib/i18n/catalog';
 import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { formatUpdated, placePath } from '@/lib/placePages';
+import { loadRatingStats } from '@/lib/ratings';
 import { pageMetadata } from '@/lib/seo';
 import { placePageData } from '@/lib/structuredData';
 
@@ -102,6 +104,7 @@ export default async function PlacePage({ params }: Params) {
   const { locale, catalog, place, overrides } = await find(lang, id);
   if (!place) notFound();
   const c = COPY[locale];
+  const rating = (await loadRatingStats())[place.id];
 
   const photos = withOverridePhotos(await loadPhotos([place]), overrides, { [place.id]: place.name })[place.id] ?? [];
   const photo = photos[0];
@@ -155,6 +158,7 @@ export default async function PlacePage({ params }: Params) {
         </div>
         <p className="mt-1 text-sm text-charcoal-500">{place.region}</p>
         <p className="mt-5 max-w-2xl font-serif text-xl italic text-charcoal-700">{place.tagline}</p>
+        <PlaceRating placeId={place.id} average={rating?.average ?? null} votes={rating?.votes ?? 0} />
 
         {photo && (
           <figure className="mt-8">

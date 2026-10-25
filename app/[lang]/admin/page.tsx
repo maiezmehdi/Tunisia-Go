@@ -12,6 +12,7 @@ import LexiconBoard, { type AdminWord } from '@/components/admin/LexiconBoard';
 import StatsBoard from '@/components/admin/StatsBoard';
 import TripsBoard, { type AdminTrip } from '@/components/admin/TripsBoard';
 import type { TripRow } from '@/lib/tripSuggest';
+import RatingsBoard, { type AdminRating } from '@/components/admin/RatingsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
 import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
 import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
@@ -19,6 +20,7 @@ import { LEXICON } from '@/data/lexicon';
 import type { LexiconRow } from '@/lib/lexiconExtra';
 import { PLACES } from '@/data/tunisiaData';
 import type { EventRow } from '@/lib/events';
+import { loadRatingStatsFresh, type RatingStat } from '@/lib/ratings';
 import { publicUrl, selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
@@ -116,6 +118,18 @@ export default async function AdminPage() {
       })),
     )
     .catch(() => []);
+  // Ratings are optional too: without the table (db/place-ratings.sql) the section says how to create it.
+  let ratingsMissing = false;
+  const ratingStats = await loadRatingStatsFresh().catch((): Record<string, RatingStat> => {
+    ratingsMissing = true;
+    return {};
+  });
+  const ratings: AdminRating[] = PLACES.map((p) => ({
+    placeId: p.id,
+    name: p.name,
+    average: ratingStats[p.id]?.average ?? null,
+    votes: ratingStats[p.id]?.votes ?? 0,
+  }));
   // Events are optional too: without the table (db/events.sql) the admin shows how to create it.
   let eventsMissing = false;
   const events: AdminEvent[] = await selectRows<EventRow>(
@@ -293,6 +307,7 @@ export default async function AdminPage() {
             words={words}
             tableMissing={lexiconMissing}
           />
+          <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />
           <ReportsBoard reports={reports} />
           {session.role === 'owner' && <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />}
         </>
