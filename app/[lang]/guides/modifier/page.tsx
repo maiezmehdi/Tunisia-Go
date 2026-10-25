@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
-import ProAccount from '@/components/ProAccount';
+import ProAccountSection from '@/components/ProAccountSection';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
 type Params = { params: Promise<{ lang: string }> };
@@ -11,14 +11,14 @@ const COPY = {
   fr: {
     tag: 'Ma fiche',
     title: 'Modifier ma fiche',
-    lead: 'Créez votre compte ou connectez-vous pour gérer votre fiche.',
+    lead: 'Inscrivez votre fiche ou modifiez-la.',
     back: 'Guides et agences',
     href: '/guides',
   },
   en: {
     tag: 'My listing',
     title: 'Edit my listing',
-    lead: 'Create your account or sign in to manage your listing.',
+    lead: 'Register your listing or change it.',
     back: 'Guides and agencies',
     href: '/en/guides',
   },
@@ -49,7 +49,7 @@ export default async function EditProPage({ params }: Params) {
       <div className="mx-auto max-w-xl px-4 pb-24 pt-12 sm:px-6">
         <h1 className="font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{c.title}</h1>
         <p className="mb-8 mt-3 text-charcoal-500">{c.lead}</p>
-        <ProAccount />
+        <ProAccountSection />
       </div>
     </main>
   );

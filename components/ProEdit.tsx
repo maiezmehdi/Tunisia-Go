@@ -139,7 +139,7 @@ export default function ProEdit({
     );
   }
   return (
-    <form onSubmit={save} className="space-y-5 rounded-3xl border border-sand-200 bg-white p-6" noValidate>
+    <form onSubmit={save} className="space-y-5" noValidate>
       <p className="text-[11px] uppercase tracking-[0.16em] text-charcoal-300">
         {c.kind[entry.kind]} · {c[entry.status]}
       </p>
