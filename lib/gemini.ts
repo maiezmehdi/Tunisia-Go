@@ -4,8 +4,8 @@
  */
 export const REWRITE_MAX_CHARS = 2000;
 
-/** The alias follows the current Flash model, so it does not break when a version is retired. */
-const DEFAULT_MODEL = 'gemini-flash-latest';
+/** The alias follows the current Flash-Lite model (fast, no long thinking), so it does not break when a version is retired. */
+const DEFAULT_MODEL = 'gemini-flash-lite-latest';
 const API = 'https://generativelanguage.googleapis.com/v1beta';
 
 /** Asks the API which Flash model this key can use; used only when the chosen model answers 404. */
@@ -19,8 +19,12 @@ async function findFlashModel(key: string): Promise<string | null> {
   const names = (data.models ?? [])
     .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
     .map((m) => (m.name ?? '').replace(/^models\//, ''))
-    .filter((n) => /^gemini-[\d.]+-flash$/.test(n))
-    .sort((a, b) => b.localeCompare(a, 'en', { numeric: true }));
+    .filter((n) => /^gemini-[\d.]+-flash(-lite)?$/.test(n))
+    // Lite first (fast), then the newest version.
+    .sort(
+      (a, b) =>
+        Number(b.endsWith('-lite')) - Number(a.endsWith('-lite')) || b.localeCompare(a, 'en', { numeric: true }),
+    );
   return names[0] ?? null;
 }
 
@@ -63,7 +67,7 @@ export async function rewriteText(input: { text: string; kind: RewriteKind; name
           ...(model.startsWith('gemini-2.5-flash') ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
         },
       }),
-      signal: AbortSignal.timeout(20000),
+      signal: AbortSignal.timeout(30000),
     });
 
   let model = process.env.GEMINI_MODEL || foundModel || DEFAULT_MODEL;
