@@ -2,9 +2,10 @@
 
 import { ActivityIcon, LanguageIcon, PriceIcon } from '@/components/ProIcons';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ProReportButton from '@/components/ProReportButton';
+import { useProAuth } from '@/lib/proAuth';
 import type { ProKind } from '@/lib/pros';
 
 export interface DirectoryPro {
@@ -27,6 +28,7 @@ export interface DirectoryPro {
 }
 
 export interface DirectoryLabels {
+  edit: string;
   guide: string;
   agency: string;
   declared: string;
@@ -48,6 +50,26 @@ const ProsMap = dynamic(() => import('@/components/ProsMap'), { ssr: false });
 
 /** The guides and agencies as a list, or as pins on a map. */
 export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; labels: DirectoryLabels }) {
+  const { tokens, open } = useProAuth();
+  const [myId, setMyId] = useState<string | null>(null);
+  const tokenKey = tokens ? tokens.accessToken.slice(-12) : null;
+  const accessToken = tokens?.accessToken;
+  useEffect(() => {
+    if (!accessToken) return setMyId(null);
+    let cancelled = false;
+    fetch('/api/pro-edit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessToken, action: 'get' }),
+    })
+      .then((res) => (res.ok ? (res.json() as Promise<{ id?: string }>) : null))
+      .then((data) => !cancelled && setMyId(data?.id ?? null))
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+    // Look the person's listing up once per sign-in, not each time the token is renewed.
+  }, [tokenKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const [view, setView] = useState<'list' | 'map'>('list');
   const placed = pros.filter((p) => p.coords).length;
 
@@ -168,7 +190,17 @@ export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; 
                     {labels.contact}
                   </a>
                 )}
-                <ProReportButton listingId={p.id} />
+                {p.id === myId ? (
+                  <button
+                    type="button"
+                    onClick={() => open()}
+                    className="rounded-pill border border-charcoal px-4 py-2 text-sm text-charcoal transition hover:bg-charcoal hover:text-cream"
+                  >
+                    {labels.edit}
+                  </button>
+                ) : (
+                  <ProReportButton listingId={p.id} />
+                )}
               </div>
             </li>
           ))}
