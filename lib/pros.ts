@@ -8,6 +8,35 @@ export type ProKind = 'guide' | 'agency';
 export const PRO_PHOTO_BUCKET = 'pro-photos';
 export const BIO_MAX = 600;
 export const EXPERIENCE_MAX = 400;
+export const PRICE_MAX = 120;
+
+/** Languages a guide or agency can tick, with their names in both site languages. */
+export const PRO_LANGUAGES = [
+  { id: 'fr', fr: 'Français', en: 'French' },
+  { id: 'en', fr: 'Anglais', en: 'English' },
+  { id: 'ar', fr: 'Arabe', en: 'Arabic' },
+  { id: 'de', fr: 'Allemand', en: 'German' },
+  { id: 'it', fr: 'Italien', en: 'Italian' },
+  { id: 'es', fr: 'Espagnol', en: 'Spanish' },
+  { id: 'ru', fr: 'Russe', en: 'Russian' },
+] as const;
+
+/** Kinds of trips a guide or agency can tick. */
+export const PRO_ACTIVITIES = [
+  { id: 'desert', fr: 'Désert', en: 'Desert' },
+  { id: 'culture', fr: 'Culture et médinas', en: 'Culture and medinas' },
+  { id: 'hiking', fr: 'Randonnée', en: 'Hiking' },
+  { id: 'beach', fr: 'Plage et mer', en: 'Beach and sea' },
+  { id: 'food', fr: 'Gastronomie', en: 'Food' },
+  { id: 'roadtrip', fr: 'Road trip', en: 'Road trip' },
+] as const;
+
+/** Keeps only the ticked ids that exist in the list, without duplicates. */
+export function cleanIds(value: unknown, list: readonly { id: string }[]): string[] {
+  if (!Array.isArray(value)) return [];
+  const allowed = new Set(list.map((item) => item.id));
+  return [...new Set(value.filter((v): v is string => typeof v === 'string' && allowed.has(v)))];
+}
 
 export interface PublicPro {
   id: string;
@@ -20,6 +49,9 @@ export interface PublicPro {
   cardDeclared: boolean;
   bio: string | null;
   experience: string | null;
+  languages: string[];
+  activities: string[];
+  priceNote: string | null;
   /** One of the site's places: where the person works, and where they appear on the map. */
   placeId: string | null;
   photoUrl: string | null;
@@ -74,6 +106,9 @@ interface ProRow {
   card_number: string | null;
   bio: string | null;
   experience: string | null;
+  languages: string[] | null;
+  activities: string[] | null;
+  price_note: string | null;
   place_id: string | null;
   photo_path: string | null;
 }
@@ -86,7 +121,7 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
     const rows = await selectRows<ProRow>(
       cfg,
       'pro_listings',
-      'select=id,kind,name,whatsapp,socials,card_number,bio,experience,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
+      'select=id,kind,name,whatsapp,socials,card_number,bio,experience,languages,activities,price_note,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
       { revalidate: 3600, tags: [PROS_TAG] },
     );
     return rows.map((r) => ({
@@ -98,6 +133,9 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
       cardDeclared: !!r.card_number,
       bio: r.bio,
       experience: r.experience,
+      languages: r.languages ?? [],
+      activities: r.activities ?? [],
+      priceNote: r.price_note,
       placeId: r.place_id,
       photoUrl: r.photo_path ? publicUrl(cfg, PRO_PHOTO_BUCKET, r.photo_path) : null,
     }));

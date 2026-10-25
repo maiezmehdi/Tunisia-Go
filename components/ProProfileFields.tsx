@@ -2,13 +2,18 @@
 
 import { useRef, useState } from 'react';
 
+import { ActivityIcon, LanguageIcon, PriceIcon } from '@/components/ProIcons';
 import RewriteButton from '@/components/RewriteButton';
+import { PRICE_MAX, PRO_ACTIVITIES, PRO_LANGUAGES } from '@/lib/pros';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { resizeImage } from '@/lib/resizeImage';
 
 export interface ProProfile {
   bio: string;
   experience: string;
+  languages: string[];
+  activities: string[];
+  priceNote: string;
   placeId: string;
   /** Path of the uploaded photo in storage, sent back when the entry is saved. */
   photoPath: string;
@@ -31,6 +36,11 @@ const COPY = {
     bio: 'Présentation',
     bioHint: 'Qui vous êtes, ce que vous proposez, les langues que vous parlez.',
     experience: 'Expérience',
+    languages: 'Langues parlées',
+    activities: 'Types de sorties',
+    price: 'Prix indicatif',
+    priceHint:
+      'Une phrase libre, par exemple « à partir de 60 DT la demi-journée ». Le prix final se discute avec le voyageur.',
     experienceHint: 'Depuis combien de temps, les régions et types de voyages que vous connaissez bien.',
   },
   en: {
@@ -47,6 +57,11 @@ const COPY = {
     bio: 'About you',
     bioHint: 'Who you are, what you offer, the languages you speak.',
     experience: 'Experience',
+    languages: 'Languages spoken',
+    activities: 'Kinds of trips',
+    price: 'Indicative price',
+    priceHint:
+      'One free sentence, for example “from 60 TND per half day”. The final price is agreed with the traveller.',
     experienceHint: 'How long you have been doing this, the regions and kinds of trips you know well.',
   },
 } as const;
@@ -93,6 +108,41 @@ export default function ProProfileFields({
       setState('error');
     }
   };
+
+  const toggle = (key: 'languages' | 'activities', id: string) =>
+    onChange({ [key]: value[key].includes(id) ? value[key].filter((x) => x !== id) : [...value[key], id] });
+
+  const chips = (
+    key: 'languages' | 'activities',
+    label: string,
+    list: readonly { id: string; fr: string; en: string }[],
+    icon: React.ReactNode,
+  ) => (
+    <fieldset>
+      <legend className="flex items-center gap-2 text-sm font-medium text-charcoal">
+        {icon}
+        {label}
+      </legend>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {list.map((item) => {
+          const on = value[key].includes(item.id);
+          return (
+            <label
+              key={item.id}
+              className={`cursor-pointer rounded-pill border px-3.5 py-1.5 text-sm transition ${
+                on
+                  ? 'border-charcoal bg-charcoal text-cream'
+                  : 'border-sand-200 bg-white text-charcoal-700 hover:border-charcoal-300'
+              }`}
+            >
+              <input type="checkbox" checked={on} onChange={() => toggle(key, item.id)} className="sr-only" />
+              {item[locale]}
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
 
   const regions = [...new Set(catalog.places.map((p) => p.region))].sort((a, b) => a.localeCompare(b, locale));
 
@@ -210,6 +260,23 @@ export default function ProProfileFields({
           onAccept={(text) => onChange({ experience: text.slice(0, experienceMax) })}
         />
       </div>
+
+      {chips('languages', c.languages, PRO_LANGUAGES, <LanguageIcon className="text-charcoal-500" />)}
+      {chips('activities', c.activities, PRO_ACTIVITIES, <ActivityIcon className="text-charcoal-500" />)}
+
+      <label className="block text-sm font-medium text-charcoal">
+        <span className="flex items-center gap-2">
+          <PriceIcon className="text-charcoal-500" />
+          {c.price}
+        </span>
+        <input
+          className={`${field} font-normal`}
+          value={value.priceNote}
+          maxLength={PRICE_MAX}
+          onChange={(e) => onChange({ priceNote: e.target.value })}
+        />
+        <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.priceHint}</span>
+      </label>
     </>
   );
 }

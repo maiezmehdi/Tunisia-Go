@@ -4,6 +4,10 @@ import { NextResponse } from 'next/server';
 import {
   BIO_MAX,
   EXPERIENCE_MAX,
+  PRICE_MAX,
+  PRO_ACTIVITIES,
+  PRO_LANGUAGES,
+  cleanIds,
   PROS_TAG,
   authUserId,
   cleanPhotoPath,
@@ -53,6 +57,9 @@ export async function POST(request: Request) {
   const socials = text(body.socials, 200);
   const bio = text(body.bio, BIO_MAX);
   const experience = text(body.experience, EXPERIENCE_MAX);
+  const languages = cleanIds(body.languages, PRO_LANGUAGES);
+  const activities = cleanIds(body.activities, PRO_ACTIVITIES);
+  const priceNote = text(body.priceNote, PRICE_MAX);
   const placeId = cleanPlaceId(body.placeId);
   const photoPath = cleanPhotoPath(body.photoPath, owner);
   if (!kind || name.length < 2 || !whatsapp) return NextResponse.json({ error: 'invalid' }, { status: 400 });
@@ -71,6 +78,9 @@ export async function POST(request: Request) {
       socials: socials || null,
       bio: bio || null,
       experience: experience || null,
+      languages,
+      activities,
+      price_note: priceNote || null,
       place_id: placeId,
       photo_path: photoPath,
       consent: true,

@@ -1,5 +1,6 @@
 'use client';
 
+import { ActivityIcon, LanguageIcon, PriceIcon } from '@/components/ProIcons';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
@@ -16,6 +17,9 @@ export interface DirectoryPro {
   cardDeclared: boolean;
   bio: string | null;
   experience: string | null;
+  languageNames: string[];
+  activityNames: string[];
+  priceNote: string | null;
   placeName: string | null;
   /** Where the pin goes: the place where the person works, nudged so pins at the same place do not overlap. */
   coords: [number, number] | null;
@@ -27,6 +31,9 @@ export interface DirectoryLabels {
   agency: string;
   declared: string;
   experience: string;
+  languages: string;
+  activities: string;
+  price: string;
   declaredHint: string;
   contact: string;
   empty: string;
@@ -109,6 +116,28 @@ export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; 
                 </p>
               )}
               {p.bio && <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-charcoal-700">{p.bio}</p>}
+              {(p.languageNames.length > 0 || p.activityNames.length > 0 || p.priceNote) && (
+                <ul className="mt-4 space-y-2 text-sm text-charcoal-700">
+                  {p.languageNames.length > 0 && (
+                    <li className="flex items-start gap-2.5" title={labels.languages}>
+                      <LanguageIcon className="mt-0.5 shrink-0 text-charcoal-500" />
+                      <span>{p.languageNames.join(', ')}</span>
+                    </li>
+                  )}
+                  {p.activityNames.length > 0 && (
+                    <li className="flex items-start gap-2.5" title={labels.activities}>
+                      <ActivityIcon className="mt-0.5 shrink-0 text-charcoal-500" />
+                      <span>{p.activityNames.join(', ')}</span>
+                    </li>
+                  )}
+                  {p.priceNote && (
+                    <li className="flex items-start gap-2.5" title={labels.price}>
+                      <PriceIcon className="mt-0.5 shrink-0 text-charcoal-500" />
+                      <span>{p.priceNote}</span>
+                    </li>
+                  )}
+                </ul>
+              )}
               {p.experience && (
                 <div className="mt-3">
                   <p className="text-[11px] uppercase tracking-[0.16em] text-charcoal-300">{labels.experience}</p>

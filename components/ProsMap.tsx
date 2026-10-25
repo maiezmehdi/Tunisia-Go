@@ -1,5 +1,6 @@
 'use client';
 
+import { LanguageIcon, PriceIcon } from '@/components/ProIcons';
 import 'leaflet/dist/leaflet.css';
 
 import L from 'leaflet';
@@ -66,6 +67,18 @@ export default function ProsMap({ pros, labels }: { pros: DirectoryPro[]; labels
               {p.placeName && <p className="mt-0.5 text-xs text-charcoal-500">{p.placeName}</p>}
               {p.cardDeclared && <p className="mt-1 text-xs text-charcoal-700">{labels.declared}</p>}
               {p.bio && <p className="mt-2 line-clamp-3 text-sm leading-snug text-charcoal-700">{p.bio}</p>}
+              {p.languageNames.length > 0 && (
+                <p className="mt-2 flex items-start gap-2 text-xs text-charcoal-700">
+                  <LanguageIcon className="mt-px shrink-0 text-charcoal-500" />
+                  {p.languageNames.join(', ')}
+                </p>
+              )}
+              {p.priceNote && (
+                <p className="mt-1 flex items-start gap-2 text-xs text-charcoal-700">
+                  <PriceIcon className="mt-px shrink-0 text-charcoal-500" />
+                  {p.priceNote}
+                </p>
+              )}
               {p.whatsappUrl && (
                 <a
                   href={p.whatsappUrl}

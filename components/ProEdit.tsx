@@ -66,6 +66,9 @@ export interface Entry {
   socials: string;
   bio: string;
   experience: string;
+  languages: string[];
+  activities: string[];
+  priceNote: string;
   placeId: string;
   photoPath: string;
   photoUrl: string;
