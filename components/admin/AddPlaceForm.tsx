@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import RewriteButton from '@/components/RewriteButton';
 import { useState } from 'react';
 
 import { CATEGORIES } from '@/data/tunisiaData';
@@ -110,10 +111,13 @@ export default function AddPlaceForm() {
               onChange={(e) => set('coords', e.target.value)}
             />
           </label>
-          <label className={`${label} sm:col-span-2`}>
-            Description
-            <textarea rows={4} className={input} value={form.why} onChange={(e) => set('why', e.target.value)} />
-          </label>
+          <div className="sm:col-span-2">
+            <label className={label}>
+              Description
+              <textarea rows={4} className={input} value={form.why} onChange={(e) => set('why', e.target.value)} />
+            </label>
+            <RewriteButton value={form.why} kind="place" name={form.name} onAccept={(t) => set('why', t)} />
+          </div>
           <label className={label}>
             Meilleure période (facultatif)
             <input className={input} value={form.bestTime} onChange={(e) => set('bestTime', e.target.value)} />

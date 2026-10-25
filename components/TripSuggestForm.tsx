@@ -2,6 +2,7 @@
 
 import { useRef, useState, type ReactNode } from 'react';
 
+import RewriteButton from '@/components/RewriteButton';
 import PhotoPicker, { type PickedPhoto } from '@/components/PhotoPicker';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import type { Locale } from '@/lib/i18n/config';
@@ -256,6 +257,14 @@ export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
           maxLength={1500}
         />
       </Field>
+      <RewriteButton
+        audience="visitor"
+        value={description}
+        lang={locale}
+        kind="trip"
+        name={name}
+        onAccept={setDescription}
+      />
 
       <Field label={c.days}>
         <select className={input} value={days} onChange={(e) => setDays(Number(e.target.value))}>

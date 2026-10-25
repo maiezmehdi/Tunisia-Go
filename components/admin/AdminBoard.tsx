@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import RewriteButton from '@/components/RewriteButton';
 import { useMemo, useState } from 'react';
 
 import { CATEGORIES_FR } from '@/data/i18n/catalog.fr';
@@ -321,6 +322,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
           maxLength={2000}
         />
       </label>
+      <RewriteButton value={why} kind="place" name={name} onAccept={setWhy} />
 
       <label className="mt-4 block">
         <span className="text-xs text-charcoal-500">Meilleure période (facultatif)</span>
@@ -356,6 +358,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
             maxLength={2000}
           />
         </label>
+        <RewriteButton value={whyEn} lang="en" kind="place" name={nameEn || name} onAccept={setWhyEn} />
       </details>
 
       {s.status === 'approved' && (

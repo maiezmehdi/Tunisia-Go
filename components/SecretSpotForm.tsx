@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import RewriteButton from '@/components/RewriteButton';
 
 import BrandIcon from '@/components/BrandIcon';
 import type { Locale } from '@/lib/i18n/config';
@@ -446,6 +447,14 @@ export default function SecretSpotForm() {
           required
         />
       </Field>
+      <RewriteButton
+        audience="visitor"
+        value={spot.why}
+        lang={locale}
+        kind="place"
+        name={spot.name}
+        onAccept={(text) => setSpot((x) => ({ ...x, why: text }))}
+      />
 
       <fieldset>
         <legend className="flex w-full items-baseline justify-between gap-3 text-sm">
