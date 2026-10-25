@@ -272,6 +272,8 @@ export const PLACES: Place[] = [
   {
     id: 'sbeitla',
     wiki: 'Sbeitla',
+    wikiFr: 'Sbeïtla',
+    photoSearch: 'Sbeitla Roman forum temples',
     name: 'Sbeitla',
     nameAr: 'سبيطلة',
     region: 'Kasserine',
@@ -296,6 +298,8 @@ export const PLACES: Place[] = [
   {
     id: 'el-jem',
     wiki: 'Amphitheatre of El Jem',
+    wikiFr: "Amphithéâtre d'El Jem",
+    photoSearch: 'El Jem amphitheatre',
     name: 'El Jem Amphitheatre',
     nameAr: 'قصر الجم',
     region: 'Mahdia',
