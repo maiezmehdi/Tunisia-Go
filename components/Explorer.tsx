@@ -316,6 +316,9 @@ function HeaderLinks() {
       <a href="/evenements" className={link}>
         {t.events}
       </a>
+      <a href="/guides" className={link}>
+        {t.guides}
+      </a>
       <a href="/pratique" className={link}>
         {t.practical}
       </a>
@@ -381,6 +384,9 @@ function MobileMenu() {
             <MyTripLink className={`${link} border-t border-sand-200`} />
             <a href="/evenements" className={`${link} border-t border-sand-200`}>
               {t.events}
+            </a>
+            <a href="/guides" className={`${link} border-t border-sand-200`}>
+              {t.guides}
             </a>
             <a href="/pratique" className={`${link} border-t border-sand-200`}>
               {t.practical}
