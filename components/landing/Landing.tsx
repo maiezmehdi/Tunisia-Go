@@ -6,9 +6,10 @@ import { useEffect, useRef, useState } from 'react';
 import AddSpotLink from '@/components/AddSpotLink';
 import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
+import ProAuthButton from '@/components/ProAuthButton';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
-import ProAccount from '@/components/ProAccount';
+import ProAccountSection from '@/components/ProAccountSection';
 import LineArtPortrait from '@/components/landing/LineArtPortrait';
 import {
   ATLAS,
@@ -149,6 +150,7 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
           >
             {copy.nav.events}
           </a>
+          <ProAuthButton className="hidden whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline sm:block" />
           <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a
             href="/explore"
@@ -487,7 +489,7 @@ function ProSection() {
             {c.list}
           </a>
         </div>
-        <ProAccount />
+        <ProAccountSection />
       </Reveal>
     </section>
   );

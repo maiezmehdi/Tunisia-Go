@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
+import ProAuthButton from '@/components/ProAuthButton';
 import MadeBy from '@/components/MadeBy';
 import ProsDirectory, { type DirectoryPro } from '@/components/ProsDirectory';
 import SoundToggle from '@/components/SoundToggle';
@@ -124,6 +125,7 @@ export default async function GuidesPage({ params }: Params) {
           <div className="flex items-center gap-5">
             <SoundToggle />
             <LanguageSwitch />
+            <ProAuthButton className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline" />
             <a
               href="/explore"
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"

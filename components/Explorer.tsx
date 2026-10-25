@@ -1,5 +1,6 @@
 'use client';
 
+import ProAuthButton from '@/components/ProAuthButton';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -322,6 +323,7 @@ function HeaderLinks() {
       <a href="/pratique" className={link}>
         {t.practical}
       </a>
+      <ProAuthButton className={link} />
     </nav>
   );
 }
@@ -391,6 +393,7 @@ function MobileMenu() {
             <a href="/pratique" className={`${link} border-t border-sand-200`}>
               {t.practical}
             </a>
+            <ProAuthButton className={`${link} w-full border-t border-sand-200 text-left`} />
 
             <div className="flex items-center justify-between border-t border-sand-200 py-3">
               <span className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">{t.language}</span>
