@@ -161,3 +161,13 @@ export async function upsertRow(cfg: SupabaseConfig, table: string, row: Record<
   });
   if (!res.ok) throw new Error(`upsert ${res.status}: ${await res.text().catch(() => '')}`);
 }
+
+/** Deletes every row matching a PostgREST filter, e.g. `place_id=eq.tunis`. */
+export async function deleteWhere(cfg: SupabaseConfig, table: string, filter: string): Promise<void> {
+  const res = await fetch(`${cfg.url}/rest/v1/${table}?${filter}`, {
+    method: 'DELETE',
+    headers: { ...authHeaders(cfg.key), Prefer: 'return=minimal' },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`delete ${res.status}: ${await res.text().catch(() => '')}`);
+}
