@@ -51,18 +51,25 @@ async function query(params: Record<string, string>, api = API): Promise<{ pages
   for (const [k, v] of Object.entries({ action: 'query', format: 'json', redirects: '1', ...params })) {
     url.searchParams.set(k, v);
   }
-  try {
-    const res = await fetch(url, {
-      headers: HEADERS,
-      next: { revalidate: 86400 },
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { query?: { pages?: Record<string, ApiPage> } };
-    return json.query ?? null;
-  } catch {
-    return null;
+  // Wikimedia answers 429/5xx when many places are fetched at once: retry a few times with a pause.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: HEADERS,
+        next: { revalidate: 86400 },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (res.ok) {
+        const json = (await res.json()) as { query?: { pages?: Record<string, ApiPage> } };
+        return json.query ?? null;
+      }
+      if (res.status !== 429 && res.status < 500) return null;
+    } catch {
+      // timeout or network error: try again
+    }
+    await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
   }
+  return null;
 }
 
 function toPhoto(page: ApiPage): Photo | null {
@@ -160,6 +167,11 @@ async function photosForPlace(place: Place): Promise<Photo[]> {
 }
 
 export async function loadPhotos(places: Place[]): Promise<Record<string, Photo[]>> {
-  const entries = await Promise.all(places.map(async (p) => [p.id, await photosForPlace(p)] as const));
+  // A few places at a time, so Wikimedia does not rate-limit the build and leave some places empty for a day.
+  const entries: (readonly [string, Photo[]])[] = [];
+  for (let i = 0; i < places.length; i += 6) {
+    const batch = places.slice(i, i + 6);
+    entries.push(...(await Promise.all(batch.map(async (p) => [p.id, await photosForPlace(p)] as const))));
+  }
   return Object.fromEntries(entries);
 }
