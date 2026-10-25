@@ -463,12 +463,12 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
 const PRO_COPY = {
   fr: {
     title: 'Vous êtes guide ou agence ?',
-    text: 'Faites-vous connaître des voyageurs : une inscription en quelques lignes avec votre e-mail, et vous modifiez votre fiche quand vous voulez. Les voyageurs vous écrivent directement sur WhatsApp.',
+    text: 'Faites-vous connaître des voyageurs : un compte avec votre e-mail et un mot de passe, et vous modifiez votre fiche quand vous voulez. Les voyageurs vous écrivent directement sur WhatsApp.',
     list: 'Voir les guides et agences',
   },
   en: {
     title: 'Are you a guide or an agency?',
-    text: 'Get known by travellers: register in a few lines with your e-mail, and change your listing whenever you like. Travellers write to you directly on WhatsApp.',
+    text: 'Get known by travellers: create an account with your e-mail and a password, and change your listing whenever you like. Travellers write to you directly on WhatsApp.',
     list: 'See guides and agencies',
   },
 } as const;

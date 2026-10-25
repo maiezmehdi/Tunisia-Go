@@ -74,8 +74,10 @@ export default async function PlacesIndex({ params }: Params) {
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />
-          <div className="flex items-center gap-5">
-            <SoundToggle />
+          <div className="flex items-center gap-3 sm:gap-5">
+            <span className="hidden sm:inline-flex">
+              <SoundToggle />
+            </span>
             <LanguageSwitch />
             <a
               href="/explore"
