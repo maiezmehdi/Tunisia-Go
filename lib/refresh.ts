@@ -8,10 +8,12 @@ export const REFRESH_TAGS = [
   'place-overrides',
   'lexicon',
   'place-ratings',
+  'pros',
 ] as const;
 export const REFRESH_PATHS = [
   '/[lang]/evenements',
   '/[lang]/explore',
+  '/[lang]/guides',
   '/[lang]/lieux',
   '/[lang]/lieux/[id]',
   '/[lang]/mon-voyage',

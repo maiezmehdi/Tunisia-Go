@@ -1,0 +1,272 @@
+'use client';
+
+import { useRef, useState } from 'react';
+
+import { useLocale } from '@/lib/i18n/LocaleProvider';
+
+const COPY = {
+  fr: {
+    status: 'Votre statut',
+    guide: 'Guide indépendant',
+    agency: 'Agence',
+    name: { guide: 'Votre nom', agency: 'Nom de l’agence' },
+    whatsapp: 'Numéro WhatsApp',
+    whatsappHint: 'Avec l’indicatif du pays, par exemple +216 …',
+    card: 'Numéro de carte professionnelle de guide',
+    cardHint:
+      'Facultatif. Avec la carte, votre fiche est publiée tout de suite. Sans carte, nous la vérifions d’abord à la main.',
+    socials: 'Réseaux sociaux ou site',
+    socialsHint: 'Instagram, Facebook ou site web. Nous vérifions la fiche avant de la publier.',
+    consent:
+      'J’accepte que mon nom et mon numéro WhatsApp soient affichés publiquement sur Tunisia Go, pour que les voyageurs puissent me contacter.',
+    send: 'Envoyer',
+    sending: 'Envoi…',
+    change: 'Merci, c’est reçu. Nous vous contactons sur WhatsApp pour confirmer avant de modifier la fiche.',
+    removeLabel: 'Je veux retirer ma fiche',
+    changeHint:
+      'Déjà inscrit ? Renvoyez le formulaire avec le même numéro pour modifier votre fiche : nous vous contactons pour confirmer.',
+    removeOnly: 'Retirer ma fiche',
+    unknown: 'Aucune fiche avec ce numéro.',
+    published: 'Merci, votre fiche est publiée. Elle apparaît comme « carte déclarée ».',
+    pending: 'Merci, c’est reçu. Nous vérifions votre fiche avant de la publier.',
+    seeList: 'Voir les guides et agences',
+    invalid: 'Vérifiez votre nom et votre numéro WhatsApp (avec l’indicatif du pays).',
+    invalidCard: 'Ce numéro de carte ne semble pas valide. Corrigez-le ou laissez le champ vide.',
+    needSocials: 'Indiquez au moins un réseau social ou un site.',
+    needConsent: 'Cochez la case pour autoriser l’affichage.',
+    tooMany: 'Trop d’envois pour le moment. Réessayez plus tard.',
+    failed: 'L’envoi n’a pas abouti. Réessayez dans un instant.',
+  },
+  en: {
+    status: 'Your status',
+    guide: 'Independent guide',
+    agency: 'Agency',
+    name: { guide: 'Your name', agency: 'Agency name' },
+    whatsapp: 'WhatsApp number',
+    whatsappHint: 'With the country code, for example +216 …',
+    card: 'Professional guide card number',
+    cardHint: 'Optional. With the card, your listing is published right away. Without it, we check it by hand first.',
+    socials: 'Social networks or website',
+    socialsHint: 'Instagram, Facebook or a website. We check the listing before publishing it.',
+    consent: 'I agree that my name and WhatsApp number are shown publicly on Tunisia Go, so travellers can contact me.',
+    send: 'Send',
+    sending: 'Sending…',
+    change: 'Thank you, we have it. We will contact you on WhatsApp to confirm before changing the listing.',
+    removeLabel: 'I want to remove my listing',
+    changeHint:
+      'Already registered? Send the form again with the same number to change your listing: we contact you to confirm.',
+    removeOnly: 'Remove my listing',
+    unknown: 'No listing with this number.',
+    published: 'Thank you, your listing is published. It appears as “card declared”.',
+    pending: 'Thank you, we have it. We check your listing before publishing it.',
+    seeList: 'See guides and agencies',
+    invalid: 'Check your name and your WhatsApp number (with the country code).',
+    invalidCard: 'This card number does not look valid. Correct it or leave the field empty.',
+    needSocials: 'Give at least one social network or website.',
+    needConsent: 'Tick the box to allow the listing to be shown.',
+    tooMany: 'Too many submissions for now. Please try again later.',
+    failed: 'Sending did not work. Please try again in a moment.',
+  },
+} as const;
+
+const field =
+  'mt-1.5 w-full rounded-2xl border border-sand-200 bg-white px-4 py-2.5 text-[15px] text-charcoal outline-none transition placeholder:text-charcoal-300 focus:border-charcoal';
+
+/** Guides and agencies register themselves: no account, a short form. */
+export default function ProSignup() {
+  const { locale } = useLocale();
+  const c = COPY[locale];
+  const openedAt = useRef(Date.now());
+  const [kind, setKind] = useState<'guide' | 'agency'>('guide');
+  const [name, setName] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [card, setCard] = useState('');
+  const [socials, setSocials] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [remove, setRemove] = useState(false);
+  const [state, setState] = useState<'idle' | 'sending' | 'published' | 'pending' | 'change' | 'error'>('idle');
+  const [error, setError] = useState('');
+
+  const fail = (message: string) => {
+    setState('error');
+    setError(message);
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!remove && !consent) return fail(c.needConsent);
+    setState('sending');
+    try {
+      const res = await fetch('/api/pro-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kind,
+          name,
+          whatsapp,
+          card: kind === 'guide' ? card : '',
+          socials: kind === 'agency' ? socials : '',
+          consent,
+          remove,
+          elapsed: Date.now() - openedAt.current,
+        }),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { status?: string };
+        return setState(data.status === 'published' ? 'published' : data.status === 'change' ? 'change' : 'pending');
+      }
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (res.status === 429) return fail(c.tooMany);
+      if (data.error === 'invalid_card') return fail(c.invalidCard);
+      if (data.error === 'unknown') return fail(c.unknown);
+      if (data.error === 'invalid')
+        return fail(kind === 'agency' && socials.trim().length < 3 ? c.needSocials : c.invalid);
+      fail(c.failed);
+    } catch {
+      fail(c.failed);
+    }
+  };
+
+  if (state === 'published' || state === 'pending' || state === 'change') {
+    return (
+      <div role="status" className="rounded-3xl border border-sand-200 bg-white p-6">
+        <p className="text-[15px] leading-relaxed text-charcoal">
+          {state === 'published' ? c.published : state === 'change' ? c.change : c.pending}
+        </p>
+        <a
+          href={locale === 'fr' ? '/guides' : '/en/guides'}
+          className="mt-4 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
+        >
+          {c.seeList}
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-5 rounded-3xl border border-sand-200 bg-white p-6" noValidate>
+      {remove ? null : (
+        <fieldset>
+          <legend className="text-sm font-medium text-charcoal">{c.status}</legend>
+          <div className="mt-2 flex gap-2">
+            {(['guide', 'agency'] as const).map((k) => (
+              <label
+                key={k}
+                className={`cursor-pointer rounded-pill border px-4 py-1.5 text-sm transition ${
+                  kind === k
+                    ? 'border-charcoal bg-charcoal text-cream'
+                    : 'border-sand-200 bg-white text-charcoal-700 hover:border-charcoal-300'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="kind"
+                  value={k}
+                  checked={kind === k}
+                  onChange={() => setKind(k)}
+                  className="sr-only"
+                />
+                {c[k]}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      {remove ? null : (
+        <label className="block text-sm font-medium text-charcoal">
+          {c.name[kind]}
+          <input
+            className={`${field} font-normal`}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={80}
+            autoComplete="name"
+            required
+          />
+        </label>
+      )}
+
+      <label className="block text-sm font-medium text-charcoal">
+        {c.whatsapp}
+        <input
+          className={`${field} font-normal`}
+          value={whatsapp}
+          onChange={(e) => setWhatsapp(e.target.value)}
+          maxLength={30}
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="+216"
+          required
+        />
+        <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.whatsappHint}</span>
+      </label>
+
+      {remove ? null : kind === 'guide' ? (
+        <label className="block text-sm font-medium text-charcoal">
+          {c.card}
+          <input
+            className={`${field} font-normal`}
+            value={card}
+            onChange={(e) => setCard(e.target.value)}
+            maxLength={40}
+            autoComplete="off"
+          />
+          <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.cardHint}</span>
+        </label>
+      ) : (
+        <label className="block text-sm font-medium text-charcoal">
+          {c.socials}
+          <input
+            className={`${field} font-normal`}
+            value={socials}
+            onChange={(e) => setSocials(e.target.value)}
+            maxLength={200}
+            autoComplete="off"
+            required
+          />
+          <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.socialsHint}</span>
+        </label>
+      )}
+
+      {!remove && (
+        <label className="flex items-start gap-3 text-sm leading-relaxed text-charcoal-700">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 accent-charcoal"
+          />
+          {c.consent}
+        </label>
+      )}
+
+      {!remove && <p className="text-xs leading-relaxed text-charcoal-500">{c.changeHint}</p>}
+
+      <label className="flex items-center gap-3 text-sm text-charcoal-500">
+        <input
+          type="checkbox"
+          checked={remove}
+          onChange={(e) => setRemove(e.target.checked)}
+          className="h-4 w-4 shrink-0 accent-charcoal"
+        />
+        {c.removeLabel}
+      </label>
+
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="submit"
+          disabled={state === 'sending'}
+          className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-60"
+        >
+          {state === 'sending' ? c.sending : remove ? c.removeOnly : c.send}
+        </button>
+        {state === 'error' && (
+          <p role="alert" className="text-sm text-terracotta-700">
+            {error}
+          </p>
+        )}
+      </div>
+    </form>
+  );
+}

@@ -34,6 +34,13 @@ const COPY: Record<
         ],
       },
       {
+        title: 'Les guides et agences inscrits',
+        body: [
+          'Si vous vous inscrivez comme guide ou agence, nous enregistrons votre nom, votre numéro WhatsApp, le numéro de votre carte professionnelle (facultatif) et vos réseaux sociaux. Votre nom et votre numéro WhatsApp sont affichés publiquement sur la page Guides et agences, avec votre accord explicite donné dans le formulaire. Le numéro de carte n’est jamais publié : la fiche indique seulement « carte professionnelle déclarée », sans que Tunisia Go l’ait vérifiée officiellement.',
+          'Pour modifier ou retirer votre fiche, renvoyez le formulaire avec le même numéro ou cochez « retirer ma fiche » : nous vous contactons sur WhatsApp pour confirmer. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
+        ],
+      },
+      {
         title: 'Les notes sur les lieux',
         body: [
           'Vous pouvez noter un lieu de 1 à 5 étoiles, sans créer de compte. Pour qu’une personne ne vote qu’une fois par lieu, nous calculons une empreinte chiffrée de votre adresse IP avec une clé secrète. L’adresse IP elle-même n’est pas enregistrée, et l’empreinte ne permet pas de la retrouver.',
@@ -86,6 +93,13 @@ const COPY: Record<
         body: [
           'When you suggest a place, we store what you type (name of the place, area, location, description, first name and contact if you give them) and your photos. Photos are resized and their metadata, including GPS location, is removed in your browser before upload.',
           'This is only used to review the suggestion and, if it is accepted, to add it to the map with your first name as credit. It is hosted in the European Union (Supabase, Frankfurt). Your contact details are never published. Suggestions that are not kept are deleted after 12 months.',
+        ],
+      },
+      {
+        title: 'Registered guides and agencies',
+        body: [
+          'If you register as a guide or agency, we store your name, your WhatsApp number, your professional card number (optional) and your social networks. Your name and WhatsApp number are shown publicly on the Guides and agencies page, with the explicit consent you give in the form. The card number is never published: the listing only says “professional card declared”, which Tunisia Go has not officially checked.',
+          'To change or remove your listing, send the form again with the same number or tick “remove my listing”: we contact you on WhatsApp to confirm. The data is hosted in the European Union (Supabase, Frankfurt).',
         ],
       },
       {

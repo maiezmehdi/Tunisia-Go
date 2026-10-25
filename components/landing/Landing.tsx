@@ -8,6 +8,7 @@ import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
+import ProSignup from '@/components/ProSignup';
 import LineArtPortrait from '@/components/landing/LineArtPortrait';
 import {
   ATLAS,
@@ -77,6 +78,7 @@ export default function Landing({ photos }: LandingProps) {
       <Manifesto />
       <Escapes trips={trips} />
       <Atlas vignettes={vignettes} />
+      <ProSection />
       <Finale />
       <Footer photos={[...usedPhotos.values()]} />
     </div>
@@ -449,6 +451,45 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
       <p className="mt-4 font-serif text-lg leading-snug">{caption}</p>
       <p className="mt-1 text-xs uppercase tracking-[0.2em] text-charcoal-300">{place.region}</p>
     </a>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Guides and agencies                                                 */
+/* ------------------------------------------------------------------ */
+
+const PRO_COPY = {
+  fr: {
+    title: 'Vous êtes guide ou agence ?',
+    text: 'Faites-vous connaître des voyageurs : une inscription en quelques lignes, sans compte à créer. Les voyageurs vous écrivent directement sur WhatsApp.',
+    list: 'Voir les guides et agences',
+  },
+  en: {
+    title: 'Are you a guide or an agency?',
+    text: 'Get known by travellers: register in a few lines, with no account to create. Travellers write to you directly on WhatsApp.',
+    list: 'See guides and agencies',
+  },
+} as const;
+
+function ProSection() {
+  const { locale } = useLocale();
+  const c = PRO_COPY[locale];
+  return (
+    <section id="guides" className="border-t border-sand-200 bg-sand-50 px-5 py-24 sm:px-10 sm:py-32">
+      <Reveal className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-start">
+        <div>
+          <h2 className="font-serif text-4xl leading-[1.08] tracking-tight text-charcoal sm:text-5xl">{c.title}</h2>
+          <p className="mt-5 max-w-md text-[17px] leading-relaxed text-charcoal-500">{c.text}</p>
+          <a
+            href={locale === 'fr' ? '/guides' : '/en/guides'}
+            className="mt-6 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
+          >
+            {c.list}
+          </a>
+        </div>
+        <ProSignup />
+      </Reveal>
+    </section>
   );
 }
 
