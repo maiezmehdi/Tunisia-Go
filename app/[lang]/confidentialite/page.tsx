@@ -37,7 +37,7 @@ const COPY: Record<
         title: 'Les guides et agences inscrits',
         body: [
           'Si vous vous inscrivez comme guide ou agence, nous enregistrons votre nom, votre numéro WhatsApp, le numéro de votre carte professionnelle (facultatif) et vos réseaux sociaux. Votre nom et votre numéro WhatsApp sont affichés publiquement sur la page Guides et agences, avec votre accord explicite donné dans le formulaire. Le numéro de carte n’est jamais publié : la fiche indique seulement « carte professionnelle déclarée », sans que Tunisia Go l’ait vérifiée officiellement.',
-          'Pour modifier ou retirer votre fiche, renvoyez le formulaire avec le même numéro ou cochez « retirer ma fiche » : nous vous contactons sur WhatsApp pour confirmer. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
+          'Après l’inscription, vous recevez un lien privé qui vous permet de modifier ou de retirer votre fiche à tout moment ; nous ne gardons qu’une empreinte chiffrée de ce lien. Les données sont hébergées dans l’Union européenne (Supabase, Francfort).',
         ],
       },
       {
@@ -99,7 +99,7 @@ const COPY: Record<
         title: 'Registered guides and agencies',
         body: [
           'If you register as a guide or agency, we store your name, your WhatsApp number, your professional card number (optional) and your social networks. Your name and WhatsApp number are shown publicly on the Guides and agencies page, with the explicit consent you give in the form. The card number is never published: the listing only says “professional card declared”, which Tunisia Go has not officially checked.',
-          'To change or remove your listing, send the form again with the same number or tick “remove my listing”: we contact you on WhatsApp to confirm. The data is hosted in the European Union (Supabase, Frankfurt).',
+          'After registering, you receive a private link that lets you change or remove your listing at any time; we keep only an encrypted fingerprint of that link. The data is hosted in the European Union (Supabase, Frankfurt).',
         ],
       },
       {

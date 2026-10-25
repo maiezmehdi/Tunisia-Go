@@ -21,12 +21,14 @@ const COPY = {
       'J’accepte que mon nom et mon numéro WhatsApp soient affichés publiquement sur Tunisia Go, pour que les voyageurs puissent me contacter.',
     send: 'Envoyer',
     sending: 'Envoi…',
-    change: 'Merci, c’est reçu. Nous vous contactons sur WhatsApp pour confirmer avant de modifier la fiche.',
-    removeLabel: 'Je veux retirer ma fiche',
-    changeHint:
-      'Déjà inscrit ? Renvoyez le formulaire avec le même numéro pour modifier votre fiche : nous vous contactons pour confirmer.',
-    removeOnly: 'Retirer ma fiche',
-    unknown: 'Aucune fiche avec ce numéro.',
+    changeHint: 'Après l’envoi, vous recevez un lien privé pour modifier ou retirer votre fiche quand vous voulez.',
+    exists: 'Ce numéro est déjà inscrit. Utilisez votre lien privé pour modifier votre fiche.',
+    linkTitle: 'Gardez ce lien : il ouvre votre fiche pour la modifier ou la retirer',
+    linkWarn:
+      'Il ne sera plus affiché. Copiez-le ou envoyez-le vous sur WhatsApp : sans lui, vous ne pourrez plus modifier la fiche seul.',
+    copy: 'Copier le lien',
+    copied: 'Lien copié',
+    toWhatsApp: 'M’envoyer le lien sur WhatsApp',
     published: 'Merci, votre fiche est publiée. Elle apparaît comme « carte déclarée ».',
     pending: 'Merci, c’est reçu. Nous vérifions votre fiche avant de la publier.',
     seeList: 'Voir les guides et agences',
@@ -51,12 +53,14 @@ const COPY = {
     consent: 'I agree that my name and WhatsApp number are shown publicly on Tunisia Go, so travellers can contact me.',
     send: 'Send',
     sending: 'Sending…',
-    change: 'Thank you, we have it. We will contact you on WhatsApp to confirm before changing the listing.',
-    removeLabel: 'I want to remove my listing',
-    changeHint:
-      'Already registered? Send the form again with the same number to change your listing: we contact you to confirm.',
-    removeOnly: 'Remove my listing',
-    unknown: 'No listing with this number.',
+    changeHint: 'After sending, you get a private link to change or remove your listing whenever you like.',
+    exists: 'This number is already registered. Use your private link to change your listing.',
+    linkTitle: 'Keep this link: it opens your listing so you can change or remove it',
+    linkWarn:
+      'It will not be shown again. Copy it or send it to yourself on WhatsApp: without it you cannot change the listing on your own.',
+    copy: 'Copy the link',
+    copied: 'Link copied',
+    toWhatsApp: 'Send me the link on WhatsApp',
     published: 'Thank you, your listing is published. It appears as “card declared”.',
     pending: 'Thank you, we have it. We check your listing before publishing it.',
     seeList: 'See guides and agencies',
@@ -83,7 +87,8 @@ export default function ProSignup() {
   const [card, setCard] = useState('');
   const [socials, setSocials] = useState('');
   const [consent, setConsent] = useState(false);
-  const [remove, setRemove] = useState(false);
+  const [link, setLink] = useState('');
+  const [copied, setCopied] = useState(false);
   const [state, setState] = useState<'idle' | 'sending' | 'published' | 'pending' | 'change' | 'error'>('idle');
   const [error, setError] = useState('');
 
@@ -94,7 +99,7 @@ export default function ProSignup() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!remove && !consent) return fail(c.needConsent);
+    if (!consent) return fail(c.needConsent);
     setState('sending');
     try {
       const res = await fetch('/api/pro-signup', {
@@ -107,18 +112,20 @@ export default function ProSignup() {
           card: kind === 'guide' ? card : '',
           socials: kind === 'agency' ? socials : '',
           consent,
-          remove,
           elapsed: Date.now() - openedAt.current,
         }),
       });
       if (res.ok) {
-        const data = (await res.json()) as { status?: string };
-        return setState(data.status === 'published' ? 'published' : data.status === 'change' ? 'change' : 'pending');
+        const data = (await res.json()) as { status?: string; token?: string };
+        if (data.token) {
+          setLink(`${window.location.origin}${locale === 'fr' ? '' : '/en'}/guides/modifier#${data.token}`);
+        }
+        return setState(data.status === 'published' ? 'published' : 'pending');
       }
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (res.status === 429) return fail(c.tooMany);
       if (data.error === 'invalid_card') return fail(c.invalidCard);
-      if (data.error === 'unknown') return fail(c.unknown);
+      if (data.error === 'exists') return fail(c.exists);
       if (data.error === 'invalid')
         return fail(kind === 'agency' && socials.trim().length < 3 ? c.needSocials : c.invalid);
       fail(c.failed);
@@ -127,12 +134,39 @@ export default function ProSignup() {
     }
   };
 
-  if (state === 'published' || state === 'pending' || state === 'change') {
+  if (state === 'published' || state === 'pending') {
     return (
       <div role="status" className="rounded-3xl border border-sand-200 bg-white p-6">
-        <p className="text-[15px] leading-relaxed text-charcoal">
-          {state === 'published' ? c.published : state === 'change' ? c.change : c.pending}
-        </p>
+        <p className="text-[15px] leading-relaxed text-charcoal">{state === 'published' ? c.published : c.pending}</p>
+        {link && (
+          <div className="mt-5 rounded-2xl border border-sand-200 bg-sand-50 p-4">
+            <p className="text-sm font-medium text-charcoal">{c.linkTitle}</p>
+            <p className="mt-2 break-all rounded-xl bg-white px-3 py-2 text-xs text-charcoal-700">{link}</p>
+            <p className="mt-2 text-xs leading-relaxed text-charcoal-500">{c.linkWarn}</p>
+            <div className="mt-3 flex flex-wrap gap-4 text-sm">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText(link).then(
+                    () => setCopied(true),
+                    () => undefined,
+                  );
+                }}
+                className="text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
+              >
+                {copied ? c.copied : c.copy}
+              </button>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(link)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
+              >
+                {c.toWhatsApp}
+              </a>
+            </div>
+          </div>
+        )}
         <a
           href={locale === 'fr' ? '/guides' : '/en/guides'}
           className="mt-4 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
@@ -145,47 +179,43 @@ export default function ProSignup() {
 
   return (
     <form onSubmit={submit} className="space-y-5 rounded-3xl border border-sand-200 bg-white p-6" noValidate>
-      {remove ? null : (
-        <fieldset>
-          <legend className="text-sm font-medium text-charcoal">{c.status}</legend>
-          <div className="mt-2 flex gap-2">
-            {(['guide', 'agency'] as const).map((k) => (
-              <label
-                key={k}
-                className={`cursor-pointer rounded-pill border px-4 py-1.5 text-sm transition ${
-                  kind === k
-                    ? 'border-charcoal bg-charcoal text-cream'
-                    : 'border-sand-200 bg-white text-charcoal-700 hover:border-charcoal-300'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="kind"
-                  value={k}
-                  checked={kind === k}
-                  onChange={() => setKind(k)}
-                  className="sr-only"
-                />
-                {c[k]}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      )}
+      <fieldset>
+        <legend className="text-sm font-medium text-charcoal">{c.status}</legend>
+        <div className="mt-2 flex gap-2">
+          {(['guide', 'agency'] as const).map((k) => (
+            <label
+              key={k}
+              className={`cursor-pointer rounded-pill border px-4 py-1.5 text-sm transition ${
+                kind === k
+                  ? 'border-charcoal bg-charcoal text-cream'
+                  : 'border-sand-200 bg-white text-charcoal-700 hover:border-charcoal-300'
+              }`}
+            >
+              <input
+                type="radio"
+                name="kind"
+                value={k}
+                checked={kind === k}
+                onChange={() => setKind(k)}
+                className="sr-only"
+              />
+              {c[k]}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
-      {remove ? null : (
-        <label className="block text-sm font-medium text-charcoal">
-          {c.name[kind]}
-          <input
-            className={`${field} font-normal`}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={80}
-            autoComplete="name"
-            required
-          />
-        </label>
-      )}
+      <label className="block text-sm font-medium text-charcoal">
+        {c.name[kind]}
+        <input
+          className={`${field} font-normal`}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={80}
+          autoComplete="name"
+          required
+        />
+      </label>
 
       <label className="block text-sm font-medium text-charcoal">
         {c.whatsapp}
@@ -202,7 +232,7 @@ export default function ProSignup() {
         <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.whatsappHint}</span>
       </label>
 
-      {remove ? null : kind === 'guide' ? (
+      {kind === 'guide' ? (
         <label className="block text-sm font-medium text-charcoal">
           {c.card}
           <input
@@ -229,29 +259,17 @@ export default function ProSignup() {
         </label>
       )}
 
-      {!remove && (
-        <label className="flex items-start gap-3 text-sm leading-relaxed text-charcoal-700">
-          <input
-            type="checkbox"
-            checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
-            className="mt-1 h-4 w-4 shrink-0 accent-charcoal"
-          />
-          {c.consent}
-        </label>
-      )}
-
-      {!remove && <p className="text-xs leading-relaxed text-charcoal-500">{c.changeHint}</p>}
-
-      <label className="flex items-center gap-3 text-sm text-charcoal-500">
+      <label className="flex items-start gap-3 text-sm leading-relaxed text-charcoal-700">
         <input
           type="checkbox"
-          checked={remove}
-          onChange={(e) => setRemove(e.target.checked)}
-          className="h-4 w-4 shrink-0 accent-charcoal"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          className="mt-1 h-4 w-4 shrink-0 accent-charcoal"
         />
-        {c.removeLabel}
+        {c.consent}
       </label>
+
+      <p className="text-xs leading-relaxed text-charcoal-500">{c.changeHint}</p>
 
       <div className="flex flex-wrap items-center gap-4">
         <button
@@ -259,7 +277,7 @@ export default function ProSignup() {
           disabled={state === 'sending'}
           className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-60"
         >
-          {state === 'sending' ? c.sending : remove ? c.removeOnly : c.send}
+          {state === 'sending' ? c.sending : c.send}
         </button>
         {state === 'error' && (
           <p role="alert" className="text-sm text-terracotta-700">

@@ -1,3 +1,5 @@
+import { createHash, randomBytes } from 'node:crypto';
+
 import { selectRows, supabaseConfig } from '@/lib/supabase';
 
 export const PROS_TAG = 'pros';
@@ -33,6 +35,16 @@ export function normalizeWhatsApp(raw: string): string | null {
 export function normalizeCard(raw: string): string | null {
   const card = raw.trim().replace(/\s+/g, ' ');
   return /^(?=.*\d)[\p{L}\d][\p{L}\d /.\-]{2,24}$/u.test(card) ? card : null;
+}
+
+/** The secret behind a guide's private edit link. Only its hash is stored. */
+export function newEditToken(): { token: string; hash: string } {
+  const token = randomBytes(32).toString('base64url');
+  return { token, hash: hashToken(token) };
+}
+
+export function hashToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
 }
 
 /** A link only for a plain https address; any other text is shown as typed. */

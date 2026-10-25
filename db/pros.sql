@@ -26,5 +26,5 @@ create table if not exists public.pro_reports (
 alter table public.pro_reports enable row level security;
 create index if not exists pro_reports_listing_idx on public.pro_reports (listing_id);
 
--- Changes asked by a guide or agency that registered again with the same number wait here until the admin applies them.
-alter table public.pro_listings add column if not exists pending_change jsonb;
+-- A guide edits their own entry through a private link; only the hash of the link's secret is stored.
+alter table public.pro_listings add column if not exists edit_token_hash text unique;

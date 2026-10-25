@@ -14,7 +14,6 @@ export interface AdminPro {
   socials: string | null;
   autoPublished: boolean;
   reports: number;
-  change: { remove?: boolean; kind?: string; name?: string; card?: string | null; socials?: string | null } | null;
 }
 
 const DATE = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short' });
@@ -24,17 +23,17 @@ const TABS = [
   ['hidden', 'Masquées'],
 ] as const;
 
-/** Guides and agencies: check the ones without a card, take one down in a click, apply the changes they ask for. */
+/** Guides and agencies: check the ones without a card, take one down in a click. */
 export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; tableMissing: boolean }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminPro['status']>('pending');
   const [confirm, setConfirm] = useState<string | null>(null);
 
-  const waiting = pros.filter((p) => p.status === 'pending' || p.change).length;
-  const list = pros.filter((p) => (tab === 'pending' ? p.status === 'pending' || !!p.change : p.status === tab));
+  const waiting = pros.filter((p) => p.status === 'pending').length;
+  const list = pros.filter((p) => (tab === 'pending' ? p.status === 'pending' : p.status === tab));
 
-  const act = async (id: string, action: 'publish' | 'hide' | 'apply_change' | 'dismiss_change' | 'delete') => {
+  const act = async (id: string, action: 'publish' | 'hide' | 'delete') => {
     setBusy(id);
     await fetch(`/api/admin/pros/${id}`, {
       method: action === 'delete' ? 'DELETE' : 'PATCH',
@@ -144,44 +143,6 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                   )}
                 </div>
               </div>
-
-              {p.change && (
-                <div className="mt-3 max-w-2xl rounded-2xl border border-sand-200 bg-sand-50 p-4 text-sm text-charcoal-700">
-                  {p.change.remove ? (
-                    <p className="font-medium text-charcoal">Demande de retrait de la fiche</p>
-                  ) : (
-                    <>
-                      <p className="font-medium text-charcoal">Modification demandée</p>
-                      <p className="mt-1">
-                        {p.change.name} · {p.change.kind === 'agency' ? 'Agence' : 'Guide'}
-                      </p>
-                      {p.change.card && <p>Carte : {p.change.card}</p>}
-                      {p.change.socials && <p className="break-all">Réseaux : {p.change.socials}</p>}
-                    </>
-                  )}
-                  <p className="mt-1 text-xs text-charcoal-500">
-                    Écrivez d’abord à cette personne sur WhatsApp pour confirmer que la demande vient bien d’elle.
-                  </p>
-                  <div className="mt-3 flex gap-4">
-                    <button
-                      type="button"
-                      disabled={busy === p.id}
-                      onClick={() => act(p.id, 'apply_change')}
-                      className={btn}
-                    >
-                      {p.change.remove ? 'Retirer la fiche' : 'Appliquer'}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busy === p.id}
-                      onClick={() => act(p.id, 'dismiss_change')}
-                      className={btn}
-                    >
-                      Ignorer
-                    </button>
-                  </div>
-                </div>
-              )}
             </li>
           ))}
         </ul>
