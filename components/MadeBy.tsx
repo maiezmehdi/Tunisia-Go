@@ -37,6 +37,12 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
       <span aria-hidden className="mx-2">
         ·
       </span>
+      <a href="/guides" className={`underline underline-offset-4 transition ${link}`}>
+        {t.guides}
+      </a>
+      <span aria-hidden className="mx-2">
+        ·
+      </span>
       <a href="/confidentialite" className={`underline underline-offset-4 transition ${link}`}>
         {t.privacy}
       </a>
