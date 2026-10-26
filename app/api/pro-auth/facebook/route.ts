@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const cfg = supabaseConfig();
   const url = new URL(request.url);
   const back = `${url.origin}${url.searchParams.get('lang') === 'en' ? '/en' : ''}/compte`;
-  if (!cfg) return NextResponse.redirect(`${back}?auth=off`);
+  if (!cfg || process.env.NEXT_PUBLIC_FACEBOOK_LOGIN !== 'on') return NextResponse.redirect(`${back}?auth=off`);
   const target = new URL(`${cfg.url}/auth/v1/authorize`);
   target.searchParams.set('provider', 'facebook');
   target.searchParams.set('scopes', 'email');

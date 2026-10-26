@@ -114,6 +114,9 @@ const COPY = {
   },
 } as const;
 
+/** "Continue with Facebook" stays hidden until NEXT_PUBLIC_FACEBOOK_LOGIN=on (Meta must approve the app first). */
+const FACEBOOK_LOGIN = process.env.NEXT_PUBLIC_FACEBOOK_LOGIN === 'on';
+
 const input =
   'mt-1.5 w-full rounded-2xl border border-sand-200 bg-white px-4 py-2.5 text-[15px] font-normal text-charcoal outline-none transition placeholder:text-charcoal-300 focus:border-charcoal';
 const primary =
@@ -346,7 +349,7 @@ export default function AccountPage() {
           </button>
         ))}
       </div>
-      {(mode === 'login' || kind === 'traveler') && (
+      {FACEBOOK_LOGIN && (mode === 'login' || kind === 'traveler') && (
         <div className="mb-5">
           <a
             href={`/api/pro-auth/facebook${locale === 'en' ? '?lang=en' : ''}`}
