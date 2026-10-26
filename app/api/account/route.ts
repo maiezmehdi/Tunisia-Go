@@ -84,6 +84,15 @@ export async function POST(request: Request) {
       await deleteWhere(cfg, 'pro_listings', `id=eq.${row.id}`);
       if (row.photo_path) await deleteObjects(cfg, PRO_PHOTO_BUCKET, [row.photo_path]).catch(() => undefined);
     }
+    const partners = await selectRows<{ photo_path: string | null }>(
+      cfg,
+      'partner_listings',
+      `select=photo_path&owner_id=eq.${user.id}`,
+    ).catch(() => []);
+    await deleteWhere(cfg, 'partner_listings', `owner_id=eq.${user.id}`).catch(() => undefined);
+    for (const row of partners) {
+      if (row.photo_path) await deleteObjects(cfg, PRO_PHOTO_BUCKET, [row.photo_path]).catch(() => undefined);
+    }
     await deleteWhere(cfg, 'traveler_data', `owner_id=eq.${user.id}`);
     const res = await fetch(`${cfg.url}/auth/v1/admin/users/${user.id}`, {
       method: 'DELETE',

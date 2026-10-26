@@ -147,9 +147,14 @@ export async function deleteRow(cfg: SupabaseConfig, table: string, id: string):
   if (!res.ok) throw new Error(`delete ${res.status}: ${await res.text().catch(() => '')}`);
 }
 
-/** Inserts a row, or replaces the one with the same primary key. */
-export async function upsertRow(cfg: SupabaseConfig, table: string, row: Record<string, unknown>): Promise<void> {
-  const res = await fetch(`${cfg.url}/rest/v1/${table}`, {
+/** Inserts a row, or replaces the one with the same primary key (or the same `onConflict` column). */
+export async function upsertRow(
+  cfg: SupabaseConfig,
+  table: string,
+  row: Record<string, unknown>,
+  onConflict?: string,
+): Promise<void> {
+  const res = await fetch(`${cfg.url}/rest/v1/${table}${onConflict ? `?on_conflict=${onConflict}` : ''}`, {
     method: 'POST',
     headers: {
       ...authHeaders(cfg.key),
