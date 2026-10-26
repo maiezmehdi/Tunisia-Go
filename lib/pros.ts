@@ -164,13 +164,24 @@ export async function authUser(cfg: SupabaseConfig, accessToken: unknown): Promi
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return null;
-    const user = (await res.json()) as { id?: unknown; email?: unknown; user_metadata?: { account_type?: unknown } };
+    const user = (await res.json()) as {
+      id?: unknown;
+      email?: unknown;
+      user_metadata?: { account_type?: unknown };
+      app_metadata?: { provider?: unknown };
+    };
     if (typeof user.id !== 'string' || !/^[0-9a-f-]{36}$/i.test(user.id)) return null;
     const type = user.user_metadata?.account_type;
     return {
       id: user.id,
       email: typeof user.email === 'string' ? user.email : '',
-      kind: type === 'traveler' || type === 'partner' ? type : 'pro',
+      // A person who signed in with Facebook never chose a type: they are travellers.
+      kind:
+        type === 'traveler' || type === 'partner'
+          ? type
+          : !type && user.app_metadata?.provider === 'facebook'
+            ? 'traveler'
+            : 'pro',
     };
   } catch {
     return null;
