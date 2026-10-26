@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import AccountSaved from '@/components/AccountSaved';
+import AccountSettings from '@/components/AccountSettings';
 import ProEdit, { type Entry } from '@/components/ProEdit';
 import ProSignup from '@/components/ProSignup';
 import ProSteps from '@/components/ProSteps';
@@ -218,6 +220,7 @@ export default function AccountPage() {
             <dd className="mt-0.5 text-charcoal">{isPro ? c.proLabel : c.travelerLabel}</dd>
           </div>
         </dl>
+        {!isPro && <AccountSaved />}
         {isPro && accessToken && (
           <section aria-label={c.listingTitle} className="space-y-4">
             <h2 className="font-serif text-2xl">{c.listingTitle}</h2>
@@ -234,6 +237,7 @@ export default function AccountPage() {
             )}
           </section>
         )}
+        {accessToken && <AccountSettings accessToken={accessToken} />}
         <div className="flex flex-wrap gap-3">
           <button
             type="button"

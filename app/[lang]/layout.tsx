@@ -8,6 +8,8 @@ import ServiceWorker from '@/components/ServiceWorker';
 import { LOCALES, isLocale } from '@/lib/i18n/config';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
 import { MyTripProvider } from '@/lib/myTrip';
+import TravelerSync from '@/components/TravelerSync';
+import { FavoritesProvider } from '@/lib/favorites';
 import { ProAuthProvider } from '@/lib/proAuth';
 import { SITE_URL } from '@/lib/seo';
 import { SoundProvider } from '@/lib/sound';
@@ -67,9 +69,12 @@ export default async function RootLayout({
           <SoundProvider>
             <MyTripProvider>
               <ProAuthProvider>
-                {children}
-                <AssistantLauncher />
-                <CookieConsent />
+                <FavoritesProvider>
+                  <TravelerSync />
+                  {children}
+                  <AssistantLauncher />
+                  <CookieConsent />
+                </FavoritesProvider>
               </ProAuthProvider>
             </MyTripProvider>
           </SoundProvider>
