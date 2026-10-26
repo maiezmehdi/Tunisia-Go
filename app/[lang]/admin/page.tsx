@@ -12,6 +12,7 @@ import LexiconBoard, { type AdminWord } from '@/components/admin/LexiconBoard';
 import StatsBoard from '@/components/admin/StatsBoard';
 import TripsBoard, { type AdminTrip } from '@/components/admin/TripsBoard';
 import type { TripRow } from '@/lib/tripSuggest';
+import PartnersBoard, { type AdminPartner } from '@/components/admin/PartnersBoard';
 import ProsBoard, { type AdminPro } from '@/components/admin/ProsBoard';
 import RatingsBoard, { type AdminRating } from '@/components/admin/RatingsBoard';
 import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
@@ -21,6 +22,7 @@ import { LEXICON } from '@/data/lexicon';
 import type { LexiconRow } from '@/lib/lexiconExtra';
 import { PLACES } from '@/data/tunisiaData';
 import type { EventRow } from '@/lib/events';
+import { PARTNER_TYPES } from '@/lib/partners';
 import { PRO_ACTIVITIES, PRO_LANGUAGES } from '@/lib/pros';
 import { loadRatingStatsFresh, type RatingStat } from '@/lib/ratings';
 import { publicUrl, selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
@@ -180,6 +182,38 @@ export default async function AdminPage() {
     )
     .catch(() => {
       prosMissing = true;
+      return [];
+    });
+  // Partners (hotels, guesthouses…): same idea, with db/partners.sql.
+  let partnersMissing = false;
+  const partners: AdminPartner[] = await selectRows<{
+    id: string;
+    created_at: string;
+    status: AdminPartner['status'];
+    partner_type: string;
+    name: string;
+    place_id: string | null;
+    photo_path: string | null;
+    description: string | null;
+    whatsapp: string | null;
+    website: string | null;
+  }>(cfg, 'partner_listings', 'select=*&order=updated_at.desc&limit=500')
+    .then((list) =>
+      list.map((r) => ({
+        id: r.id,
+        createdAt: r.created_at,
+        status: r.status,
+        typeLabel: PARTNER_TYPES.find((t) => t.id === r.partner_type)?.fr ?? r.partner_type,
+        name: r.name,
+        placeName: r.place_id ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null) : null,
+        description: r.description,
+        whatsapp: r.whatsapp,
+        website: r.website,
+        photoUrl: r.photo_path ? publicUrl(cfg, 'pro-photos', r.photo_path) : null,
+      })),
+    )
+    .catch(() => {
+      partnersMissing = true;
       return [];
     });
   // Events are optional too: without the table (db/events.sql) the admin shows how to create it.
@@ -360,6 +394,7 @@ export default async function AdminPage() {
             tableMissing={lexiconMissing}
           />
           <ProsBoard pros={pros} tableMissing={prosMissing} />
+          <PartnersBoard partners={partners} tableMissing={partnersMissing} />
           <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />
           <ReportsBoard reports={reports} />
           {session.role === 'owner' && <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />}

@@ -25,7 +25,7 @@ interface ProAuthValue {
   /** E-mail and type of the signed-in account; undefined until known, null when signed out. */
   account: Account | null | undefined;
   /** Goes to the account page (sign in or sign up). */
-  open: (mode?: ProAuthMode, kind?: 'traveler' | 'pro') => void;
+  open: (mode?: ProAuthMode, kind?: 'traveler' | 'pro' | 'partner') => void;
   setTokens: (tokens: ProTokens) => void;
   signOut: () => void;
 }

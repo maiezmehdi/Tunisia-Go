@@ -66,7 +66,7 @@ export async function POST(request: Request) {
           email,
           password,
           email_confirm: true,
-          user_metadata: { account_type: body.kind === 'traveler' ? 'traveler' : 'pro' },
+          user_metadata: { account_type: body.kind === 'traveler' || body.kind === 'partner' ? body.kind : 'pro' },
         }),
         signal: AbortSignal.timeout(10000),
       });

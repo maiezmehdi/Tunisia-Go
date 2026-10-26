@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import AccountSaved from '@/components/AccountSaved';
 import AccountSettings from '@/components/AccountSettings';
+import PartnerForm from '@/components/PartnerForm';
 import ProEdit, { type Entry } from '@/components/ProEdit';
 import ProSignup from '@/components/ProSignup';
 import ProSteps from '@/components/ProSteps';
@@ -22,6 +23,10 @@ const COPY = {
     travelerHint: 'Je prépare un voyage en Tunisie.',
     pro: 'Guide ou agence',
     proHint: 'Je veux présenter ma fiche aux voyageurs.',
+    partner: 'Partenaire',
+    partnerHint: 'Hôtel, maison d’hôtes, location de voiture ou restaurant.',
+    partnerLabel: 'Partenaire',
+    partnerTitle: 'Mon établissement',
     email: 'Votre adresse e-mail',
     password: 'Mot de passe',
     passwordHint: '8 caractères au moins. Notez-le : il ne peut pas être récupéré pour le moment.',
@@ -48,6 +53,7 @@ const COPY = {
     delete: 'Supprimer mon compte',
     deleteTraveler: 'Votre compte sera supprimé définitivement.',
     deletePro: 'Votre compte et votre fiche seront supprimés définitivement.',
+    deletePartner: 'Votre compte et la fiche de votre établissement seront supprimés définitivement.',
     deleteConfirm: 'Oui, supprimer',
     cancel: 'Annuler',
     deleteFailed: 'La suppression n’a pas abouti. Réessayez dans un instant.',
@@ -64,6 +70,10 @@ const COPY = {
     travelerHint: 'I am planning a trip to Tunisia.',
     pro: 'Guide or agency',
     proHint: 'I want to present my listing to travellers.',
+    partner: 'Partner',
+    partnerHint: 'Hotel, guesthouse, car rental or restaurant.',
+    partnerLabel: 'Partner',
+    partnerTitle: 'My business',
     email: 'Your e-mail address',
     password: 'Password',
     passwordHint: 'At least 8 characters. Write it down: it cannot be recovered for now.',
@@ -90,6 +100,7 @@ const COPY = {
     delete: 'Delete my account',
     deleteTraveler: 'Your account will be permanently deleted.',
     deletePro: 'Your account and your listing will be permanently deleted.',
+    deletePartner: 'Your account and your business listing will be permanently deleted.',
     deleteConfirm: 'Yes, delete',
     cancel: 'Cancel',
     deleteFailed: 'Deleting did not work. Please try again in a moment.',
@@ -108,7 +119,7 @@ export default function AccountPage() {
   const c = COPY[locale];
   const { tokens, account, setTokens, signOut } = useProAuth();
   const [mode, setMode] = useState<ProAuthMode>('login');
-  const [kind, setKind] = useState<'traveler' | 'pro'>('traveler');
+  const [kind, setKind] = useState<'traveler' | 'pro' | 'partner'>('traveler');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -143,7 +154,8 @@ export default function AccountPage() {
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     if (q.get('mode') === 'signup') setMode('signup');
-    if (q.get('kind') === 'pro') setKind('pro');
+    const k = q.get('kind');
+    if (k === 'pro' || k === 'partner') setKind(k);
   }, []);
 
   const submit = async (e: React.FormEvent) => {
@@ -217,10 +229,18 @@ export default function AccountPage() {
           </div>
           <div>
             <dt className="text-xs text-charcoal-500">{c.typeLabel}</dt>
-            <dd className="mt-0.5 text-charcoal">{isPro ? c.proLabel : c.travelerLabel}</dd>
+            <dd className="mt-0.5 text-charcoal">
+              {isPro ? c.proLabel : account.kind === 'partner' ? c.partnerLabel : c.travelerLabel}
+            </dd>
           </div>
         </dl>
-        {!isPro && <AccountSaved />}
+        {account.kind === 'traveler' && <AccountSaved />}
+        {account.kind === 'partner' && accessToken && (
+          <section aria-label={c.partnerTitle} className="space-y-4">
+            <h2 className="font-serif text-2xl">{c.partnerTitle}</h2>
+            <PartnerForm accessToken={accessToken} onExpired={signOut} />
+          </section>
+        )}
         {isPro && accessToken && (
           <section aria-label={c.listingTitle} className="space-y-4">
             <h2 className="font-serif text-2xl">{c.listingTitle}</h2>
@@ -250,7 +270,9 @@ export default function AccountPage() {
         <div className="border-t border-sand-200 pt-5 text-sm">
           {confirmDelete ? (
             <div className="space-y-3">
-              <p className="text-charcoal-700">{isPro ? c.deletePro : c.deleteTraveler}</p>
+              <p className="text-charcoal-700">
+                {isPro ? c.deletePro : account.kind === 'partner' ? c.deletePartner : c.deleteTraveler}
+              </p>
               <div className="flex gap-3">
                 <button type="button" onClick={remove} disabled={busy} className={primary}>
                   {busy ? c.sending : c.deleteConfirm}
@@ -282,6 +304,7 @@ export default function AccountPage() {
   const types = [
     { id: 'traveler', label: c.traveler, hint: c.travelerHint },
     { id: 'pro', label: c.pro, hint: c.proHint },
+    { id: 'partner', label: c.partner, hint: c.partnerHint },
   ] as const;
 
   return (
@@ -309,7 +332,7 @@ export default function AccountPage() {
         {mode === 'signup' && (
           <fieldset>
             <legend className="text-sm font-medium text-charcoal">{c.who}</legend>
-            <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+            <div className="mt-1.5 grid gap-2 sm:grid-cols-3">
               {types.map((t) => (
                 <label
                   key={t.id}
