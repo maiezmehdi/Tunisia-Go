@@ -4,13 +4,9 @@ import type { Locale } from '@/lib/i18n/config';
 
 /**
  * Public address of the site, for canonical links, the sitemap and social cards.
- * Set NEXT_PUBLIC_SITE_URL once a custom domain is live; until then Vercel's production URL is used.
+ * The final domain is tunisiagoo.com; NEXT_PUBLIC_SITE_URL can override it (for a test site, for example).
  */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
-  'https://tunisiago-seven.vercel.app'
-).replace(/\/$/, '');
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://tunisiagoo.com').replace(/\/$/, '');
 
 export const SITE_NAME = 'Tunisia Go';
 
