@@ -41,6 +41,9 @@ const COPY = {
     tooMany: 'Trop d’essais. Réessayez dans une heure.',
     failed: 'Cela n’a pas abouti. Réessayez dans un instant.',
     off: 'La connexion n’est pas encore disponible. Réessayez plus tard.',
+    facebook: 'Continuer avec Facebook',
+    facebookFailed: 'La connexion avec Facebook n’a pas abouti. Réessayez ou utilisez votre e-mail.',
+    or: 'ou',
     loading: 'Chargement…',
     emailLabel: 'Adresse e-mail',
     typeLabel: 'Type de compte',
@@ -88,6 +91,9 @@ const COPY = {
     tooMany: 'Too many attempts. Please try again in an hour.',
     failed: 'That did not work. Please try again in a moment.',
     off: 'Sign-in is not available yet. Please try again later.',
+    facebook: 'Continue with Facebook',
+    facebookFailed: 'Facebook sign-in did not work. Try again or use your e-mail.',
+    or: 'or',
     loading: 'Loading…',
     emailLabel: 'E-mail address',
     typeLabel: 'Account type',
@@ -152,6 +158,18 @@ export default function AccountPage() {
   }, [accessToken ? accessToken.slice(-12) : null, isPro]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    // Back from Facebook (through Supabase): the session is in the address after #.
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = hash.get('access_token');
+    const refreshToken = hash.get('refresh_token');
+    if (accessToken && refreshToken) {
+      window.history.replaceState(null, '', window.location.pathname);
+      setTokens({ accessToken, refreshToken });
+    } else if (hash.get('error')) {
+      window.history.replaceState(null, '', window.location.pathname);
+      setError(COPY[locale].facebookFailed);
+    }
+    if (new URLSearchParams(window.location.search).get('auth') === 'off') setError(COPY[locale].off);
     const q = new URLSearchParams(window.location.search);
     if (q.get('mode') === 'signup') setMode('signup');
     const k = q.get('kind');
@@ -328,6 +346,20 @@ export default function AccountPage() {
           </button>
         ))}
       </div>
+      {(mode === 'login' || kind === 'traveler') && (
+        <div className="mb-5">
+          <a
+            href={`/api/pro-auth/facebook${locale === 'en' ? '?lang=en' : ''}`}
+            className="flex items-center justify-center gap-2.5 rounded-pill border border-sand-200 bg-white px-5 py-2.5 text-sm text-charcoal-700 transition hover:border-charcoal-300"
+          >
+            <svg aria-hidden viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor">
+              <path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21h3z" />
+            </svg>
+            {c.facebook}
+          </a>
+          <p className="mt-4 text-center text-xs text-charcoal-500">{c.or}</p>
+        </div>
+      )}
       <form onSubmit={submit} className="space-y-4" noValidate>
         {mode === 'signup' && (
           <fieldset>
