@@ -42,8 +42,7 @@ const COPY = {
     mapEmpty: 'Les fiches sans lieu d’exercice ne sont pas sur la carte.',
     loadingMap: 'Chargement de la carte…',
     joinTitle: 'Vous êtes guide ou agence ?',
-    joinLead:
-      'Créez votre compte avec votre e-mail et un mot de passe, puis gérez votre fiche quand vous voulez.',
+    joinLead: 'Créez votre compte avec votre e-mail et un mot de passe, puis gérez votre fiche quand vous voulez.',
     join: 'Inscrire ou modifier ma fiche',
     openMap: 'Ouvrir la carte',
   },

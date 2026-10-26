@@ -144,11 +144,18 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
   }
 }
 
-/**
- * Who is signed in: asks Supabase Auth about the access token the browser got after the e-mail sign-in link.
- * Returns the user's id (never stored together with the e-mail here), or null when the token is not valid.
- */
-export async function authUserId(cfg: SupabaseConfig, accessToken: unknown): Promise<string | null> {
+/** 'partner' (hotel, guesthouse, car rental…) is reserved: no screen creates it yet. */
+export type AccountKind = 'traveler' | 'pro' | 'partner';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  /** Accounts created before the two types existed have no type: they were all guides or agencies. */
+  kind: AccountKind;
+}
+
+/** Who a Supabase access token belongs to, or null when it is missing, malformed or expired. */
+export async function authUser(cfg: SupabaseConfig, accessToken: unknown): Promise<AuthUser | null> {
   if (typeof accessToken !== 'string' || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(accessToken)) return null;
   try {
     const res = await fetch(`${cfg.url}/auth/v1/user`, {
@@ -157,9 +164,21 @@ export async function authUserId(cfg: SupabaseConfig, accessToken: unknown): Pro
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return null;
-    const user = (await res.json()) as { id?: unknown };
-    return typeof user.id === 'string' && /^[0-9a-f-]{36}$/i.test(user.id) ? user.id : null;
+    const user = (await res.json()) as { id?: unknown; email?: unknown; user_metadata?: { account_type?: unknown } };
+    if (typeof user.id !== 'string' || !/^[0-9a-f-]{36}$/i.test(user.id)) return null;
+    const type = user.user_metadata?.account_type;
+    return {
+      id: user.id,
+      email: typeof user.email === 'string' ? user.email : '',
+      kind: type === 'traveler' || type === 'partner' ? type : 'pro',
+    };
   } catch {
     return null;
   }
+}
+
+/** The id behind an access token, for routes that only manage a guide's or agency's own listing. */
+export async function authUserId(cfg: SupabaseConfig, accessToken: unknown): Promise<string | null> {
+  const user = await authUser(cfg, accessToken);
+  return user && user.kind === 'pro' ? user.id : null;
 }

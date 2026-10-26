@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     email?: unknown;
     password?: unknown;
     refreshToken?: unknown;
+    kind?: unknown;
   } | null;
   if (!allow(`proauth:ip:${clientIp(request)}`, 40, HOUR)) {
     return NextResponse.json({ error: 'too_many' }, { status: 429 });
@@ -61,7 +62,12 @@ export async function POST(request: Request) {
       const created = await fetch(`${cfg.url}/auth/v1/admin/users`, {
         method: 'POST',
         headers: cfg.key.startsWith('sb_') ? headers : { ...headers, Authorization: `Bearer ${cfg.key}` },
-        body: JSON.stringify({ email, password, email_confirm: true }),
+        body: JSON.stringify({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: { account_type: body.kind === 'traveler' ? 'traveler' : 'pro' },
+        }),
         signal: AbortSignal.timeout(10000),
       });
       if (created.status === 422 || created.status === 409)
