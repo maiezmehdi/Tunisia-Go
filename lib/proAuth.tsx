@@ -1,7 +1,8 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 const KEY = 'tg-pro-session';
 
@@ -11,23 +12,25 @@ export interface ProTokens {
 }
 
 export type ProAuthMode = 'signup' | 'login';
+export type AccountKind = 'traveler' | 'pro' | 'partner';
+
+export interface Account {
+  email: string;
+  kind: AccountKind;
+}
 
 interface ProAuthValue {
   /** Null when signed out; undefined while the saved session is being renewed. */
   tokens: ProTokens | null | undefined;
-  /** Opens the sign-in / sign-up window. */
-  open: (mode?: ProAuthMode) => void;
-  close: () => void;
-  isOpen: boolean;
-  mode: ProAuthMode;
-  setMode: (mode: ProAuthMode) => void;
+  /** E-mail and type of the signed-in account; undefined until known, null when signed out. */
+  account: Account | null | undefined;
+  /** Goes to the account page (sign in or sign up). */
+  open: (mode?: ProAuthMode, kind?: 'traveler' | 'pro') => void;
   setTokens: (tokens: ProTokens) => void;
   signOut: () => void;
 }
 
 const ProAuthContext = createContext<ProAuthValue | null>(null);
-
-const ProAuthModal = dynamic(() => import('@/components/ProAuthModal'), { ssr: false });
 
 function readTokens(): ProTokens | null {
   try {
@@ -61,11 +64,11 @@ async function renew(refreshToken: string): Promise<ProTokens | null> {
   }
 }
 
-/** Session of a guide or agency (e-mail and password), shared by the menu button and the sign-in window. */
+/** Session of a signed-in account (e-mail and password), shared by the menu and the account pages. */
 export function ProAuthProvider({ children }: { children: ReactNode }) {
+  const { locale } = useLocale();
   const [tokens, setTokensState] = useState<ProTokens | null | undefined>(undefined);
-  const [isOpen, setOpen] = useState(false);
-  const [mode, setMode] = useState<ProAuthMode>('signup');
+  const [account, setAccount] = useState<Account | null | undefined>(undefined);
 
   const setTokens = useCallback((t: ProTokens) => {
     saveTokens(t);
@@ -75,6 +78,7 @@ export function ProAuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(() => {
     saveTokens(null);
     setTokensState(null);
+    setAccount(null);
   }, []);
 
   useEffect(() => {
@@ -92,29 +96,45 @@ export function ProAuthProvider({ children }: { children: ReactNode }) {
     return () => window.clearInterval(timer);
   }, [setTokens, signOut]);
 
+  const accessToken = tokens?.accessToken;
+  useEffect(() => {
+    if (accessToken === undefined) return;
+    if (!accessToken) return setAccount(null);
+    let cancelled = false;
+    fetch('/api/account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessToken, action: 'me' }),
+    })
+      .then(async (res) => (res.ok ? ((await res.json()) as Account) : null))
+      .then((a) => !cancelled && setAccount(a))
+      .catch(() => !cancelled && setAccount(null));
+    return () => {
+      cancelled = true;
+    };
+    // Only look the account up again when the person changes, not each time the token is renewed.
+  }, [accessToken ? accessToken.slice(-12) : accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const value = useMemo<ProAuthValue>(
     () => ({
       tokens,
-      isOpen,
-      mode,
-      setMode,
+      account,
       setTokens,
       signOut,
-      open: (m) => {
-        if (m) setMode(m);
-        setOpen(true);
+      open: (mode = 'login', kind) => {
+        const q = new URLSearchParams({ mode, ...(kind ? { kind } : {}) });
+        window.location.assign(`${accountHref(locale)}?${q}`);
       },
-      close: () => setOpen(false),
     }),
-    [tokens, isOpen, mode, setTokens, signOut],
+    [tokens, account, setTokens, signOut, locale],
   );
 
-  return (
-    <ProAuthContext.Provider value={value}>
-      {children}
-      {isOpen && <ProAuthModal />}
-    </ProAuthContext.Provider>
-  );
+  return <ProAuthContext.Provider value={value}>{children}</ProAuthContext.Provider>;
+}
+
+/** Address of the account page, and of the listing page of a guide or agency. */
+export function accountHref(locale: string, sub = ''): string {
+  return `${locale === 'en' ? '/en' : ''}/compte${sub}`;
 }
 
 export function useProAuth(): ProAuthValue {

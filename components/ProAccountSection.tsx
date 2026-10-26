@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from '@/lib/i18n/LocaleProvider';
-import { useProAuth } from '@/lib/proAuth';
+import { accountHref, useProAuth } from '@/lib/proAuth';
 
 const COPY = {
   fr: {
@@ -9,19 +9,21 @@ const COPY = {
     signup: 'Créer mon compte',
     login: 'J’ai déjà un compte',
     mine: 'Ouvrir ma fiche',
+    account: 'Mon compte',
   },
   en: {
     intro: 'Create your account with your e-mail and a password, then manage your listing whenever you like.',
     signup: 'Create my account',
     login: 'I already have an account',
     mine: 'Open my listing',
+    account: 'My account',
   },
 } as const;
 
-/** Text and two buttons: each opens the sign-in window (see ProAuthModal). */
+/** Text and two buttons for guides and agencies: they lead to the account page. */
 export default function ProAccountSection() {
   const { locale } = useLocale();
-  const { tokens, open } = useProAuth();
+  const { tokens, account, open } = useProAuth();
   const c = COPY[locale];
   return (
     <div className="space-y-5">
@@ -30,16 +32,16 @@ export default function ProAccountSection() {
         {tokens ? (
           <button
             type="button"
-            onClick={() => open()}
+            onClick={() => window.location.assign(accountHref(locale))}
             className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
           >
-            {c.mine}
+            {account?.kind === 'pro' ? c.mine : c.account}
           </button>
         ) : (
           <>
             <button
               type="button"
-              onClick={() => open('signup')}
+              onClick={() => open('signup', 'pro')}
               className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
             >
               {c.signup}

@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 import ProReportButton from '@/components/ProReportButton';
-import { useProAuth } from '@/lib/proAuth';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { accountHref, useProAuth } from '@/lib/proAuth';
 import type { ProKind } from '@/lib/pros';
 
 export interface DirectoryPro {
@@ -50,7 +51,8 @@ const ProsMap = dynamic(() => import('@/components/ProsMap'), { ssr: false });
 
 /** The guides and agencies as a list, or as pins on a map. */
 export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; labels: DirectoryLabels }) {
-  const { tokens, open } = useProAuth();
+  const { locale } = useLocale();
+  const { tokens } = useProAuth();
   const [myId, setMyId] = useState<string | null>(null);
   const tokenKey = tokens ? tokens.accessToken.slice(-12) : null;
   const accessToken = tokens?.accessToken;
@@ -193,7 +195,7 @@ export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; 
                 {p.id === myId ? (
                   <button
                     type="button"
-                    onClick={() => open()}
+                    onClick={() => window.location.assign(accountHref(locale))}
                     className="rounded-pill border border-charcoal px-4 py-2 text-sm text-charcoal transition hover:bg-charcoal hover:text-cream"
                   >
                     {labels.edit}
