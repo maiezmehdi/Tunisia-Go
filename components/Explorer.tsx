@@ -104,7 +104,7 @@ export default function Explorer({
     if (itineraryId) url.searchParams.set('trip', itineraryId);
     else url.searchParams.delete('trip');
     url.searchParams.delete('place');
-    window.history.replaceState(null, '', url);
+    window.history.replaceState(window.history.state, '', url);
   }, [itineraryId]);
 
   const itinerary = ITINERARIES.find((i) => i.id === itineraryId) ?? null;

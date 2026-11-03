@@ -14,6 +14,7 @@ import {
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import type { Locale } from '@/lib/i18n/config';
 import { useMyTrip } from '@/lib/myTrip';
+import { useBackToClose } from '@/lib/useBackToClose';
 
 interface Message {
   id: number;
@@ -83,6 +84,7 @@ function load(locale: Locale): Conversation {
 }
 
 export default function AssistantPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+  useBackToClose(open, onClose);
   const { locale } = useLocale();
   const ui = UI[locale];
   const trip = useMyTrip();

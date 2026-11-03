@@ -14,6 +14,7 @@ import type { Itinerary, Photo, Place } from '@/data/types';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { lockPageScroll } from '@/lib/scrollLock';
+import { useBackToClose } from '@/lib/useBackToClose';
 import {
   airbnbUrl,
   bookingUrl,
@@ -49,6 +50,8 @@ export default function ActionDrawer({
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [place, onClose]);
+
+  useBackToClose(!!place, onClose);
 
   // Below md the drawer covers the screen: keep the page behind it from scrolling.
   const open = !!place;
