@@ -54,8 +54,19 @@ function instructions(kind: RewriteKind, name: string): string {
   ].join('\n');
 }
 
-/** Returns the rewritten text, or throws. */
-export async function rewriteText(input: { text: string; kind: RewriteKind; name?: string }): Promise<string> {
+export interface GeminiTurn {
+  role: 'user' | 'model';
+  text: string;
+}
+
+/** Sends a system prompt and a conversation to Gemini and returns the answer text, or throws. */
+export async function generate(input: {
+  system: string;
+  turns: GeminiTurn[];
+  temperature?: number;
+  maxOutputTokens?: number;
+  timeoutMs?: number;
+}): Promise<string> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error('not_configured');
   const call = (model: string) =>
@@ -63,16 +74,16 @@ export async function rewriteText(input: { text: string; kind: RewriteKind; name
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: instructions(input.kind, input.name?.trim() ?? '') }] },
-        contents: [{ role: 'user', parts: [{ text: input.text }] }],
+        systemInstruction: { parts: [{ text: input.system }] },
+        contents: input.turns.map((t) => ({ role: t.role, parts: [{ text: t.text }] })),
         generationConfig: {
-          temperature: 0.3,
+          temperature: input.temperature ?? 0.3,
           // Thinking models count their thinking against this limit.
-          maxOutputTokens: 4000,
+          maxOutputTokens: input.maxOutputTokens ?? 4000,
           ...(model.startsWith('gemini-2.5-flash') ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
         },
       }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(input.timeoutMs ?? 30000),
     });
 
   let model = process.env.GEMINI_MODEL || foundModel || DEFAULT_MODEL;
@@ -94,5 +105,14 @@ export async function rewriteText(input: { text: string; kind: RewriteKind; name
     .join('')
     .trim();
   if (!out) throw new Error(`empty answer (${data.candidates?.[0]?.finishReason ?? 'no candidate'})`);
+  return out;
+}
+
+/** Returns the rewritten text, or throws. */
+export async function rewriteText(input: { text: string; kind: RewriteKind; name?: string }): Promise<string> {
+  const out = await generate({
+    system: instructions(input.kind, input.name?.trim() ?? ''),
+    turns: [{ role: 'user', text: input.text }],
+  });
   return out.slice(0, REWRITE_MAX_CHARS);
 }
