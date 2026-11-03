@@ -427,6 +427,22 @@ const GUIDE_BY_PLACE: Record<string, string> = {
   'houmt-souk': 'djerba',
   'djerba-velo': 'djerba',
   zarzis: 'djerba',
+  kerkouane: 'cap-bon',
+  takrouna: 'sahel',
+  hergla: 'sahel',
+  kuriat: 'sahel',
+  salakta: 'sahel',
+  thyna: 'sahel',
+  'lezard-rouge': 'djerid',
+  mides: 'djerid',
+  jebil: 'sud',
+  'chenini-gabes': 'sud',
+  tamezret: 'sud',
+  toujane: 'sud',
+  'ksar-hadada': 'sud',
+  'ksar-ouled-debbab': 'sud',
+  douiret: 'sud',
+  djerbahood: 'djerba',
 };
 
 export function guideFor(placeId: string): string {

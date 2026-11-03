@@ -595,4 +595,397 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     visitDuration: 'Une demi-journée',
     captions: ['La plage et ses anciens blockhaus', 'Hôtels sur le cap', 'Vue sur le golfe de Tunis'],
   },
+  // ── Ajouts du 3 novembre 2026 ─────────────────────────────────────
+  kerkouane: {
+    tagline: 'La seule ville punique restée debout',
+    description:
+      'À la pointe du cap Bon, Kerkouane est la seule ville punique que Rome n’a jamais rebâtie. Ses rues en damier, ses murs de maisons, ses cours et ses baignoires privées descendent encore vers la mer : un témoignage rare de la vie quotidienne du monde carthaginois.',
+    didYouKnow:
+      'On a retrouvé sur le site des amas de coquillages de murex : la ville fabriquait la teinture pourpre qui fit la renommée des Phéniciens.',
+    insights: {
+      history:
+        'Habitée près de quatre siècles, la ville fut abandonnée vers le milieu du IIIe siècle av. J.-C., pendant la première guerre punique, et jamais réoccupée. Inscrite au patrimoine mondial de l’UNESCO en 1985.',
+      customs:
+        'Un site petit et venté : un chapeau et de l’eau suffisent. Un musée, à l’entrée, présente les objets de la nécropole.',
+      food: 'Poisson grillé à Kélibia, à 12 km au sud.',
+      bestTime: 'Au printemps et à l’automne. L’été, combinez avec une baignade à Kélibia.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Rues puniques face à la mer', 'Une maison et sa baignoire', 'Le musée du site'],
+  },
+  takrouna: {
+    tagline: 'Un village berbère sur son rocher',
+    description:
+      'À six kilomètres à l’ouest d’Enfida, Takrouna est posée sur un piton rocheux à environ 200 m au-dessus de la plaine. Quelques familles vivent encore dans ses maisons de pierre, et la vue s’étend sur les oliveraies jusqu’à la mer et vers Zaghouan.',
+    didYouKnow:
+      'De violents combats se sont déroulés autour du rocher en 1943, pendant la campagne de Tunisie de la Seconde Guerre mondiale.',
+    insights: {
+      history:
+        'Le village est d’origine berbère. Un cimetière militaire français des combats de 1943 se trouve à proximité.',
+      customs:
+        'Des gens vivent ici : demandez avant de photographier les maisons ou les habitants. Les femmes du village tissent l’alfa et des tapis berbères.',
+      food: 'Un thé à la menthe sur la terrasse du café, en haut, face à la plaine.',
+      bestTime: 'Au printemps et à l’automne, au coucher du soleil.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Le village sur son rocher', 'Maisons de pierre', 'Vue sur la plaine d’Enfida'],
+  },
+  'cap-serrat': {
+    tagline: 'Une crique sauvage entre forêt et falaises',
+    description:
+      'Sur la côte nord, entre Sejnane et Tabarka, un cap à phare abrite une longue baie de sable adossée à des collines de chênes-lièges et de myrtes. Aucun hôtel : juste la plage, l’embouchure d’un oued et quelques pêcheurs.',
+    didYouKnow: 'Par temps clair, on aperçoit l’île de La Galite, à une soixantaine de kilomètres au large.',
+    insights: {
+      history:
+        'Le phare rayé de noir et de blanc guide les navires le long de cette côte rocheuse depuis le protectorat français.',
+      customs:
+        'Aucun service : prévoyez eau et nourriture, et remportez vos déchets. Le camping sauvage y est courant l’été.',
+      food: 'Achetez pain et fromage à Sejnane en chemin.',
+      bestTime: 'De juin à septembre pour la baignade. La mer peut être forte.',
+    },
+    visitDuration: 'Une journée',
+    captions: ['La baie au pied du cap', 'Le phare', 'Collines de chênes-lièges'],
+  },
+  'cap-angela': {
+    tagline: 'La pointe nord de l’Afrique',
+    description:
+      'À quelques kilomètres à l’ouest de Bizerte, un promontoire rocheux marque le point le plus septentrional du continent africain. Une courte marche mène à un monument simple au-dessus de la mer.',
+    didYouKnow:
+      'Le cap porte aussi le nom de Ras ben Sakka. La pointe sud de l’Afrique, le cap des Aiguilles, se trouve à environ 8 000 km.',
+    insights: {
+      history: 'Le promontoire a longtemps servi de repère aux marins entrant dans le détroit de Sicile.',
+      customs: 'La piste peut être difficile après la pluie. Portez de bonnes chaussures sur les rochers.',
+      food: 'Déjeunez au vieux port de Bizerte.',
+      bestTime: 'Toute l’année, sauf les jours de grand vent en hiver. Superbe au coucher du soleil.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Le promontoire sur la mer', 'Le monument', 'La côte à l’ouest de Bizerte'],
+  },
+  rafraf: {
+    tagline: 'Une longue plage sous les vignes',
+    description:
+      'Un croissant de sable fin fait face à un petit îlot rocheux, le Pilau, avec derrière des vignes en terrasses et des figuiers. Prisée des familles tunisiennes l’été, calme le reste de l’année.',
+    didYouKnow: 'Le raisin de Rafraf, cultivé en terrasses au-dessus de la mer, est réputé dans tout le pays.',
+    insights: {
+      history: 'Le village occupe les pentes du cap Farina, entre la lagune de Ghar El Melh et le large.',
+      customs: 'Très fréquentée les week-ends d’août : venez tôt ou en semaine.',
+      food: 'Figues et raisins frais vendus au bord de la route en fin d’été.',
+      bestTime: 'Juin et septembre : mer chaude et moins de monde.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['La plage et l’îlot du Pilau', 'Vignes au-dessus de la mer', 'Le soir sur le sable'],
+  },
+  'sidi-ali-el-mekki': {
+    tagline: 'Une plage au pied d’une grotte d’ermite',
+    description:
+      'Au bout du cap Farina, après Ghar El Melh, une plage blanche s’étend sous une falaise où un petit marabout est bâti dans la roche. L’été, on loue des paillotes à la journée.',
+    didYouKnow:
+      'Le marabout honore un saint homme qui, selon la tradition locale, vivait en ermite dans une grotte de la falaise.',
+    insights: {
+      history: 'Le cap ferme la baie d’Utique, dont le port antique a depuis longtemps été comblé par les alluvions.',
+      customs: 'Le marabout reste un lieu de visite : tenue correcte pour y monter.',
+      food: 'Poisson et calamars grillés dans les paillotes l’été.',
+      bestTime: 'De juin à septembre. Venez en semaine au mois d’août.',
+    },
+    visitDuration: 'Une journée',
+    captions: ['La plage blanche', 'Le marabout dans la falaise', 'Paillotes au bord de l’eau'],
+  },
+  'table-de-jugurtha': {
+    name: 'Table de Jugurtha',
+    tagline: 'Une montagne forteresse au-dessus de la plaine',
+    description:
+      'Près de Kalaat Senan, à proximité de la frontière algérienne, une montagne tabulaire s’élève d’environ 600 m au-dessus de la plaine. Un escalier de 136 marches taillé dans la roche mène à un plateau sommital d’environ 80 hectares, avec ses citernes, une petite mosquée et une vue jusqu’en Algérie.',
+    didYouKnow:
+      'Le plateau était autrefois un fond de vallée : l’érosion a emporté les collines plus tendres autour et laissé debout le calcaire dur.',
+    insights: {
+      history:
+        'La tradition la relie au roi numide Jugurtha, qui combattit Rome vers 110 av. J.-C. Au XVIIIe siècle, le rebelle Senan y tint tête aux troupes du bey et donna son nom à la ville.',
+      customs: 'Montez avec un guide de Kalaat Senan. La montée est courte mais raide : pas de tongs.',
+      food: 'Emportez de l’eau et un pique-nique : il n’y a rien au sommet.',
+      bestTime: 'Au printemps et à l’automne. L’hiver peut apporter la neige, l’été est chaud.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['La table au-dessus de la plaine', 'L’escalier taillé dans la roche', 'La vue depuis le sommet'],
+  },
+  kesra: {
+    tagline: 'Le plus haut village de Tunisie',
+    description:
+      'À près de 1 000 m, Kesra s’accroche au bord d’une falaise au-dessus de la plaine, près de Makthar. Maisons de pierre, sources et petites cascades descendent la pente, et la forêt du djebel Serj est toute proche.',
+    didYouKnow: 'Kesra est aussi le nom de la galette de semoule cuite dans tout le Maghreb.',
+    insights: {
+      history: 'À l’époque romaine, le village s’appelait Cusira, petite ville de la province de Byzacène.',
+      customs:
+        'Un village calme : montez par les vieilles ruelles jusqu’aux sources et saluez les gens que vous croisez.',
+      food: 'Goûtez le pain local, les figues et l’eau fraîche des sources.',
+      bestTime: 'Au printemps et au début de l’été, quand les sources coulent. Les hivers sont froids.',
+    },
+    visitDuration: '2 à 3 heures',
+    captions: ['Le village sur sa falaise', 'Ruelles de pierre', 'Les sources'],
+  },
+  haidra: {
+    tagline: 'La ville d’une légion romaine aux frontières',
+    description:
+      'Près de la frontière algérienne, Ammaedara s’étend le long d’une vallée presque sans visiteurs : arc de triomphe, mausolées, thermes, plusieurs églises et l’une des plus grandes forteresses byzantines d’Afrique du Nord.',
+    didYouKnow:
+      'La IIIe légion Auguste eut ici sa première base avant de partir à l’ouest, à Lambèse, dans l’actuelle Algérie.',
+    insights: {
+      history:
+        'Fondée comme camp militaire au Ier siècle, la ville devint une colonie de vétérans, puis un centre chrétien et byzantin.',
+      customs:
+        'Le site est vaste et ouvert : prévoyez quelques heures et de l’eau. Renseignez-vous sur place sur la route, la zone frontalière étant parfois contrôlée.',
+      food: 'Mangez à Kasserine ou à Thala en chemin.',
+      bestTime: 'Au printemps et à l’automne.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['La forteresse byzantine', 'L’arc de triomphe', 'Les ruines le long de la vallée'],
+  },
+  hergla: {
+    tagline: 'Un village de pêcheurs sur la falaise',
+    description:
+      'À vingt kilomètres au nord de Sousse, Hergla est un village blanc perché au-dessus de la mer, avec un petit port de pêche et une mosquée qui domine la baie. Une alternative tranquille à la zone hôtelière.',
+    didYouKnow:
+      'Son nom vient de Horrea Caelia, les entrepôts à grains que les Romains y avaient construits pour expédier les récoltes de la région.',
+    insights: {
+      history:
+        'La grande mosquée porte le nom de Sidi Bou Mendel, un saint homme qui, selon la tradition, s’y installa au XIIIe siècle.',
+      customs: 'Le tissage de l’alfa, la poterie et la pêche restent les métiers du village.',
+      food: 'Du poisson frais au port.',
+      bestTime: 'Toute l’année. Juin et septembre pour la baignade.',
+    },
+    visitDuration: '2 heures',
+    captions: ['Le village au-dessus de la mer', 'Le port de pêche', 'La mosquée Sidi Bou Mendel'],
+  },
+  kuriat: {
+    name: 'Îles Kuriat',
+    tagline: 'Là où les tortues viennent pondre',
+    description:
+      'Deux îles basses et sableuses à environ 18 km au large de Monastir, aux eaux claires et peu profondes. C’est le principal site de ponte de la tortue caouanne en Tunisie, et une partie des îles est protégée.',
+    didYouKnow: 'L’été, des bénévoles surveillent les nids la nuit et aident les bébés tortues à rejoindre la mer.',
+    insights: {
+      history: 'Les îles n’ont pas d’habitants permanents, hormis un phare et une station de suivi.',
+      customs:
+        'Choisissez un bateau qui respecte les règles : ni lumière ni bruit près des plages de ponte, et restez hors des zones clôturées.',
+      food: 'Les sorties en bateau comprennent souvent un déjeuner de poisson grillé.',
+      bestTime: 'De juin à septembre, quand les bateaux partent de Monastir.',
+    },
+    visitDuration: 'Une journée',
+    captions: ['Eaux turquoise peu profondes', 'Un nid protégé', 'Le phare de l’île'],
+  },
+  salakta: {
+    tagline: 'Un port romain sur une plage tranquille',
+    description:
+      'Au sud de Mahdia, le village de pêcheurs de Salakta occupe l’emplacement de Sullecthum, un port romain. Un petit musée, des catacombes et des ruines au bord de l’eau côtoient une longue plage de sable.',
+    didYouKnow:
+      'Une mosaïque du IIIe siècle représentant un lion, haute d’environ 3 m, y a été découverte en 1958. Elle est aujourd’hui au musée du Bardo, à Tunis.',
+    insights: {
+      history: 'Sullecthum exportait l’huile d’olive du Sahel. Le musée du village a ouvert en 1980.',
+      customs: 'À combiner avec El Jem, à une trentaine de kilomètres dans les terres.',
+      food: 'Poisson grillé au village ou à Mahdia.',
+      bestTime: 'Toute l’année pour le site, de juin à septembre pour la baignade.',
+    },
+    visitDuration: '2 heures',
+    captions: ['Ruines au bord de l’eau', 'Le musée', 'La plage de Salakta'],
+  },
+  thyna: {
+    tagline: 'Des thermes romains au bord des salines',
+    description:
+      'Au sud de Sfax, les ruines de Thaenae réunissent des thermes romains, une grande maison, des remparts et une basilique paléochrétienne. Les salines voisines attirent flamants roses et échassiers.',
+    didYouKnow: 'Thaenae fut d’abord un comptoir phénicien avant de devenir une colonie romaine sous Hadrien.',
+    insights: {
+      history: 'Port actif de la province romaine d’Afrique, puis siège d’un évêché dans l’Antiquité tardive.',
+      customs: 'Un petit site peu connu : renseignez-vous sur place pour les horaires.',
+      food: 'De retour à Sfax, goûtez la « charmoula » ou un couscous au poisson.',
+      bestTime: 'Au printemps et à l’automne, surtout pour les oiseaux.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Les thermes romains', 'Sols de mosaïque', 'Flamants roses sur les salines'],
+  },
+  'lezard-rouge': {
+    name: 'Lézard Rouge et gorges de Selja',
+    tagline: 'Le train du bey dans un canyon',
+    description:
+      'Depuis Metlaoui, un ancien train construit pour le bey de Tunis s’enfonce dans les gorges de Selja, un canyon presque inaccessible autrement. L’aller-retour dure moins de deux heures, avec des arrêts photo au-dessus de l’oued.',
+    didYouKnow:
+      'Les voitures ont été construites en 1910 et réservées au bey et à sa cour, avec une voiture-restaurant.',
+    insights: {
+      history:
+        'La ligne a été posée pour les trains de phosphate, qui l’empruntent toujours. Le service touristique a été suspendu à plusieurs reprises.',
+      customs:
+        'Vérifiez que le train circule et l’heure de départ avant d’y aller, à la gare de Metlaoui ou auprès d’une agence de Tozeur.',
+      food: 'Mangez à Tozeur, à une heure de route.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['Le train rouge', 'Les gorges de Selja', 'La voiture du bey'],
+  },
+  'gafsa-piscines': {
+    name: 'Piscines romaines de Gafsa',
+    tagline: 'Des bassins romains toujours alimentés par une source',
+    description:
+      'En plein centre de Gafsa, deux profonds bassins de pierre construits par les Romains sont encore remplis par une source tiède. À côté se dressent la kasbah et la vieille ville, porte des oasis du Sud-Ouest.',
+    didYouKnow: 'L’été, les garçons du quartier plongent dans les bassins depuis les murs qui les entourent.',
+    insights: {
+      history:
+        'L’antique Capsa était une ville numide avant Rome. Elle a aussi donné son nom à la culture capsienne de la préhistoire.',
+      customs: 'La baignade n’est pas pour les visiteurs. Un petit musée jouxte les bassins.',
+      food: 'Goûtez les dattes locales, vendues au marché.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 heure',
+    captions: ['Les bassins romains', 'La kasbah', 'La vieille ville'],
+  },
+  'bou-hedma': {
+    name: 'Parc national de Bou Hedma',
+    region: 'Sidi Bouzid',
+    tagline: 'Une savane d’acacias et des oryx',
+    description:
+      'Entre Gafsa et Sidi Bouzid, le parc protège la dernière savane d’acacias d’Afrique du Nord. Oryx algazelles, addax, gazelles dama et autruches y ont été réintroduits dans des enclos.',
+    didYouKnow: 'Le parc figure sur la liste indicative du patrimoine mondial de l’UNESCO depuis 2008.',
+    insights: {
+      history: 'Créé en 1980, le parc abrite aussi des vestiges romains : un pont, des bassins et un aqueduc.',
+      customs:
+        'Les visites passent par l’administration du parc. Prévenez à l’avance et partez avec un guide pour voir les animaux.',
+      food: 'Prévoyez pique-nique et eau.',
+      bestTime: 'D’octobre à avril. Tôt le matin pour les animaux.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['Acacias dans la plaine', 'Oryx algazelles', 'Le djebel Bou Hedma'],
+  },
+  mides: {
+    tagline: 'Un village abandonné au bord d’un canyon',
+    description:
+      'À dix kilomètres de Tamerza, à la frontière algérienne, le village en ruine de Midès surplombe un profond canyon aux roches plissées. Le nouveau village vit plus bas, dans une palmeraie de dattes, d’oranges et de figues.',
+    didYouKnow: 'Le canyon apparaît dans des films comme « Le Patient anglais » et « Fort Saganne ».',
+    insights: {
+      history:
+        'L’antique Madès était un poste de guet sur la frontière romaine. Le vieux village fut abandonné après les crues meurtrières de 1969.',
+      customs: 'Marchez prudemment le long du bord : il n’y a pas de garde-corps. Restez du côté tunisien.',
+      food: 'Oranges et dattes de la palmeraie.',
+      bestTime: 'D’octobre à avril, en fin d’après-midi pour la lumière dans le canyon.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Le canyon de Midès', 'Le village abandonné', 'La palmeraie'],
+  },
+  jebil: {
+    name: 'Parc national de Jebil',
+    region: 'Kébili',
+    tagline: 'Les dunes du Grand Erg, protégées',
+    description:
+      'À environ 80 km au sud de Douz, le deuxième plus grand parc national du pays couvre 150 000 hectares du Grand Erg oriental : hautes dunes, affleurements rocheux et lits d’oueds secs où vivent encore des gazelles.',
+    didYouKnow:
+      'Un enclos de 77 km² sert à l’élevage de l’addax, une antilope du désert presque disparue à l’état sauvage.',
+    insights: {
+      history: 'Protégé depuis 1984, classé parc national en 1994.',
+      customs:
+        'Uniquement en 4x4, avec un chauffeur expérimenté et une autorisation. Ne partez jamais seul dans l’erg.',
+      food: 'Le pain cuit dans le sable, « khobz mella », autour du feu du soir.',
+      bestTime: 'De novembre à mars. Les nuits sont froides.',
+    },
+    visitDuration: '2 jours',
+    captions: ['Les dunes de l’erg', 'Un lit d’oued sec', 'Bivouac la nuit'],
+  },
+  'chenini-gabes': {
+    name: 'Oasis de Chenini, Gabès',
+    tagline: 'Une oasis au bord de la mer',
+    description:
+      'Gabès est l’une des très rares oasis au monde à toucher la mer. À Chenini, à 5 km dans les terres, les palmiers abritent trois étages de cultures : grenadiers et figuiers, puis légumes et fourrage au sol.',
+    didYouKnow:
+      'Une association locale œuvre depuis 1995 pour sauver l’oasis, avec compostage et agriculture biologique.',
+    insights: {
+      history:
+        'L’oasis est ancienne et fragile : l’urbanisation et la pollution ont réduit les sources qui l’alimentaient.',
+      customs: 'Visitez-la en calèche ou à vélo, et restez sur les chemins entre les jardins.',
+      food: 'Grenades à l’automne, et henné de Gabès au marché de Jara.',
+      bestTime: 'Toute l’année sauf au cœur de l’été. Les grenades mûrissent en octobre.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['Palmiers au-dessus des jardins', 'Grenadiers', 'Une calèche sur les chemins'],
+  },
+  tamezret: {
+    tagline: 'Un village de pierre dans les monts de Matmata',
+    description:
+      'À dix kilomètres de Matmata, Tamezret grimpe à flanc de colline vers 480 m, ses maisons de pierre empilées autour d’une mosquée blanche. On y parle encore berbère.',
+    didYouKnow: 'Une petite maison-musée du village présente vêtements, outils et bijoux berbères.',
+    insights: {
+      history: 'Comme les autres villages du Dahar, il a été construit en hauteur pour surveiller les plaines.',
+      customs: 'Montez tout en haut pour la vue, et saluez les gens dans les ruelles.',
+      food: 'Thé et galette au café de l’entrée du village.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Maisons de pierre sur la colline', 'La mosquée blanche', 'Vue sur les monts de Matmata'],
+  },
+  toujane: {
+    tagline: 'Un village berbère des deux côtés d’une vallée',
+    description:
+      'Sur la route de montagne entre Matmata et Médenine, Toujane est coupé en deux par une vallée profonde, ses maisons de pierre épousant les pentes. La route elle-même est l’une des plus belles du Sud.',
+    didYouKnow: 'Les dernières scènes du film de René Vautier « La Folle de Toujane » (1974) y ont été tournées.',
+    insights: {
+      history:
+        'Fondé par des Berbères vers le XIIe siècle, le village a connu des combats pendant la Seconde Guerre mondiale.',
+      customs: 'Les tapis tissés au village sont vendus par les familles elles-mêmes.',
+      food: 'L’huile d’olive des terrasses autour du village.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Le village de part et d’autre de la vallée', 'Maisons de pierre sur la pente', 'La route de montagne'],
+  },
+  'ksar-hadada': {
+    tagline: 'Des greniers devenus Mos Espa',
+    description:
+      'Près de Ghomrassen, au nord de Tataouine, Ksar Hadada est un grenier fortifié fait de pièces voûtées, les « ghorfas », empilées autour de cours. Une partie a servi de quartier des esclaves de Mos Espa dans « La Menace fantôme ».',
+    didYouKnow:
+      'Chaque ghorfa appartenait à une famille et gardait ses grains, son huile et ses dattes, parfois pendant des années.',
+    insights: {
+      history:
+        'Les ksour ont été bâtis par les communautés berbères pour mettre les récoltes à l’abri. Hadada a ensuite servi d’hôtel.',
+      customs: 'Prudence dans les escaliers extérieurs : ils n’ont pas de rampe.',
+      food: 'Goûtez les biscuits « kaak » de Ghomrassen.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 heure',
+    captions: ['Ghorfas empilées', 'La cour', 'Le coin du tournage'],
+  },
+  'ksar-ouled-debbab': {
+    tagline: 'Un ksar restauré sur sa colline',
+    description:
+      'Juste au sud de Tataouine, sur la route de Chenini et Douiret, ce ksar perché a été en partie restauré. Ses ghorfas et ses cours donnent une idée claire du fonctionnement de ces greniers.',
+    didYouKnow: 'Certaines ghorfas ont été transformées en boutiques d’artisanat et en chambres pour les visiteurs.',
+    insights: {
+      history: 'Bâti par la tribu des Ouled Debbab pour stocker ses récoltes et les protéger des razzias.',
+      customs: 'Facile d’accès en voiture : un bon premier ksar avant les plus isolés.',
+      food: 'Un thé dans la cour.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 heure',
+    captions: ['Le ksar sur sa colline', 'Ghorfas restaurées', 'Vue sur la plaine'],
+  },
+  douiret: {
+    tagline: 'Un village troglodyte sous son ksar',
+    description:
+      'À l’ouest de Tataouine, le vieux Douiret s’étire sur une crête sous un ksar en ruine, avec des maisons creusées dans la roche et une mosquée blanche au pied de la pente. La plupart des familles se sont installées dans le nouveau village, plus bas.',
+    didYouKnow: 'Le village était autrefois une étape pour les caravanes entre la côte et le Sahara.',
+    insights: {
+      history: 'Fondé par des Berbères il y a plusieurs siècles, il a été largement abandonné au XXe siècle.',
+      customs: 'Montez jusqu’au ksar pour la vue, avec de bonnes chaussures.',
+      food: 'Prévoyez eau et en-cas, ou mangez à Tataouine.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '2 heures',
+    captions: ['Maisons troglodytes sur la crête', 'Le ksar en ruine', 'La mosquée blanche'],
+  },
+  djerbahood: {
+    tagline: 'Un village devenu galerie à ciel ouvert',
+    description:
+      'En 2014, environ 150 artistes de rue venus d’une trentaine de pays ont peint quelque 250 fresques sur les murs blancs d’Erriadh, le village de la synagogue de la Ghriba. Beaucoup sont encore là, passées ou repeintes, entre les maisons et les ruelles.',
+    didYouKnow: 'Le projet a été porté par Itinerrance, une galerie parisienne d’art urbain.',
+    insights: {
+      history: 'Erriadh, autrefois appelée Hara Seghira, est l’un des plus anciens villages juifs de l’île.',
+      customs: 'Des gens vivent derrière ces murs : restez discret et demandez avant de photographier quelqu’un.',
+      food: 'À combiner avec la Ghriba, à quelques minutes, et une brik à Houmt Souk.',
+      bestTime: 'Toute l’année. La lumière du matin convient le mieux aux fresques.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Fresques dans les ruelles', 'Une porte peinte', 'Murs blancs et couleurs'],
+  },
 };
