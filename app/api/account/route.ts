@@ -21,7 +21,10 @@ function adminHeaders(key: string): Record<string, string> {
   return key.startsWith('sb_') ? { apikey: key } : { apikey: key, Authorization: `Bearer ${key}` };
 }
 
-/** True when the token (already checked by Supabase) comes from the recovery e-mail link, within 30 minutes. */
+/**
+ * True when the token (already checked by Supabase) comes from an e-mail link (recovery or one-time code), within 30 minutes.
+ * Supabase records a recovery link as "otp" in the session; either way the person proved they own the mailbox.
+ */
 function openedByRecovery(token: unknown): boolean {
   if (typeof token !== 'string') return false;
   try {
@@ -30,7 +33,10 @@ function openedByRecovery(token: unknown): boolean {
     };
     const now = Date.now() / 1000;
     return (payload.amr ?? []).some(
-      (a) => a.method === 'recovery' && typeof a.timestamp === 'number' && now - a.timestamp < 30 * 60,
+      (a) =>
+        (a.method === 'recovery' || a.method === 'otp') &&
+        typeof a.timestamp === 'number' &&
+        now - a.timestamp < 30 * 60,
     );
   } catch {
     return false;
