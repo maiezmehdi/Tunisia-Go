@@ -13,6 +13,7 @@ import type { CategoryId, Itinerary, Photo, Place } from '@/data/types';
 import { formatDuration, formatKm, type RouteSummary } from '@/lib/geo';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { shareUrl } from '@/lib/myTrip';
+import { SITE_URL } from '@/lib/seo';
 
 const InteractiveMap = dynamic(() => import('@/components/InteractiveMap'), { ssr: false });
 
@@ -106,12 +107,10 @@ export default function TripPrintSheet({ stops, route, photos, itinerary }: Trip
   const ids = stops.map((s) => s.id);
   const best = tripBestMonthsLabel(ids, locale);
   const words = LEXICON.flatMap((g) => g.words).filter((w) => PRINT_WORDS.includes(w.id));
-  const [origin, setOrigin] = useState('');
   const [link, setLink] = useState('');
   const [qr, setQr] = useState('');
 
   useEffect(() => {
-    setOrigin(window.location.origin);
     const url = shareUrl(ids);
     setLink(url);
     QRCode.toString(url, {
@@ -131,7 +130,7 @@ export default function TripPrintSheet({ stops, route, photos, itinerary }: Trip
     month: 'long',
     year: 'numeric',
   });
-  const host = origin.replace(/^https?:\/\//, '');
+  const host = SITE_URL.replace(/^https?:\/\//, '');
 
   return (
     <div

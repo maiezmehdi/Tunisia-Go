@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { SITE_URL } from '@/lib/seo';
 import { supabaseConfig } from '@/lib/supabase';
 
 /**
@@ -12,7 +13,7 @@ export const runtime = 'nodejs';
 export async function GET(request: Request) {
   const cfg = supabaseConfig();
   const url = new URL(request.url);
-  const back = `${url.origin}${url.searchParams.get('lang') === 'en' ? '/en' : ''}/compte`;
+  const back = `${SITE_URL}${url.searchParams.get('lang') === 'en' ? '/en' : ''}/compte`;
   if (!cfg || process.env.NEXT_PUBLIC_FACEBOOK_LOGIN !== 'on') return NextResponse.redirect(`${back}?auth=off`);
   const target = new URL(`${cfg.url}/auth/v1/authorize`);
   target.searchParams.set('provider', 'facebook');
