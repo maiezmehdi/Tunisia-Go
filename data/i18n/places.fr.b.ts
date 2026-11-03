@@ -988,4 +988,65 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     visitDuration: '1 à 2 heures',
     captions: ['Fresques dans les ruelles', 'Une porte peinte', 'Murs blancs et couleurs'],
   },
+  // ── Campings du 3 novembre 2026 ──────────────────────────────────
+  'camping-douz': {
+    name: 'Camping Désert Club, Douz',
+    region: 'Kébili',
+    tagline: 'Un camping dans la palmeraie, aux portes du Sahara',
+    description:
+      'L’un des plus anciens campings du Sud, en bordure de la palmeraie de Douz, à quelques minutes du centre. Emplacements pour tentes, vans et camping-cars sous les palmiers, et les dunes du Grand Erg commencent juste derrière.',
+    didYouKnow: 'Douz accueille chaque hiver le Festival du Sahara, avec courses de dromadaires et poésie bédouine.',
+    insights: {
+      history: 'Douz s’est développée autour de sa palmeraie, lieu de rencontre des nomades Mrazig.',
+      customs:
+        'Appelez avant pour vérifier l’ouverture et les prix. Les sorties à dos de dromadaire ou en 4x4 partent de Douz.',
+      food: 'Goûtez en ville le pain cuit dans le sable, « khobz mella ».',
+      bestTime: 'D’octobre à avril. Les nuits sont froides en hiver.',
+    },
+    visitDuration: '1 à 2 nuits',
+    captions: ['Emplacements sous les palmiers', 'La palmeraie au crépuscule', 'Les dunes près de Douz'],
+  },
+  'camping-tozeur': {
+    tagline: 'Des emplacements dans la palmeraie de Tozeur',
+    description:
+      'Un camping sur la route de la Berka, dans la palmeraie de Tozeur. Emplacements pour tentes, vans et camping-cars, mi-soleil mi-ombre, avec douches, cuisine et une piscine alimentée par une source. Ouvert toute l’année.',
+    didYouKnow:
+      'La palmeraie de Tozeur est irriguée par plus de 200 sources, réparties selon un système mis au point au XIIIe siècle.',
+    insights: {
+      history: 'Tozeur était une étape caravanière sur les routes transsahariennes.',
+      customs: 'Petit-déjeuner et dîner sur commande. Vérifiez prix et disponibilités avant d’arriver.',
+      food: 'Dattes deglet nour fraîches de la palmeraie.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 à 3 nuits',
+    captions: ['Emplacements sous les palmiers', 'La piscine alimentée par une source', 'La palmeraie de Tozeur'],
+  },
+  'camping-gafsa': {
+    tagline: 'Une étape dans l’oasis de Gafsa',
+    description:
+      'Un petit camping sur la route de l’oasis, à quelques kilomètres du centre de Gafsa. Une étape pratique entre le Jérid et le Nord, près des piscines romaines et du Lézard Rouge à Metlaoui.',
+    didYouKnow: 'Gafsa a donné son nom à la culture capsienne, l’une des cultures préhistoriques d’Afrique du Nord.',
+    insights: {
+      history: 'L’antique Capsa était une ville numide avant Rome.',
+      customs: 'Petit et familial : appelez avant pour vérifier qu’il est ouvert.',
+      food: 'Dattes et grenades de l’oasis.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 nuit',
+    captions: ['Le camping dans l’oasis', 'Palmiers de Gafsa', 'La route de l’oasis'],
+  },
+  'camping-el-kahena': {
+    tagline: 'Camper au bord de la mer, au nord de Sfax',
+    description:
+      'Un camping et une résidence sur la côte, à Ellouza, près de Jebiniana, à une trentaine de minutes au nord de Sfax. Des emplacements près d’une plage calme, loin des zones hôtelières, et une bonne base pour El Jem et le bac de Kerkennah.',
+    didYouKnow: 'Le camping porte le nom de la Kahena, la reine berbère qui résista aux armées arabes au VIIe siècle.',
+    insights: {
+      history: 'La côte entre Sfax et Mahdia est bordée de villages de pêcheurs et d’oliveraies.',
+      customs: 'Appelez avant pour vérifier l’ouverture et les prix.',
+      food: 'Poisson frais des pêcheurs d’Ellouza.',
+      bestTime: 'D’avril à octobre.',
+    },
+    visitDuration: '1 à 3 nuits',
+    captions: ['Emplacements près de la mer', 'La plage d’Ellouza', 'Oliveraies dans les terres'],
+  },
 };

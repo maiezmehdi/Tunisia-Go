@@ -443,6 +443,9 @@ const GUIDE_BY_PLACE: Record<string, string> = {
   'ksar-ouled-debbab': 'sud',
   douiret: 'sud',
   djerbahood: 'djerba',
+  'camping-douz': 'sud',
+  'camping-tozeur': 'djerid',
+  'camping-el-kahena': 'sahel',
 };
 
 export function guideFor(placeId: string): string {
