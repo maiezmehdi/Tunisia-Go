@@ -8,6 +8,7 @@ import { deleteObjects, deleteWhere, selectRows, supabaseConfig } from '@/lib/su
 /**
  * 'me': e-mail and type of the signed-in account.
  * 'update': changes the e-mail and/or the password (after checking the current password).
+ * 'recover-password': sets a new password for a person who came from the recovery e-mail (session opened by that link only).
  * 'set-type': switches between traveller, guide/agency and partner (refused while a listing exists).
  * 'delete': removes the account, its saved favourites and trip, and the listing with its photo if there is one.
  */
@@ -18,6 +19,22 @@ const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
 
 function adminHeaders(key: string): Record<string, string> {
   return key.startsWith('sb_') ? { apikey: key } : { apikey: key, Authorization: `Bearer ${key}` };
+}
+
+/** True when the token (already checked by Supabase) comes from the recovery e-mail link, within 30 minutes. */
+function openedByRecovery(token: unknown): boolean {
+  if (typeof token !== 'string') return false;
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString('utf8')) as {
+      amr?: { method?: string; timestamp?: number }[];
+    };
+    const now = Date.now() / 1000;
+    return (payload.amr ?? []).some(
+      (a) => a.method === 'recovery' && typeof a.timestamp === 'number' && now - a.timestamp < 30 * 60,
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function POST(request: Request) {
@@ -71,6 +88,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     } catch (error) {
       console.error('account: update', error);
+      return NextResponse.json({ error: 'failed' }, { status: 502 });
+    }
+  }
+  if (body?.action === 'recover-password') {
+    const newPassword = typeof body.newPassword === 'string' ? body.newPassword : '';
+    if (newPassword.length < 8 || newPassword.length > 72) return NextResponse.json({ error: 'weak' }, { status: 400 });
+    // Only a session opened by the recovery link, in the last 30 minutes, may skip the current password.
+    if (!openedByRecovery(body.accessToken)) return NextResponse.json({ error: 'expired' }, { status: 403 });
+    if (!allow(`account:recover:${user.id}`, 10, HOUR))
+      return NextResponse.json({ error: 'too_many' }, { status: 429 });
+    try {
+      const res = await fetch(`${cfg.url}/auth/v1/admin/users/${user.id}`, {
+        method: 'PUT',
+        headers: { ...adminHeaders(cfg.key), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok) throw new Error(`recover password ${res.status}`);
+      return NextResponse.json({ ok: true });
+    } catch (error) {
+      console.error('account: recover-password', error);
       return NextResponse.json({ error: 'failed' }, { status: 502 });
     }
   }
