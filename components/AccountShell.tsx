@@ -1,5 +1,6 @@
 'use client';
 
+import ContactLine from '@/components/ContactLine';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
 export type AccountSection = { id: string; label: string; content: ReactNode };
@@ -106,7 +107,10 @@ export default function AccountShell({
       <aside className="hidden lg:block">
         <div className="sticky top-6">{menu}</div>
       </aside>
-      <div className="min-w-0 max-w-xl">{current?.content}</div>
+      <div className="min-w-0 max-w-xl">
+        {current?.content}
+        <ContactLine className="mt-10" />
+      </div>
     </div>
   );
 }

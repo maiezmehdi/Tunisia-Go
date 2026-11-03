@@ -54,6 +54,8 @@ const en = {
   // Drawer
   close: 'Close',
   privacy: 'Privacy',
+  contact: 'Contact',
+  contactLine: 'A question? Write to us at',
   allPlaces: 'All places',
   openFullPage: 'Open full page',
   closePage: 'Close page',
@@ -220,6 +222,8 @@ const fr: UiStrings = {
   spotBenefit: 'Chaque lieu retenu apparaît sur la carte, avec votre prénom.',
   close: 'Fermer',
   privacy: 'Confidentialité',
+  contact: 'Contact',
+  contactLine: 'Une question ? Écrivez-nous à',
   allPlaces: 'Tous les lieux',
   openFullPage: 'Ouvrir en plein écran',
   closePage: 'Fermer la page',

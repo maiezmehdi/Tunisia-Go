@@ -43,6 +43,11 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
           </a>
         </li>
         <li>
+          <a href="mailto:contact@tunisiagoo.com" className={anchor}>
+            {t.contact}
+          </a>
+        </li>
+        <li>
           <button type="button" onClick={openConsent} className={anchor}>
             {t.cookies}
           </button>
