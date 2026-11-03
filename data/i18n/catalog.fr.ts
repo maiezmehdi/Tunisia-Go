@@ -36,4 +36,40 @@ export const ITINERARIES_FR: Record<string, Pick<Itinerary, 'name' | 'tagline' |
     description:
       'Des souks de Tunis à la ville sainte de Kairouan et aux ports fortifiés du Sahel, jusqu’à la presqu’île blanche de Mahdia.',
   },
+  'ksour-route': {
+    name: 'La route des ksour',
+    tagline: 'Villages berbères et greniers du Dahar',
+    description:
+      'À travers les montagnes du Sud-Est : les maisons troglodytes de Matmata, les villages de pierre de Tamezret et Toujane, puis les greniers de Ksar Hadada et Ksar Ouled Soltane et les villages perchés de Chenini et Douiret.',
+  },
+  'mountain-oases': {
+    name: 'Les oasis de montagne',
+    tagline: 'Canyons, sources et palmeraies du Jérid',
+    description:
+      'Depuis Tozeur, le train du bey dans les gorges de Selja, puis les oasis de montagne de Chebika, Tamerza et Midès à la frontière algérienne, avant de finir dans les palmiers de Nefta.',
+  },
+  'deep-south-4x4': {
+    name: 'Le grand Sud en 4x4',
+    tagline: 'Lac salé, dunes et source dans le désert',
+    description:
+      'La traversée du chott el Jérid jusqu’à Douz, porte du Sahara, puis en 4x4 jusqu’à la source chaude de Ksar Ghilane et aux dunes protégées du parc national de Jebil.',
+  },
+  'wild-north': {
+    name: 'Le Nord sauvage',
+    tagline: 'Caps, lacs et forêts de chênes-lièges',
+    description:
+      'De Bizerte à la pointe nord de l’Afrique, les oiseaux du lac Ichkeul et les potières de Sejnane, puis la baie sauvage du cap Serrat, la côte de corail de Tabarka et les forêts d’Aïn Draham.',
+  },
+  'high-tell': {
+    name: 'Le Haut Tell',
+    tagline: 'Montagnes et cités romaines, sans la foule',
+    description:
+      'Dans les terres et en altitude : Testour l’andalouse, la cité romaine de Dougga, la vieille ville du Kef, la Table de Jugurtha, les ruines frontalières de Haïdra, puis Makthar et le village perché de Kesra.',
+  },
+  'djerba-slow': {
+    name: 'Djerba autrement',
+    tagline: 'L’île au-delà des plages',
+    description:
+      'Le marché de Houmt Souk, les fresques de Djerbahood, la synagogue de la Ghriba et les potiers de Guellala, une journée à vélo sur les petites routes de l’île, puis les palmiers et les plages de Zarzis.',
+  },
 };

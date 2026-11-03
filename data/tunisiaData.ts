@@ -2098,6 +2098,60 @@ export const ITINERARIES: Itinerary[] = [
     days: 4,
     stops: ['medina-tunis', 'kairouan', 'sousse-medina', 'monastir', 'mahdia'],
   },
+  {
+    id: 'ksour-route',
+    name: 'The Ksour Route',
+    tagline: 'Berber villages and granaries of the Dahar',
+    description:
+      'Through the mountains of the south-east: the cave houses of Matmata, the stone villages of Tamezret and Toujane, then the granaries of Ksar Hadada and Ksar Ouled Soltane and the hilltop villages of Chenini and Douiret.',
+    days: 3,
+    stops: ['matmata', 'tamezret', 'toujane', 'ksar-hadada', 'ksar-ouled-soltane', 'chenini', 'douiret'],
+  },
+  {
+    id: 'mountain-oases',
+    name: 'The Mountain Oases',
+    tagline: 'Canyons, springs and palm groves of the Jerid',
+    description:
+      'From Tozeur, the Bey’s train into the Selja Gorges, then the mountain oases of Chebika, Tamerza and Midès on the Algerian border, ending among the palms of Nefta.',
+    days: 2,
+    stops: ['tozeur', 'lezard-rouge', 'chebika', 'tamerza', 'mides', 'nefta'],
+  },
+  {
+    id: 'deep-south-4x4',
+    name: 'The Deep South by 4x4',
+    tagline: 'Salt lake, dunes and a desert spring',
+    description:
+      'Across the Chott el Jerid to Douz, gateway to the Sahara, then by 4x4 to the warm spring of Ksar Ghilane and the protected dunes of Jebil National Park.',
+    days: 3,
+    stops: ['chott-el-jerid', 'douz', 'ksar-ghilane', 'jebil'],
+  },
+  {
+    id: 'wild-north',
+    name: 'The Wild North',
+    tagline: 'Capes, lakes and cork oak forests',
+    description:
+      'From Bizerte to the northern tip of Africa, the birds of Lake Ichkeul and the potters of Sejnane, then the wild bay of Cap Serrat, the coral coast of Tabarka and the forests of Aïn Draham.',
+    days: 3,
+    stops: ['bizerte', 'cap-angela', 'ichkeul', 'sejnane', 'cap-serrat', 'tabarka', 'ain-draham'],
+  },
+  {
+    id: 'high-tell',
+    name: 'The High Tell',
+    tagline: 'Mountains and Roman towns without crowds',
+    description:
+      'Inland and uphill: Andalusian Testour, the Roman city of Dougga, the old town of El Kef, the mesa of Jugurtha’s Table, the frontier ruins of Haïdra, then Makthar and the cliff village of Kesra.',
+    days: 3,
+    stops: ['testour', 'dougga', 'el-kef', 'table-de-jugurtha', 'haidra', 'makthar', 'kesra'],
+  },
+  {
+    id: 'djerba-slow',
+    name: 'Djerba, the Other Way',
+    tagline: 'The island beyond its beaches',
+    description:
+      'The market of Houmt Souk, the murals of Djerbahood, the Ghriba synagogue and the potters of Guellala, a day by bike along the island’s back roads, then the palms and beaches of Zarzis.',
+    days: 2,
+    stops: ['houmt-souk', 'djerbahood', 'el-ghriba', 'guellala', 'djerba-velo', 'zarzis'],
+  },
 ];
 
 /** Map centre roughly in the middle of the country */
