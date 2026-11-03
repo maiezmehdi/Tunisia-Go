@@ -2,6 +2,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
+import { SITE_URL } from '@/lib/seo';
+
 /**
  * "Mon voyage": the visitor's own road trip, an ordered list of place ids.
  * It stays in the browser (no account) and travels in a link to be shared.
@@ -108,7 +110,7 @@ export function parseShared(raw: string | null, known: (id: string) => boolean):
 }
 
 export function shareUrl(ids: string[]): string {
-  const url = new URL('/mon-voyage', window.location.origin);
+  const url = new URL('/mon-voyage', SITE_URL);
   url.searchParams.set(SHARE_PARAM, ids.join(','));
   // Commas read better than %2C in a link people paste.
   return url.toString().replace(/%2C/g, ',');
