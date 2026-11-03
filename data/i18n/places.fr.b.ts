@@ -1049,4 +1049,99 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     visitDuration: '1 à 3 nuits',
     captions: ['Emplacements près de la mer', 'La plage d’Ellouza', 'Oliveraies dans les terres'],
   },
+  // ── Série 2 du 3 novembre 2026 ───────────────────────────────────
+  'bou-kornine': {
+    name: 'Parc national du Bou Kornine',
+    tagline: 'Une montagne à deux cornes au-dessus du golfe de Tunis',
+    description:
+      'À quinze kilomètres de Tunis, au-dessus de Hammam-Lif, les deux sommets du djebel Bou Kornine culminent à 576 m. Pentes de pins et d’oliviers sauvages, une source et une large vue sur le golfe : c’est la nature la plus proche de la capitale.',
+    didYouKnow: 'Le parc abrite la pachyure étrusque, l’un des plus petits mammifères du monde.',
+    insights: {
+      history: 'Parc national depuis 1987. Son nom signifie « celui aux deux cornes ».',
+      customs:
+        'Partez le matin avec de l’eau : les sentiers sont raides et exposés. Un petit écomusée présente le parc.',
+      food: 'Poisson ou « lablabi » à Hammam-Lif après la marche.',
+      bestTime: 'De l’automne au printemps. En fin d’hiver, les cyclamens sauvages fleurissent sur les pentes.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['Les deux sommets', 'Sentiers dans les pins', 'Vue sur le golfe de Tunis'],
+  },
+  'el-feidja': {
+    name: 'Parc national d’El Feidja',
+    tagline: 'Forêt de chênes-lièges et derniers cerfs de Barbarie',
+    description:
+      'Près de la frontière algérienne, à l’ouest d’Aïn Draham, ce parc protège une épaisse forêt de chênes-lièges et de chênes zéens. Il abrite l’une des dernières populations de cerfs de Barbarie d’Afrique du Nord, avec des sangliers et des loups dorés.',
+    didYouKnow: 'Le cerf de Barbarie est le seul cerf originaire d’Afrique.',
+    insights: {
+      history: 'Créé en 1990 pour protéger la forêt et ses cerfs.',
+      customs:
+        'Demandez un guide à l’entrée du parc ou à Aïn Draham. Restez sur les pistes et en silence pour voir les animaux.',
+      food: 'Grillades et pain de la région à Aïn Draham.',
+      bestTime: 'Du printemps à l’automne. Les hivers sont froids et humides, parfois enneigés.',
+    },
+    visitDuration: 'Une journée',
+    captions: ['Forêt de chênes-lièges', 'Un cerf de Barbarie', 'Pistes de montagne près de la frontière'],
+  },
+  'la-goulette': {
+    tagline: 'Poisson, fort espagnol et Petite Sicile',
+    description:
+      'Le port de Tunis occupe une langue de terre entre le lac et le golfe. Son front de mer est bordé de restaurants de poisson, et derrière se dressent un fort du XVIe siècle et l’ancien quartier sicilien.',
+    didYouKnow:
+      'La Goulette était surnommée « la Petite Sicile » : Italiens, Maltais, juifs et musulmans y vivaient côte à côte.',
+    insights: {
+      history: 'Le fort fut construit par Charles Quint en 1535, puis pris par les Ottomans en 1574.',
+      customs:
+        'Les soirs d’été sont animés : les Tunisois viennent dîner au bord de la mer. Choisissez votre poisson au comptoir, il se paie au poids.',
+      food: 'Poisson grillé, brik à l’œuf et « complet poisson ».',
+      bestTime: 'Les soirs d’été, ou au printemps et à l’automne pour plus de calme.',
+    },
+    visitDuration: 'Une soirée',
+    captions: ['Restaurants de poisson sur le front de mer', 'Le fort espagnol', 'Ruelles du vieux quartier'],
+  },
+  lamta: {
+    tagline: 'Un port phénicien et son petit musée',
+    description:
+      'Au sud de Monastir, la ville de pêcheurs de Lamta occupe l’antique Leptiminus, un port fondé par des marins phéniciens qui prospéra sous Rome. Un petit musée archéologique présente mosaïques et objets des fouilles.',
+    didYouKnow: 'Hannibal y débarqua à son retour d’Italie, à la fin de la deuxième guerre punique.',
+    insights: {
+      history: 'Des équipes tunisiennes, américaines et canadiennes y fouillent encore la ville antique.',
+      customs: 'Une halte tranquille, à combiner avec Monastir ou Mahdia.',
+      food: 'Poisson grillé au port.',
+      bestTime: 'Toute l’année. Le printemps et l’automne sont les plus agréables.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Le musée archéologique', 'Mosaïques de Leptiminus', 'Le port de pêche'],
+  },
+  'beni-khedache': {
+    name: 'Béni Khedache',
+    tagline: 'Une ville de montagne dans le Dahar',
+    description:
+      'À une trentaine de kilomètres à l’ouest de Médenine, Béni Khedache se trouve dans les monts du Dahar, entre la plaine et le Grand Erg. Les environs sont parsemés de ksour et de vieux greniers, et la ville possède une mosquée souterraine.',
+    didYouKnow: 'La mosquée souterraine a été creusée dans la roche pour rester fraîche l’été et tiède l’hiver.',
+    insights: {
+      history:
+        'Les villages berbères du Dahar ont été bâtis en hauteur pour surveiller les plaines et protéger les récoltes.',
+      customs: 'La route de montagne vers Ksar Hadada et Ghomrassen est l’une des plus belles du Sud.',
+      food: 'Huile d’olive et figues sèches des terrasses.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: 'Une demi-journée',
+    captions: ['La ville dans la montagne', 'Un ksar des environs', 'La mosquée souterraine'],
+  },
+  mareth: {
+    name: 'Ligne Mareth et son musée',
+    tagline: 'Les bunkers d’une bataille de 1943',
+    description:
+      'Construite par les Français dans les années 1930, la ligne Mareth allait de la mer aux monts de Matmata. Les forces de Rommel la tinrent en mars 1943, jusqu’à la percée de la 8e armée britannique. Des bunkers subsistent, et un musée à Mareth raconte la bataille.',
+    didYouKnow:
+      'La ligne fut finalement contournée par la trouée de Tebaga, à l’ouest des monts, après l’échec d’une attaque frontale.',
+    insights: {
+      history: 'La bataille de la ligne Mareth dura du 16 au 31 mars 1943, avant le repli de l’Axe vers l’oued Akarit.',
+      customs: 'Vérifiez sur place les horaires du musée. N’entrez pas dans les bunkers effondrés.',
+      food: 'Mangez à Gabès, à 35 km au nord.',
+      bestTime: 'D’octobre à avril.',
+    },
+    visitDuration: '1 à 2 heures',
+    captions: ['Un bunker de la ligne', 'Le musée', 'La plaine vers les monts'],
+  },
 };
