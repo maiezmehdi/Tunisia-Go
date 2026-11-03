@@ -8,6 +8,7 @@ import { deleteObjects, deleteWhere, selectRows, supabaseConfig } from '@/lib/su
 /**
  * 'me': e-mail and type of the signed-in account.
  * 'update': changes the e-mail and/or the password (after checking the current password).
+ * 'set-type': switches between traveller, guide/agency and partner (refused while a listing exists).
  * 'delete': removes the account, its saved favourites and trip, and the listing with its photo if there is one.
  */
 export const runtime = 'nodejs';
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
     currentPassword?: unknown;
     newEmail?: unknown;
     newPassword?: unknown;
+    kind?: unknown;
   } | null;
   const user = await authUser(cfg, body?.accessToken);
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -69,6 +71,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     } catch (error) {
       console.error('account: update', error);
+      return NextResponse.json({ error: 'failed' }, { status: 502 });
+    }
+  }
+  if (body?.action === 'set-type') {
+    const kind = body.kind;
+    if (kind !== 'traveler' && kind !== 'pro' && kind !== 'partner')
+      return NextResponse.json({ error: 'invalid' }, { status: 400 });
+    if (kind === user.kind) return NextResponse.json({ ok: true, kind });
+    try {
+      // A published listing belongs to its type: it has to be gone before the account changes type.
+      const pros = await selectRows<{ id: string }>(cfg, 'pro_listings', `select=id&owner_id=eq.${user.id}&limit=1`);
+      const partners = await selectRows<{ id: string }>(
+        cfg,
+        'partner_listings',
+        `select=id&owner_id=eq.${user.id}&limit=1`,
+      ).catch(() => []);
+      if (pros.length || partners.length) return NextResponse.json({ error: 'has_listing' }, { status: 409 });
+      const res = await fetch(`${cfg.url}/auth/v1/admin/users/${user.id}`, {
+        method: 'PUT',
+        headers: { ...adminHeaders(cfg.key), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_metadata: { account_type: kind } }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok) throw new Error(`set type ${res.status}`);
+      return NextResponse.json({ ok: true, kind });
+    } catch (error) {
+      console.error('account: set-type', error);
       return NextResponse.json({ error: 'failed' }, { status: 502 });
     }
   }
