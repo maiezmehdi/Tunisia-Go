@@ -40,7 +40,7 @@ export default async function AccountRoute({ params }: Params) {
           </div>
         </div>
       </header>
-      <div className="mx-auto max-w-xl px-4 pb-24 pt-12 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
         <h1 className="font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{c.title}</h1>
         <p className="mb-8 mt-3 text-charcoal-500">{c.lead}</p>
         <AccountPage />

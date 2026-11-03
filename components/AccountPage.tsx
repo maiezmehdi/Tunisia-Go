@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import AccountTypeChange from '@/components/AccountTypeChange';
+import AccountShell, { type AccountSection } from '@/components/AccountShell';
 import AccountSaved from '@/components/AccountSaved';
 import AccountSettings from '@/components/AccountSettings';
 import PartnerForm from '@/components/PartnerForm';
@@ -61,6 +63,11 @@ const COPY = {
     cancel: 'Annuler',
     deleteFailed: 'La suppression n’a pas abouti. Réessayez dans un instant.',
     stepLabels: ['Compte', 'Vous', 'Profil', 'Envoi'],
+    menuLabel: 'Menu du compte',
+    closeLabel: 'Fermer le menu',
+    navFavorites: 'Mes favoris',
+    navTrip: 'Mon voyage',
+    navSettings: 'Réglages',
   },
   en: {
     titleIn: 'Sign in',
@@ -111,6 +118,11 @@ const COPY = {
     cancel: 'Cancel',
     deleteFailed: 'Deleting did not work. Please try again in a moment.',
     stepLabels: ['Account', 'You', 'Profile', 'Send'],
+    menuLabel: 'Account menu',
+    closeLabel: 'Close the menu',
+    navFavorites: 'My favourites',
+    navTrip: 'My trip',
+    navSettings: 'Settings',
   },
 } as const;
 
@@ -241,43 +253,10 @@ export default function AccountPage() {
   }
 
   if (tokens && account) {
-    return (
+    const typeLabel = isPro ? c.proLabel : account.kind === 'partner' ? c.partnerLabel : c.travelerLabel;
+    const settings = (
       <div className="space-y-6">
-        <dl className="space-y-3 rounded-3xl border border-sand-200 bg-white p-5 text-[15px]">
-          <div>
-            <dt className="text-xs text-charcoal-500">{c.emailLabel}</dt>
-            <dd className="mt-0.5 break-all text-charcoal">{account.email}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-charcoal-500">{c.typeLabel}</dt>
-            <dd className="mt-0.5 text-charcoal">
-              {isPro ? c.proLabel : account.kind === 'partner' ? c.partnerLabel : c.travelerLabel}
-            </dd>
-          </div>
-        </dl>
-        {account.kind === 'traveler' && <AccountSaved />}
-        {account.kind === 'partner' && accessToken && (
-          <section aria-label={c.partnerTitle} className="space-y-4">
-            <h2 className="font-serif text-2xl">{c.partnerTitle}</h2>
-            <PartnerForm accessToken={accessToken} onExpired={signOut} />
-          </section>
-        )}
-        {isPro && accessToken && (
-          <section aria-label={c.listingTitle} className="space-y-4">
-            <h2 className="font-serif text-2xl">{c.listingTitle}</h2>
-            {entry === null && <p className="text-sm text-charcoal-500">{c.loading}</p>}
-            {entry === 'error' && <p className="text-sm text-terracotta-700">{c.loadFailed}</p>}
-            {entry === 'none' && (
-              <>
-                <p className="text-sm text-charcoal-500">{c.createLead}</p>
-                <ProSignup accessToken={accessToken} onExpired={signOut} />
-              </>
-            )}
-            {entry && typeof entry === 'object' && (
-              <ProEdit accessToken={accessToken} entry={entry} onExpired={signOut} />
-            )}
-          </section>
-        )}
+        {accessToken && <AccountTypeChange accessToken={accessToken} current={account.kind} />}
         {accessToken && <AccountSettings accessToken={accessToken} />}
         <div className="flex flex-wrap gap-3">
           <button
@@ -319,6 +298,61 @@ export default function AccountPage() {
           )}
         </div>
       </div>
+    );
+
+    // The menu depends on the account type: travellers keep favourites and their trip,
+    // guides and agencies their listing, partners their business.
+    const sections: AccountSection[] = [];
+    if (account.kind === 'traveler') {
+      sections.push(
+        { id: 'favoris', label: c.navFavorites, content: <AccountSaved part="favorites" /> },
+        { id: 'voyage', label: c.navTrip, content: <AccountSaved part="trip" /> },
+      );
+    }
+    if (account.kind === 'partner' && accessToken) {
+      sections.push({
+        id: 'etablissement',
+        label: c.partnerTitle,
+        content: (
+          <section aria-label={c.partnerTitle} className="space-y-4">
+            <h2 className="font-serif text-2xl">{c.partnerTitle}</h2>
+            <PartnerForm accessToken={accessToken} onExpired={signOut} />
+          </section>
+        ),
+      });
+    }
+    if (isPro && accessToken) {
+      sections.push({
+        id: 'fiche',
+        label: c.listingTitle,
+        content: (
+          <section aria-label={c.listingTitle} className="space-y-4">
+            <h2 className="font-serif text-2xl">{c.listingTitle}</h2>
+            {entry === null && <p className="text-sm text-charcoal-500">{c.loading}</p>}
+            {entry === 'error' && <p className="text-sm text-terracotta-700">{c.loadFailed}</p>}
+            {entry === 'none' && (
+              <>
+                <p className="text-sm text-charcoal-500">{c.createLead}</p>
+                <ProSignup accessToken={accessToken} onExpired={signOut} />
+              </>
+            )}
+            {entry && typeof entry === 'object' && (
+              <ProEdit accessToken={accessToken} entry={entry} onExpired={signOut} />
+            )}
+          </section>
+        ),
+      });
+    }
+    sections.push({ id: 'reglages', label: c.navSettings, content: settings });
+
+    return (
+      <AccountShell
+        email={account.email}
+        typeLabel={typeLabel}
+        sections={sections}
+        menuLabel={c.menuLabel}
+        closeLabel={c.closeLabel}
+      />
     );
   }
 
