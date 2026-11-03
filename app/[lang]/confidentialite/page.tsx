@@ -23,7 +23,7 @@ const COPY: Record<
       {
         title: 'Qui est responsable',
         body: [
-          'Tunisia Go est édité par Mehdi Maiez. Pour toute question sur vos données, ou pour en demander l’accès, la correction ou la suppression, écrivez-nous via mehdimaiez.com.',
+          'Tunisia Go est édité par Mehdi Maiez. Pour toute question sur vos données, ou pour en demander l’accès, la correction ou la suppression, écrivez-nous à contact@tunisiagoo.com.',
         ],
       },
       {
@@ -85,7 +85,7 @@ const COPY: Record<
       {
         title: 'Who is responsible',
         body: [
-          'Tunisia Go is published by Mehdi Maiez. For any question about your data, or to ask for access, correction or deletion, contact us through mehdimaiez.com.',
+          'Tunisia Go is published by Mehdi Maiez. For any question about your data, or to ask for access, correction or deletion, write to us at contact@tunisiagoo.com.',
         ],
       },
       {
