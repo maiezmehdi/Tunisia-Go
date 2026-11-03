@@ -55,6 +55,8 @@ export interface Reply {
   words?: Word[];
   links?: { label: string; href: string }[];
   chips?: Chip[];
+  /** Written by the AI from the pages of the site (shows a small note). */
+  ai?: boolean;
 }
 
 export const EMPTY_PROFILE: Profile = { cats: [], zones: [] };
@@ -538,6 +540,11 @@ function menuChips(t: Text): Chip[] {
     { label: t.menu.tips, action: { type: 'tips' } },
     { label: t.menu.words, action: { type: 'words' } },
   ];
+}
+
+/** The four starting choices, shown again under an answer written by the AI. */
+export function menu(locale: Locale): Chip[] {
+  return menuChips(TEXT[locale]);
 }
 
 export function welcome(locale: Locale): Reply {

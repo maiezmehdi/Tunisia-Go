@@ -64,7 +64,7 @@ const COPY: Record<
       {
         title: 'L’assistant de voyage',
         body: [
-          'L’assistant en bas à droite n’est pas une intelligence artificielle en ligne. Il fonctionne entièrement dans votre navigateur et répond à partir des contenus du site (lieux, road trips, cahiers pratiques, mots du cru). Ce que vous y écrivez ne nous est pas envoyé et n’est transmis à aucun service.',
+          'L’assistant en bas à droite répond à partir des contenus du site (lieux, road trips, cahiers pratiques, mots du cru). Pour rédiger une réponse naturelle, votre question et les derniers échanges, avec les extraits de pages du site utiles, sont envoyés à un service d’intelligence artificielle de Google (Gemini). Nous ne les enregistrons pas et ne les associons à aucun compte : n’y écrivez pas de données personnelles. Quand le service est indisponible ou que la limite d’usage est atteinte, l’assistant intégré à votre navigateur répond à la place, sans rien envoyer. Le bouton « Reformuler » des formulaires fonctionne de la même manière avec le texte que vous voulez améliorer.',
         ],
       },
       {
@@ -126,7 +126,7 @@ const COPY: Record<
       {
         title: 'The travel assistant',
         body: [
-          'The assistant in the bottom-right corner is not an online artificial intelligence. It runs entirely in your browser and answers from the site’s own content (places, road trips, practical guides, local words). What you type is not sent to us or to any other service.',
+          'The assistant in the bottom-right corner answers from the site’s own content (places, road trips, practical guides, local words). To write a natural answer, your question and the last few exchanges, with the relevant extracts of the site’s pages, are sent to a Google artificial intelligence service (Gemini). We do not store them or link them to any account: do not type personal data. When the service is unavailable or the usage limit is reached, the assistant built into your browser answers instead, and nothing is sent. The “Rewrite” button in the forms works the same way with the text you want to improve.',
         ],
       },
       {

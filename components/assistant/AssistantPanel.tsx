@@ -6,6 +6,7 @@ import {
   onAction,
   onMessage,
   welcome,
+  menu,
   EMPTY_PROFILE,
   type Action,
   type Profile,
@@ -49,6 +50,8 @@ const UI = {
     openTrip: 'Ouvrir mon voyage',
     seeTrip: 'Voir ce road trip',
     you: 'Vous',
+    aiNote: 'Réponse rédigée à partir des pages du site.',
+    thinking: 'Je cherche…',
   },
   en: {
     title: 'Travel assistant',
@@ -65,6 +68,8 @@ const UI = {
     openTrip: 'Open my trip',
     seeTrip: 'See this road trip',
     you: 'You',
+    aiNote: 'Answer written from the pages of this site.',
+    thinking: 'Looking…',
   },
 };
 
@@ -90,6 +95,7 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
   const trip = useMyTrip();
   const [conv, setConv] = useState<Conversation>(() => load(locale));
   const [draft, setDraft] = useState('');
+  const [pending, setPending] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -109,7 +115,7 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
     const asked = list.querySelectorAll<HTMLElement>('[data-from="me"]');
     const last = asked[asked.length - 1];
     list.scrollTo({ top: last ? last.offsetTop - list.offsetTop - 12 : 0, behavior: 'smooth' });
-  }, [conv.messages.length, open]);
+  }, [conv.messages.length, pending, open]);
 
   useEffect(() => {
     if (!open) return;
@@ -144,12 +150,41 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
     push(label, onAction(action, conv.profile, locale));
   }
 
-  function send(e: FormEvent) {
+  async function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim().slice(0, 300);
-    if (!text) return;
+    if (!text || pending) return;
     setDraft('');
-    push(text, onMessage(text, conv.profile, locale, trip.ids.length));
+    const local = onMessage(text, conv.profile, locale, trip.ids.length);
+    // The guided road trip and ready-made trip plans stay with the built-in assistant.
+    if (conv.profile.step || local.reply.trip) return push(text, local);
+    setPending(text);
+    try {
+      const history = conv.messages.slice(-6).map((m) => ({ role: m.from === 'me' ? 'user' : 'model', text: m.text }));
+      const res = await fetch('/api/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: text, history, locale }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data = (await res.json()) as { text?: string; places?: string[]; itinerary?: string };
+      if (!data.text) throw new Error('empty');
+      push(text, {
+        profile: conv.profile,
+        reply: {
+          text: data.text,
+          places: data.places?.length ? data.places : undefined,
+          itinerary: data.itinerary,
+          chips: menu(locale),
+          ai: true,
+        },
+      });
+    } catch {
+      // Not configured, over the limit or offline: the built-in assistant answers instead.
+      push(text, local);
+    } finally {
+      setPending(null);
+    }
   }
 
   const lastBot = [...conv.messages].reverse().find((m) => m.from === 'bot')?.id;
@@ -210,6 +245,18 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
             <BotMessage key={m.id} reply={m.reply!} showChips={m.id === lastBot} onChoose={choose} />
           ),
         )}
+        {pending && (
+          <>
+            <p
+              data-from="me"
+              className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-sand-100 px-3.5 py-2 text-sm"
+            >
+              <span className="sr-only">{ui.you} : </span>
+              {pending}
+            </p>
+            <p className="text-sm text-charcoal-500">{ui.thinking}</p>
+          </>
+        )}
       </div>
 
       <form onSubmit={send} className="flex items-center gap-2 border-t border-sand-200 px-4 py-3">
@@ -250,6 +297,7 @@ function BotMessage({
   return (
     <div className="max-w-[95%] space-y-3 text-sm leading-relaxed">
       <p>{reply.text}</p>
+      {reply.ai && <p className="text-xs text-charcoal-300">{ui.aiNote}</p>}
 
       {reply.trip && <TripBlock ids={reply.trip} />}
 
