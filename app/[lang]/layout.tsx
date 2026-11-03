@@ -28,6 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     metadataBase: new URL(SITE_URL),
     applicationName: 'Tunisia Go',
+    // Optional Search Console meta-tag verification (value set in Vercel, no code change needed).
+    verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : undefined,
     title: fr ? 'Tunisia Go · Explorer la Tunisie' : 'Tunisia Go · Explore Tunisia',
     description: fr
       ? 'Carte interactive, road trips choisis et conseils locaux pour la Tunisie : ruines romaines, dunes du Sahara, plages, médinas et cuisine.'

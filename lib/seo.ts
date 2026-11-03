@@ -4,9 +4,9 @@ import type { Locale } from '@/lib/i18n/config';
 
 /**
  * Public address of the site, for canonical links, the sitemap and social cards.
- * The final domain is tunisiagoo.com; NEXT_PUBLIC_SITE_URL can override it (for a test site, for example).
+ * The live address is www.tunisiagoo.com (the bare domain should redirect to it); NEXT_PUBLIC_SITE_URL can override it (for a test site, for example).
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://tunisiagoo.com').replace(/\/$/, '');
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tunisiagoo.com').replace(/\/$/, '');
 
 export const SITE_NAME = 'Tunisia Go';
 
