@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import RewriteButton from '@/components/RewriteButton';
 import { useState } from 'react';
 
@@ -37,7 +37,8 @@ const TABS = [
 export default function TripsBoard({ trips, tableMissing }: { trips: AdminTrip[]; tableMissing: boolean }) {
   const [tab, setTab] = useState<(typeof TABS)[number]['id']>('pending');
   const count = (s: string) => trips.filter((t) => t.status === s).length;
-  const list = trips.filter((t) => t.status === tab);
+  const [gone, hide] = useGone(trips);
+  const list = trips.filter((t) => t.status === tab && !gone.has(t.id));
 
   return (
     <section className="mt-16 border-t border-sand-200 pt-10" aria-label="Trips proposés">
@@ -73,7 +74,7 @@ export default function TripsBoard({ trips, tableMissing }: { trips: AdminTrip[]
           ) : (
             <ul className="mt-6 space-y-4">
               {list.map((t) => (
-                <TripCard key={t.id} trip={t} />
+                <TripCard key={t.id} trip={t} onGone={hide} />
               ))}
             </ul>
           )}
@@ -83,8 +84,8 @@ export default function TripsBoard({ trips, tableMissing }: { trips: AdminTrip[]
   );
 }
 
-function TripCard({ trip: t }: { trip: AdminTrip }) {
-  const router = useRouter();
+function TripCard({ trip: t, onGone }: { trip: AdminTrip; onGone: (id: string) => void }) {
+  const [pending, refresh] = useRefresh();
   const [name, setName] = useState(t.name);
   const [description, setDescription] = useState(t.description);
   const [days, setDays] = useState(String(t.days));
@@ -117,16 +118,22 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
       }),
     }).catch(() => null);
     setBusy(false);
-    if (res?.ok) router.refresh();
-    else setMessage('Impossible d’enregistrer. Réessayez.');
+    if (res?.ok) {
+      onGone(t.id);
+      notify(action === 'approve' ? 'Trip publié' : action === 'reject' ? 'Trip refusé' : 'Remis à valider');
+      refresh();
+    } else setMessage('Impossible d’enregistrer. Réessayez.');
   };
 
   const remove = async () => {
     if (!window.confirm('Supprimer ce trip définitivement ?')) return;
     setBusy(true);
-    await fetch(`/api/admin/trips/${t.id}`, { method: 'DELETE' }).catch(() => null);
+    const res = await fetch(`/api/admin/trips/${t.id}`, { method: 'DELETE' }).catch(() => null);
     setBusy(false);
-    router.refresh();
+    if (!res?.ok) return setMessage('Impossible de supprimer. Réessayez.');
+    onGone(t.id);
+    notify('Trip supprimé');
+    refresh();
   };
 
   const btn = 'rounded-pill px-5 py-2 text-sm transition disabled:opacity-60';
@@ -225,7 +232,7 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
         {t.status !== 'approved' && (
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => act('approve')}
             className={`${btn} bg-charcoal text-cream hover:bg-charcoal-700`}
           >
@@ -235,7 +242,7 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
         {t.status === 'approved' && (
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => act('approve')}
             className={`${btn} bg-charcoal text-cream hover:bg-charcoal-700`}
           >
@@ -245,7 +252,7 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
         {t.status === 'pending' && (
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => act('reject')}
             className={`${btn} border border-sand-200 text-charcoal-700 hover:border-charcoal-300`}
           >
@@ -255,7 +262,7 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
         {t.status !== 'pending' && (
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || pending}
             onClick={() => act('pending')}
             className={`${btn} border border-sand-200 text-charcoal-700 hover:border-charcoal-300`}
           >
@@ -264,7 +271,7 @@ function TripCard({ trip: t }: { trip: AdminTrip }) {
         )}
         <button
           type="button"
-          disabled={busy}
+          disabled={busy || pending}
           onClick={remove}
           className="text-sm text-charcoal-500 underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
         >

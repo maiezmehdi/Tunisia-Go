@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import { useState } from 'react';
 
 export interface AdminReport {
@@ -17,22 +17,27 @@ const DATE = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', 
 
 /** Errors reported from the place pages: read them, fix the page, then mark them handled. */
 export default function ReportsBoard({ reports }: { reports: AdminReport[] }) {
-  const router = useRouter();
+  const [pending, refresh] = useRefresh();
+  const [gone, hide] = useGone(reports);
   const [busy, setBusy] = useState<string | null>(null);
   const [showDone, setShowDone] = useState(false);
-  const open = reports.filter((r) => r.status === 'open');
-  const done = reports.filter((r) => r.status === 'done');
+  const shown = reports.filter((r) => !gone.has(r.id));
+  const open = shown.filter((r) => r.status === 'open');
+  const done = shown.filter((r) => r.status === 'done');
   const list = showDone ? done : open;
 
   const mark = async (id: string, action: 'done' | 'open') => {
     setBusy(id);
-    await fetch(`/api/admin/reports/${id}`, {
+    const res = await fetch(`/api/admin/reports/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action }),
     }).catch(() => null);
     setBusy(null);
-    router.refresh();
+    if (!res?.ok) return notify('L’action a échoué. Réessayez.', 'error');
+    hide(id);
+    notify(action === 'done' ? 'Marqué comme traité' : 'Rouvert');
+    refresh();
   };
 
   return (
@@ -94,7 +99,7 @@ export default function ReportsBoard({ reports }: { reports: AdminReport[] }) {
               </div>
               <button
                 type="button"
-                disabled={busy === r.id}
+                disabled={busy === r.id || pending}
                 onClick={() => mark(r.id, showDone ? 'open' : 'done')}
                 className="rounded-pill border border-charcoal-300 px-4 py-1.5 text-sm text-charcoal transition hover:border-charcoal disabled:opacity-50"
               >

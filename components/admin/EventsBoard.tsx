@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import { useState } from 'react';
 
 import type { EventKind } from '@/data/events';
@@ -85,7 +85,8 @@ export default function EventsBoard({
   places: { id: string; name: string }[];
   tableMissing: boolean;
 }) {
-  const router = useRouter();
+  const [pending, refresh] = useRefresh();
+  const [gone, hide] = useGone(events);
   const [editing, setEditing] = useState<string | 'new' | null>(null);
   const [form, setForm] = useState<Form>(EMPTY);
   const [busy, setBusy] = useState(false);
@@ -114,7 +115,7 @@ export default function EventsBoard({
     }).catch(() => null);
     setBusy(false);
     if (res?.ok) {
-      router.refresh();
+      refresh();
       return true;
     }
     const data = (await res?.json().catch(() => null)) as { field?: string } | null;
@@ -131,12 +132,18 @@ export default function EventsBoard({
       editing === 'new'
         ? await call('/api/admin/events', 'POST', form)
         : await call(`/api/admin/events/${editing}`, 'PATCH', form);
-    if (ok) setEditing(null);
+    if (ok) {
+      notify('Enregistré');
+      setEditing(null);
+    }
   };
 
   const remove = async (e: AdminEvent) => {
     if (!window.confirm(`Supprimer « ${e.titleFr} » ?`)) return;
-    await call(`/api/admin/events/${e.id}`, 'DELETE');
+    if (await call(`/api/admin/events/${e.id}`, 'DELETE')) {
+      hide(e.id);
+      notify('Événement supprimé');
+    }
   };
 
   const placeName = (id: string) => places.find((p) => p.id === id)?.name ?? id;
@@ -272,7 +279,7 @@ export default function EventsBoard({
           <div className="mt-5 flex gap-3">
             <button
               type="button"
-              disabled={busy}
+              disabled={busy || pending}
               onClick={save}
               className="rounded-pill bg-charcoal px-5 py-2 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-50"
             >
@@ -291,49 +298,51 @@ export default function EventsBoard({
 
       {!tableMissing && (
         <ul className="mt-6 divide-y divide-sand-200 border-y border-sand-200">
-          {events.map((e) => (
-            <li key={e.id} className="flex flex-wrap items-start justify-between gap-4 py-4">
-              <div className="min-w-0 max-w-2xl">
-                <p className="text-sm font-medium text-charcoal">
-                  {e.titleFr}
-                  {!e.published && (
-                    <span className="ml-2 rounded-pill bg-sand-100 px-2 py-0.5 text-xs font-normal text-charcoal-500">
-                      Masqué
-                    </span>
-                  )}
-                </p>
-                <p className="mt-0.5 text-sm text-charcoal-500">
-                  {e.whenFr} · {placeName(e.placeId)} · {e.confirmed ? 'Annoncé' : 'À confirmer'}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => open(e)}
-                  className="rounded-pill border border-charcoal-300 px-4 py-1.5 text-sm text-charcoal transition hover:border-charcoal disabled:opacity-50"
-                >
-                  Modifier
-                </button>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => call(`/api/admin/events/${e.id}`, 'PATCH', { published: !e.published })}
-                  className="rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-50"
-                >
-                  {e.published ? 'Masquer' : 'Afficher'}
-                </button>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => remove(e)}
-                  className="rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-500 transition hover:border-terracotta-700 hover:text-terracotta-700 disabled:opacity-50"
-                >
-                  Supprimer
-                </button>
-              </div>
-            </li>
-          ))}
+          {events
+            .filter((e) => !gone.has(e.id))
+            .map((e) => (
+              <li key={e.id} className="flex flex-wrap items-start justify-between gap-4 py-4">
+                <div className="min-w-0 max-w-2xl">
+                  <p className="text-sm font-medium text-charcoal">
+                    {e.titleFr}
+                    {!e.published && (
+                      <span className="ml-2 rounded-pill bg-sand-100 px-2 py-0.5 text-xs font-normal text-charcoal-500">
+                        Masqué
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-0.5 text-sm text-charcoal-500">
+                    {e.whenFr} · {placeName(e.placeId)} · {e.confirmed ? 'Annoncé' : 'À confirmer'}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    disabled={busy || pending}
+                    onClick={() => open(e)}
+                    className="rounded-pill border border-charcoal-300 px-4 py-1.5 text-sm text-charcoal transition hover:border-charcoal disabled:opacity-50"
+                  >
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy || pending}
+                    onClick={() => call(`/api/admin/events/${e.id}`, 'PATCH', { published: !e.published })}
+                    className="rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-50"
+                  >
+                    {e.published ? 'Masquer' : 'Afficher'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy || pending}
+                    onClick={() => remove(e)}
+                    className="rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-500 transition hover:border-terracotta-700 hover:text-terracotta-700 disabled:opacity-50"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </li>
+            ))}
           {events.length === 0 && <li className="py-4 text-sm text-charcoal-500">Aucun événement pour le moment.</li>}
         </ul>
       )}

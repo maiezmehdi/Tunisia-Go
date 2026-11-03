@@ -1,5 +1,6 @@
 'use client';
 
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import { useRouter } from 'next/navigation';
 import RewriteButton from '@/components/RewriteButton';
 import { useMemo, useState } from 'react';
@@ -73,7 +74,9 @@ export default function AdminBoard({ submissions }: { submissions: AdminSubmissi
     for (const s of submissions) c[s.status]++;
     return c;
   }, [submissions]);
-  const list = submissions.filter((s) => s.status === tab);
+  const [pending, refresh] = useRefresh();
+  const [gone, hide] = useGone(submissions);
+  const list = submissions.filter((s) => s.status === tab && !gone.has(s.id));
 
   const logout = async () => {
     await fetch('/api/admin/login', { method: 'DELETE' }).catch(() => null);
@@ -120,7 +123,18 @@ export default function AdminBoard({ submissions }: { submissions: AdminSubmissi
       ) : (
         <ul className="mt-6 space-y-5">
           {list.map((s) => (
-            <SubmissionCard key={s.id} submission={s} onDone={() => router.refresh()} />
+            <SubmissionCard
+              key={s.id}
+              submission={s}
+              pending={pending}
+              onDone={(action) => {
+                if (action) {
+                  hide(s.id);
+                  notify(action === 'approve' ? 'Publié' : action === 'reject' ? 'Refusé' : 'Remis à valider');
+                }
+                refresh();
+              }}
+            />
           ))}
         </ul>
       )}
@@ -128,7 +142,15 @@ export default function AdminBoard({ submissions }: { submissions: AdminSubmissi
   );
 }
 
-function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission; onDone: () => void }) {
+function SubmissionCard({
+  submission: s,
+  onDone,
+  pending,
+}: {
+  submission: AdminSubmission;
+  onDone: (action?: 'approve' | 'reject' | 'pending') => void;
+  pending: boolean;
+}) {
   const [name, setName] = useState(s.name);
   const [area, setArea] = useState(s.area);
   const [why, setWhy] = useState(s.why);
@@ -147,6 +169,12 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
   const contact = s.contact ? contactLink(s.contact) : null;
 
   const act = async (action: 'approve' | 'reject' | 'pending') => {
+    if (
+      action === 'reject' &&
+      s.status === 'approved' &&
+      !window.confirm('Retirer ce lieu de la carte et le refuser ?')
+    )
+      return;
     setBusy(action);
     setError(null);
     const res = await fetch(`/api/admin/submissions/${s.id}`, {
@@ -168,7 +196,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
       }),
     }).catch(() => null);
     setBusy(null);
-    if (res?.ok) return onDone();
+    if (res?.ok) return onDone(action);
     const code = ((await res?.json().catch(() => null)) as { error?: string } | null)?.error ?? '';
     setError(ERRORS[code] ?? 'L’enregistrement a échoué. Réessayez.');
   };
@@ -372,7 +400,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
                   <img src={p.url} alt={`Photo ${i + 1}`} className="aspect-[4/3] w-full object-cover" />
                   <button
                     type="button"
-                    disabled={!!busy}
+                    disabled={!!busy || pending}
                     onClick={() => removePhoto(p.path)}
                     className="absolute right-2 top-2 rounded-pill bg-cream/90 px-2.5 py-1 text-[11px] text-charcoal transition hover:bg-cream disabled:opacity-60"
                   >
@@ -389,7 +417,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
               accept="image/jpeg,image/png,image/webp"
               multiple
               className="sr-only"
-              disabled={!!busy}
+              disabled={!!busy || pending}
               onChange={(e) => {
                 void upload(e.target.files);
                 e.target.value = '';
@@ -444,7 +472,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
         {s.status !== 'approved' && (
           <button
             type="button"
-            disabled={!!busy}
+            disabled={!!busy || pending}
             onClick={() => act('approve')}
             className="rounded-pill bg-charcoal px-5 py-2 text-sm font-medium text-cream transition hover:bg-charcoal-700 disabled:opacity-60"
           >
@@ -455,7 +483,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
           <>
             <button
               type="button"
-              disabled={!!busy}
+              disabled={!!busy || pending}
               onClick={() => act('approve')}
               className="rounded-pill bg-charcoal px-5 py-2 text-sm font-medium text-cream transition hover:bg-charcoal-700 disabled:opacity-60"
             >
@@ -474,7 +502,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
         {s.status !== 'rejected' && (
           <button
             type="button"
-            disabled={!!busy}
+            disabled={!!busy || pending}
             onClick={() => act('reject')}
             className="rounded-pill border border-sand-200 px-4 py-2 text-sm text-charcoal-700 transition hover:border-charcoal disabled:opacity-60"
           >
@@ -484,7 +512,7 @@ function SubmissionCard({ submission: s, onDone }: { submission: AdminSubmission
         {s.status !== 'pending' && (
           <button
             type="button"
-            disabled={!!busy}
+            disabled={!!busy || pending}
             onClick={() => act('pending')}
             className="px-2 py-2 text-sm text-charcoal-500 underline-offset-4 hover:underline disabled:opacity-60"
           >

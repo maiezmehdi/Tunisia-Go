@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import { useState } from 'react';
 
 export interface AdminRating {
@@ -14,7 +14,7 @@ type Sort = 'name' | 'average' | 'votes';
 
 /** Star ratings per place: name, average, number of votes, and a reset to zero. */
 export default function RatingsBoard({ ratings, tableMissing }: { ratings: AdminRating[]; tableMissing: boolean }) {
-  const router = useRouter();
+  const [pending, refresh] = useRefresh();
   const [busy, setBusy] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<string | null>(null);
   const [sort, setSort] = useState<Sort>('votes');
@@ -33,10 +33,12 @@ export default function RatingsBoard({ ratings, tableMissing }: { ratings: Admin
 
   const reset = async (placeId: string) => {
     setBusy(placeId);
-    await fetch(`/api/admin/ratings/${placeId}`, { method: 'DELETE' }).catch(() => null);
+    const res = await fetch(`/api/admin/ratings/${placeId}`, { method: 'DELETE' }).catch(() => null);
     setBusy(null);
     setConfirm(null);
-    router.refresh();
+    if (!res?.ok) return notify('L’action a échoué. Réessayez.', 'error');
+    notify('Avis remis à zéro');
+    refresh();
   };
 
   const head = (key: Sort, label: string, right = false) => (
@@ -102,7 +104,7 @@ export default function RatingsBoard({ ratings, tableMissing }: { ratings: Admin
                       <span className="inline-flex gap-3">
                         <button
                           type="button"
-                          disabled={busy === r.placeId}
+                          disabled={busy === r.placeId || pending}
                           onClick={() => reset(r.placeId)}
                           className="text-terracotta-700 underline underline-offset-4 disabled:opacity-60"
                         >
