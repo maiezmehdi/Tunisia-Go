@@ -647,6 +647,12 @@ const READY_MADE: Record<string, CategoryId[]> = {
   'star-wars': ['sahara'],
   'cap-bon': ['beach'],
   'sacred-medinas': ['heritage', 'souk'],
+  'ksour-route': ['culture'],
+  'mountain-oases': ['sahara'],
+  'deep-south-4x4': ['sahara', 'camping'],
+  'wild-north': ['beach'],
+  'high-tell': ['heritage'],
+  'djerba-slow': ['culture', 'cycling'],
 };
 
 function proposeTrip(profile: Profile, locale: Locale): Reply {
