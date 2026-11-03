@@ -111,6 +111,10 @@ const RAW: Record<string, string> = {
   'ksar-ouled-debbab': 'oBBBoxxxoBoo',
   douiret: 'BBBBoxxxoBBB',
   djerbahood: 'ooBBBBoooBBo',
+  'camping-douz': 'BBBoxxxxoBBB',
+  'camping-tozeur': 'BBBBoxxxoBBB',
+  'camping-gafsa': 'BBBBoxxxoBBB',
+  'camping-el-kahena': 'xoBBBBBBBBox',
 };
 
 const LETTER: Record<string, SeasonRating> = { B: 'best', o: 'fine', x: 'avoid' };
