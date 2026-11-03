@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import AssistantLauncher from '@/components/assistant/AssistantLauncher';
 import CookieConsent from '@/components/CookieConsent';
+import InstallPrompt from '@/components/InstallPrompt';
 import ServiceWorker from '@/components/ServiceWorker';
 import { LOCALES, isLocale } from '@/lib/i18n/config';
 import { LocaleProvider } from '@/lib/i18n/LocaleProvider';
@@ -78,6 +79,7 @@ export default async function RootLayout({
                   {children}
                   <AssistantLauncher />
                   <CookieConsent />
+                  <InstallPrompt />
                 </FavoritesProvider>
               </ProAuthProvider>
             </MyTripProvider>
