@@ -115,6 +115,12 @@ const RAW: Record<string, string> = {
   'camping-tozeur': 'BBBBoxxxoBBB',
   'camping-gafsa': 'BBBBoxxxoBBB',
   'camping-el-kahena': 'xoBBBBBBBBox',
+  'bou-kornine': 'BBBBBoxxoBBB',
+  'el-feidja': 'xoBBBBBBBBox',
+  'la-goulette': 'ooBBBBBBBBoo',
+  lamta: 'ooBBBBoooBBo',
+  'beni-khedache': 'BBBBoxxxoBBB',
+  mareth: 'BBBBoxxxoBBB',
 };
 
 const LETTER: Record<string, SeasonRating> = { B: 'best', o: 'fine', x: 'avoid' };

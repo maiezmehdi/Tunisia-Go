@@ -446,6 +446,11 @@ const GUIDE_BY_PLACE: Record<string, string> = {
   'camping-douz': 'sud',
   'camping-tozeur': 'djerid',
   'camping-el-kahena': 'sahel',
+  'bou-kornine': 'tunis',
+  'la-goulette': 'tunis',
+  lamta: 'sahel',
+  'beni-khedache': 'sud',
+  mareth: 'sud',
 };
 
 export function guideFor(placeId: string): string {
