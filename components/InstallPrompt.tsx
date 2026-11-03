@@ -25,7 +25,6 @@ const COPY: Record<Locale, { title: string; body: string; ios: string; install: 
 
 const KEY = 'tg-install-dismissed';
 const INSTALLED = 'tg-installed';
-const PAUSE = 1000 * 60 * 60 * 24 * 14;
 const DELAY = 15000;
 
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> };
@@ -33,8 +32,8 @@ type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{
 function dismissedRecently(): boolean {
   try {
     if (localStorage.getItem(INSTALLED)) return true;
-    const at = Number(localStorage.getItem(KEY));
-    return !!at && Date.now() - at < PAUSE;
+    // Closing it only hides it for this visit: it comes back the next time the site is opened.
+    return !!sessionStorage.getItem(KEY);
   } catch {
     return false;
   }
@@ -100,7 +99,7 @@ export default function InstallPrompt() {
 
   const dismiss = () => {
     try {
-      localStorage.setItem(KEY, String(Date.now()));
+      sessionStorage.setItem(KEY, '1');
     } catch {
       /* private mode: it will simply come back next visit */
     }
