@@ -5,6 +5,7 @@ import BrandLogo from '@/components/BrandLogo';
 import AddPlaceForm from '@/components/admin/AddPlaceForm';
 import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
 import UsersBoard, { type AdminUser } from '@/components/admin/UsersBoard';
+import AdminShell, { type AdminGroup } from '@/components/admin/AdminShell';
 import AdminLogin from '@/components/admin/AdminLogin';
 import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
 import PlaceOverridesBoard from '@/components/admin/PlaceOverridesBoard';
@@ -355,51 +356,121 @@ export default async function AdminPage() {
     publicPhotos: r.public_photos ?? [],
   }));
 
-  return (
-    <Shell>
-      {failed ? (
+  if (failed) {
+    return (
+      <Shell>
         <Notice title="Impossible de lire les propositions">
           <p>Supabase n’a pas répondu. Réessayez dans un instant.</p>
         </Notice>
-      ) : (
-        <>
-          <StatsBoard
-            counts={[
-              { label: 'Lieux du site', value: PLACES.length },
-              { label: 'Lieux ajoutés', value: submissions.filter((x) => x.status === 'approved').length },
-              { label: 'Événements', value: events.length },
-              { label: 'Mots ajoutés', value: words.length },
-            ]}
-            pending={
-              submissions.filter((x) => x.status === 'pending').length +
-              trips.filter((x) => x.status === 'pending').length
-            }
-            openReports={reports.filter((x) => x.status === 'open').length}
-          />
-          <AdminBoard submissions={submissions} />
-          <TripsBoard trips={trips} tableMissing={tripsMissing} />
-          <AddPlaceForm />
-          <PlaceOverridesBoard
-            places={PLACES.map((p) => ({ id: p.id, name: p.name }))}
-            tableMissing={overridesMissing}
-          />
-          <EventsBoard
-            events={events}
-            places={PLACES.map((p) => ({ id: p.id, name: p.name }))}
-            tableMissing={eventsMissing}
-          />
-          <LexiconBoard
-            groups={LEXICON.map((g) => ({ id: g.id, title: g.title.fr }))}
-            words={words}
-            tableMissing={lexiconMissing}
-          />
-          <ProsBoard pros={pros} tableMissing={prosMissing} />
-          <PartnersBoard partners={partners} tableMissing={partnersMissing} />
-          <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />
-          <ReportsBoard reports={reports} />
-          {session.role === 'owner' && <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />}
-        </>
-      )}
-    </Shell>
-  );
+      </Shell>
+    );
+  }
+
+  const placeList = PLACES.map((p) => ({ id: p.id, name: p.name }));
+  const count = (list: { status: string }[]) => list.filter((x) => x.status === 'pending').length;
+  const pendingSubs = count(submissions);
+  const pendingTrips = count(trips);
+  const openReports = reports.filter((x) => x.status === 'open').length;
+
+  const groups: AdminGroup[] = [
+    {
+      title: 'Tableau de bord',
+      sections: [
+        {
+          id: 'accueil',
+          label: 'Vue d’ensemble',
+          content: (
+            <StatsBoard
+              counts={[
+                { label: 'Lieux du site', value: PLACES.length },
+                { label: 'Lieux ajoutés', value: submissions.filter((x) => x.status === 'approved').length },
+                { label: 'Événements', value: events.length },
+                { label: 'Mots ajoutés', value: words.length },
+              ]}
+              pending={pendingSubs + pendingTrips}
+              openReports={openReports}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: 'À modérer',
+      sections: [
+        {
+          id: 'propositions',
+          label: 'Lieux proposés',
+          badge: pendingSubs,
+          content: <AdminBoard submissions={submissions} />,
+        },
+        {
+          id: 'trips',
+          label: 'Trips proposés',
+          badge: pendingTrips,
+          content: <TripsBoard trips={trips} tableMissing={tripsMissing} />,
+        },
+        { id: 'signalements', label: 'Signalements', badge: openReports, content: <ReportsBoard reports={reports} /> },
+      ],
+    },
+    {
+      title: 'Contenu du site',
+      sections: [
+        { id: 'ajouter', label: 'Ajouter un lieu', content: <AddPlaceForm /> },
+        {
+          id: 'lieux',
+          label: 'Lieux du site',
+          content: <PlaceOverridesBoard places={placeList} tableMissing={overridesMissing} />,
+        },
+        {
+          id: 'evenements',
+          label: 'Événements',
+          content: <EventsBoard events={events} places={placeList} tableMissing={eventsMissing} />,
+        },
+        {
+          id: 'mots',
+          label: 'Mots du cru',
+          content: (
+            <LexiconBoard
+              groups={LEXICON.map((g) => ({ id: g.id, title: g.title.fr }))}
+              words={words}
+              tableMissing={lexiconMissing}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Communauté',
+      sections: [
+        {
+          id: 'guides',
+          label: 'Guides et agences',
+          badge: count(pros),
+          content: <ProsBoard pros={pros} tableMissing={prosMissing} />,
+        },
+        {
+          id: 'partenaires',
+          label: 'Partenaires',
+          badge: count(partners),
+          content: <PartnersBoard partners={partners} tableMissing={partnersMissing} />,
+        },
+        {
+          id: 'avis',
+          label: 'Avis (étoiles)',
+          content: <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />,
+        },
+        ...(session.role === 'owner'
+          ? [
+              {
+                id: 'comptes',
+                label: 'Comptes admin',
+                content: <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />,
+              },
+            ]
+          : []),
+      ],
+    },
+  ];
+
+  return <AdminShell groups={groups} />;
 }

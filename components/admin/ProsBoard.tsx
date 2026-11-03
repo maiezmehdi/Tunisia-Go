@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import { useState } from 'react';
 
 export interface AdminPro {
@@ -30,24 +30,30 @@ const TABS = [
 
 /** Guides and agencies: check the ones without a card, take one down in a click. */
 export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; tableMissing: boolean }) {
-  const router = useRouter();
+  const [pending, refresh] = useRefresh();
+  const [gone, hide] = useGone(pros);
   const [busy, setBusy] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminPro['status']>('pending');
   const [confirm, setConfirm] = useState<string | null>(null);
 
   const waiting = pros.filter((p) => p.status === 'pending').length;
-  const list = pros.filter((p) => (tab === 'pending' ? p.status === 'pending' : p.status === tab));
+  const list = pros
+    .filter((p) => !gone.has(p.id))
+    .filter((p) => (tab === 'pending' ? p.status === 'pending' : p.status === tab));
 
   const act = async (id: string, action: 'publish' | 'hide' | 'delete') => {
     setBusy(id);
-    await fetch(`/api/admin/pros/${id}`, {
+    const res = await fetch(`/api/admin/pros/${id}`, {
       method: action === 'delete' ? 'DELETE' : 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: action === 'delete' ? undefined : JSON.stringify({ action }),
     }).catch(() => null);
     setBusy(null);
     setConfirm(null);
-    router.refresh();
+    if (!res?.ok) return notify('L’action a échoué. Réessayez.', 'error');
+    hide(id);
+    notify(action === 'delete' ? 'Supprimé' : action === 'publish' ? 'Publié' : 'Masqué');
+    refresh();
   };
 
   const btn =
@@ -130,12 +136,22 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-sm">
                   {p.status !== 'published' && (
-                    <button type="button" disabled={busy === p.id} onClick={() => act(p.id, 'publish')} className={btn}>
+                    <button
+                      type="button"
+                      disabled={busy === p.id || pending}
+                      onClick={() => act(p.id, 'publish')}
+                      className={btn}
+                    >
                       Publier
                     </button>
                   )}
                   {p.status !== 'hidden' && (
-                    <button type="button" disabled={busy === p.id} onClick={() => act(p.id, 'hide')} className={btn}>
+                    <button
+                      type="button"
+                      disabled={busy === p.id || pending}
+                      onClick={() => act(p.id, 'hide')}
+                      className={btn}
+                    >
                       {p.status === 'published' ? 'Dépublier' : 'Masquer'}
                     </button>
                   )}
@@ -143,7 +159,7 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                     <span className="inline-flex gap-3">
                       <button
                         type="button"
-                        disabled={busy === p.id}
+                        disabled={busy === p.id || pending}
                         onClick={() => act(p.id, 'delete')}
                         className="text-terracotta-700 underline underline-offset-4"
                       >

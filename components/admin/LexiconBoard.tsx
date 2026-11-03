@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { notify, useGone, useRefresh } from '@/components/admin/feedback';
 import { useState } from 'react';
 
 export interface AdminWord {
@@ -26,7 +26,8 @@ export default function LexiconBoard({
   words: AdminWord[];
   tableMissing: boolean;
 }) {
-  const router = useRouter();
+  const [pending, refresh] = useRefresh();
+  const [gone, hide] = useGone(words);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ ...EMPTY, groupId: groups[0]?.id ?? '' });
   const [busy, setBusy] = useState(false);
@@ -44,16 +45,20 @@ export default function LexiconBoard({
     setBusy(false);
     if (res?.ok) {
       setForm({ ...EMPTY, groupId: form.groupId });
-      router.refresh();
+      notify('Mot ajouté');
+      refresh();
     } else setMessage('Vérifiez que le mot, l’arabe et les deux traductions sont remplis.');
   };
 
   const remove = async (id: string) => {
     if (!window.confirm('Retirer ce mot ?')) return;
     setBusy(true);
-    await fetch(`/api/admin/lexicon/${id}`, { method: 'DELETE' }).catch(() => null);
+    const res = await fetch(`/api/admin/lexicon/${id}`, { method: 'DELETE' }).catch(() => null);
     setBusy(false);
-    router.refresh();
+    if (!res?.ok) return notify('L’action a échoué. Réessayez.', 'error');
+    hide(id);
+    notify('Mot supprimé');
+    refresh();
   };
 
   return (
@@ -125,7 +130,7 @@ export default function LexiconBoard({
             <div className="flex items-center gap-4 sm:col-span-2">
               <button
                 type="button"
-                disabled={busy}
+                disabled={busy || pending}
                 onClick={add}
                 className="rounded-pill bg-charcoal px-5 py-2 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-50"
               >
@@ -139,27 +144,29 @@ export default function LexiconBoard({
             </div>
           </div>
 
-          {words.length > 0 && (
+          {words.some((w) => !gone.has(w.id)) && (
             <ul className="divide-y divide-sand-200 border-y border-sand-200">
-              {words.map((w) => (
-                <li key={w.id} className="flex items-center justify-between gap-4 py-3 text-sm">
-                  <span>
-                    <span className="font-medium text-charcoal">{w.latin}</span>{' '}
-                    <span lang="ar" className="text-charcoal-300">
-                      {w.ar}
-                    </span>{' '}
-                    <span className="text-charcoal-500">· {w.meaningFr}</span>
-                  </span>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => remove(w.id)}
-                    className="shrink-0 text-xs text-charcoal-500 underline underline-offset-4 hover:text-charcoal"
-                  >
-                    Retirer
-                  </button>
-                </li>
-              ))}
+              {words
+                .filter((w) => !gone.has(w.id))
+                .map((w) => (
+                  <li key={w.id} className="flex items-center justify-between gap-4 py-3 text-sm">
+                    <span>
+                      <span className="font-medium text-charcoal">{w.latin}</span>{' '}
+                      <span lang="ar" className="text-charcoal-300">
+                        {w.ar}
+                      </span>{' '}
+                      <span className="text-charcoal-500">· {w.meaningFr}</span>
+                    </span>
+                    <button
+                      type="button"
+                      disabled={busy || pending}
+                      onClick={() => remove(w.id)}
+                      className="shrink-0 text-xs text-charcoal-500 underline underline-offset-4 hover:text-charcoal"
+                    >
+                      Retirer
+                    </button>
+                  </li>
+                ))}
             </ul>
           )}
         </div>
