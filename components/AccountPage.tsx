@@ -360,11 +360,6 @@ export default function AccountPage() {
     const typeLabel = isPro ? c.proLabel : account.kind === 'partner' ? c.partnerLabel : c.travelerLabel;
     const settings = (
       <div className="space-y-6">
-        {passwordSet && (
-          <p role="status" className="rounded-2xl border border-sand-200 bg-white px-5 py-3 text-sm text-charcoal">
-            {c.newDone}
-          </p>
-        )}
         {accessToken && <AccountTypeChange accessToken={accessToken} current={account.kind} />}
         {accessToken && <AccountSettings accessToken={accessToken} />}
         <div className="flex flex-wrap gap-3">
@@ -455,13 +450,20 @@ export default function AccountPage() {
     sections.push({ id: 'reglages', label: c.navSettings, content: settings });
 
     return (
-      <AccountShell
-        email={account.email}
-        typeLabel={typeLabel}
-        sections={sections}
-        menuLabel={c.menuLabel}
-        closeLabel={c.closeLabel}
-      />
+      <>
+        {passwordSet && (
+          <p role="status" className="mb-6 rounded-2xl border border-sand-200 bg-white px-5 py-3 text-sm text-charcoal">
+            {c.newDone}
+          </p>
+        )}
+        <AccountShell
+          email={account.email}
+          typeLabel={typeLabel}
+          sections={sections}
+          menuLabel={c.menuLabel}
+          closeLabel={c.closeLabel}
+        />
+      </>
     );
   }
 
