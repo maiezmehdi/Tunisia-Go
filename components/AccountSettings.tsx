@@ -14,6 +14,7 @@ const COPY = {
     save: 'Enregistrer',
     sending: 'Un instant…',
     done: 'C’est enregistré.',
+    donePassword: 'Votre mot de passe a bien été modifié.',
     nothing: 'Indiquez une nouvelle adresse ou un nouveau mot de passe.',
     badEmail: 'Cette adresse e-mail ne semble pas valide.',
     weak: 'Le mot de passe doit avoir au moins 8 caractères.',
@@ -31,6 +32,7 @@ const COPY = {
     save: 'Save',
     sending: 'One moment…',
     done: 'Saved.',
+    donePassword: 'Your password has been changed.',
     nothing: 'Enter a new address or a new password.',
     badEmail: 'This e-mail address does not look valid.',
     weak: 'The password must be at least 8 characters.',
@@ -66,9 +68,9 @@ export default function AccountSettings({ accessToken }: { accessToken: string }
         body: JSON.stringify({ accessToken, action: 'update', currentPassword: current, newEmail, newPassword }),
       });
       if (res.ok) {
-        setMessage({ ok: true, text: c.done });
+        setMessage({ ok: true, text: newPassword ? c.donePassword : c.done });
         // The page shows the new address after a reload.
-        return void window.setTimeout(() => window.location.reload(), 900);
+        return void window.setTimeout(() => window.location.reload(), 2500);
       }
       const code = ((await res.json().catch(() => ({}))) as { error?: string }).error;
       setMessage({

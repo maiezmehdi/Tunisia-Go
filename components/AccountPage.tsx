@@ -41,6 +41,7 @@ const COPY = {
     backToLogin: 'Retour à la connexion',
     newTitle: 'Choisir un nouveau mot de passe',
     newSave: 'Enregistrer et me connecter',
+    newDone: 'Votre mot de passe a bien été modifié. Vous êtes connecté.',
     newExpired: 'Ce lien n’est plus valable. Demandez-en un nouveau avec « Mot de passe oublié ? ».',
     continueUp: 'Créer mon compte',
     continueProPrefix: 'Continuer',
@@ -105,6 +106,7 @@ const COPY = {
     backToLogin: 'Back to sign in',
     newTitle: 'Choose a new password',
     newSave: 'Save and sign me in',
+    newDone: 'Your password has been changed. You are signed in.',
     newExpired: 'This link is no longer valid. Ask for a new one with “Forgot your password?”.',
     continueUp: 'Create my account',
     continueProPrefix: 'Continue',
@@ -168,6 +170,7 @@ export default function AccountPage() {
   const [forgot, setForgot] = useState(false);
   const [sent, setSent] = useState(false);
   const [recovery, setRecovery] = useState<ProTokens | null>(null);
+  const [passwordSet, setPasswordSet] = useState(false);
   const [entry, setEntry] = useState<Entry | 'none' | 'error' | null>(null);
 
   const accessToken = tokens?.accessToken;
@@ -287,6 +290,8 @@ export default function AccountPage() {
       });
       if (res.ok) {
         setPassword('');
+        setPasswordSet(true);
+        setRecovery(null);
         return setTokens(recovery);
       }
       const code = ((await res.json().catch(() => ({}))) as { error?: string }).error;
@@ -355,6 +360,11 @@ export default function AccountPage() {
     const typeLabel = isPro ? c.proLabel : account.kind === 'partner' ? c.partnerLabel : c.travelerLabel;
     const settings = (
       <div className="space-y-6">
+        {passwordSet && (
+          <p role="status" className="rounded-2xl border border-sand-200 bg-white px-5 py-3 text-sm text-charcoal">
+            {c.newDone}
+          </p>
+        )}
         {accessToken && <AccountTypeChange accessToken={accessToken} current={account.kind} />}
         {accessToken && <AccountSettings accessToken={accessToken} />}
         <div className="flex flex-wrap gap-3">
