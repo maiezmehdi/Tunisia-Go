@@ -17,7 +17,7 @@ import { lockPageScroll } from '@/lib/scrollLock';
 import { useBackToClose } from '@/lib/useBackToClose';
 import {
   airbnbUrl,
-  bookingUrl,
+  tunisieBookingUrl,
   googleMapsUrl,
   guideWhatsAppUrl,
   phoneUrl,
@@ -197,9 +197,7 @@ function DrawerContent({
           <div className="mt-3">
             <p className="text-sm font-medium text-charcoal">{t.findAStay}</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              <Pill href={bookingUrl(place)} brand="booking">
-                Booking.com
-              </Pill>
+              <Pill href={tunisieBookingUrl()}>Tunisie Booking</Pill>
               <Pill href={airbnbUrl(place)} brand="airbnb">
                 Airbnb
               </Pill>
