@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import AddSpotLink from '@/components/AddSpotLink';
 import BrandLogo from '@/components/BrandLogo';
 import LanguageSwitch from '@/components/LanguageSwitch';
+import MobileMenu from '@/components/MobileMenu';
 import ProAuthButton from '@/components/ProAuthButton';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
@@ -138,15 +139,19 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
         style={{ backgroundImage: GRAIN }}
       />
 
-      <header className="absolute inset-x-0 top-0 flex items-center justify-between px-4 py-5 sm:px-10">
+      <header className="absolute inset-x-0 top-0 z-30 flex items-center justify-between px-4 py-5 sm:px-10">
         {/* Phones show the whole logo: the hero button below already opens the map. */}
         <BrandLogo tone="light" size={38} compact />
         <nav className="flex items-center gap-2.5 sm:gap-6">
           <SoundToggle tone="light" />
-          <LanguageSwitch tone="light" />
+          {/* Phones: only the logo and the sound stay in view, the rest sits in the same menu as the map page. */}
+          <div className="sm:hidden">
+            <MobileMenu tone="light" />
+          </div>
+          <LanguageSwitch tone="light" className="hidden sm:flex" />
           <a
             href="/evenements"
-            className="whitespace-nowrap text-[13px] text-cream/85 underline-offset-4 sm:text-sm transition hover:text-cream hover:underline"
+            className="hidden whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline sm:inline"
           >
             {copy.nav.events}
           </a>
