@@ -14,6 +14,7 @@ import { tunisieBookingUrl } from '@/lib/links';
 import { loadPhotos } from '@/lib/photos';
 import { placePath } from '@/lib/placePages';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
+import { sectionBreadcrumb } from '@/lib/structuredData';
 
 export const revalidate = 86400;
 
@@ -116,6 +117,7 @@ export default async function EventsPage({ params }: Params) {
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
+      <JsonLd data={sectionBreadcrumb(locale === 'en' ? 'Events' : 'Événements', '/evenements', locale)} />
       <JsonLd data={jsonLd} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
@@ -161,7 +163,13 @@ export default async function EventsPage({ params }: Params) {
                       >
                         {photo ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={photo.src} alt={photo.title} loading="lazy" className="h-48 w-full object-cover" />
+                          <img
+                            src={photo.src}
+                            alt={place?.name ?? photo.title}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-48 w-full object-cover"
+                          />
                         ) : (
                           <div className="h-48 w-full bg-sand-200/60" aria-hidden />
                         )}

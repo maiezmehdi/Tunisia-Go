@@ -170,7 +170,10 @@ export default async function PlacePage({ params }: Params) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photo.src}
-              alt={photo.title}
+              alt={`${place.name}, ${place.region} · ${category.label}`}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               width={photo.width}
               height={photo.height}
               className="max-h-[480px] w-full rounded-3xl object-cover"
