@@ -121,7 +121,11 @@ function DrawerContent({
   return (
     <>
       <div className="relative">
-        <PhotoCarousel photos={photos} fallbackCaptions={place.images.map((i) => i.caption)} />
+        <PhotoCarousel
+          photos={photos}
+          fallbackCaptions={place.images.map((i) => i.caption)}
+          name={`${place.name}, ${place.region}`}
+        />
         <div className="absolute right-4 top-4 flex gap-2">
           {!place.community && (
             <a
@@ -405,7 +409,15 @@ function ActionRow({
 }
 
 /** Swipeable photo carousel with credits. Falls back to a plain panel when no photo is available. */
-function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallbackCaptions: string[] }) {
+function PhotoCarousel({
+  photos,
+  fallbackCaptions,
+  name,
+}: {
+  photos: Photo[];
+  fallbackCaptions: string[];
+  name: string;
+}) {
   const { t } = useLocale();
   const [index, setIndex] = useState(0);
   const [failed, setFailed] = useState<Record<number, boolean>>({});
@@ -437,7 +449,9 @@ function PhotoCarousel({ photos, fallbackCaptions }: { photos: Photo[]; fallback
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={photo.src}
-              alt={photo.title}
+              alt={`${name}${photos.length > 1 ? ` (${index + 1}/${photos.length})` : ''}`}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
               className="h-full w-full object-cover"
               draggable={false}
               onError={() => setFailed((f) => ({ ...f, [index]: true }))}

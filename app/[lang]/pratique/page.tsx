@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import BrandLogo from '@/components/BrandLogo';
+import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import Lexicon from '@/components/Lexicon';
@@ -10,6 +11,7 @@ import { isLocale, type Locale } from '@/lib/i18n/config';
 
 import { PRATIQUE_COPY } from './copy';
 import { pageMetadata } from '@/lib/seo';
+import { sectionBreadcrumb } from '@/lib/structuredData';
 import { loadLexicon } from '@/lib/lexiconExtra';
 
 // Words added from /admin refresh this page right away.
@@ -34,6 +36,7 @@ export default async function PratiquePage({ params }: Params) {
   const lexicon = await loadLexicon();
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
+      <JsonLd data={sectionBreadcrumb(locale === 'en' ? 'Practical tips' : 'Pratique', '/pratique', locale)} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />

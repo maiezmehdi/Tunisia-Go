@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import BrandLogo from '@/components/BrandLogo';
+import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import ProAuthButton from '@/components/ProAuthButton';
 import MadeBy from '@/components/MadeBy';
@@ -12,6 +13,7 @@ import { isLocale, type Locale } from '@/lib/i18n/config';
 import { proWhatsAppUrl } from '@/lib/links';
 import { loadPublishedPros, PRO_ACTIVITIES, PRO_LANGUAGES, socialsHref } from '@/lib/pros';
 import { pageMetadata } from '@/lib/seo';
+import { sectionBreadcrumb } from '@/lib/structuredData';
 
 export const revalidate = 3600;
 
@@ -138,6 +140,7 @@ export default async function GuidesPage({ params }: Params) {
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
+      <JsonLd data={sectionBreadcrumb(locale === 'en' ? 'Local guides' : 'Guides locaux', '/guides', locale)} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />

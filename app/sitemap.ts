@@ -20,7 +20,11 @@ const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const pages = [
-    ...PAGES.map((p) => ({ ...p, lastModified: now })),
+    ...PAGES.map((p) => ({
+      ...p,
+      // Events and guides change often; the other pages change when the texts are reviewed.
+      lastModified: ['/evenements', '/guides', '/explore'].includes(p.path) ? now : new Date(CONTENT_UPDATED),
+    })),
     ...PLACES.map((place) => ({
       path: placePath(place.id),
       priority: 0.6,

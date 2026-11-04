@@ -150,3 +150,15 @@ export function tripPageData(trip: Itinerary, stops: Place[], lang: Locale) {
     },
   ];
 }
+
+/** Breadcrumb for a section page: home, then the page itself. */
+export function sectionBreadcrumb(name: string, path: string, lang: Locale) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: SITE_NAME, item: abs(localePath('/', lang)) },
+      { '@type': 'ListItem', position: 2, name, item: abs(localePath(path, lang)) },
+    ],
+  };
+}

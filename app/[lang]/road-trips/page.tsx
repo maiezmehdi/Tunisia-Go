@@ -8,6 +8,7 @@ import SoundToggle from '@/components/SoundToggle';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
+import { sectionBreadcrumb } from '@/lib/structuredData';
 
 type Params = { params: Promise<{ lang: string }> };
 
@@ -66,6 +67,7 @@ export default async function RoadTripsIndex({ params }: Params) {
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
+      <JsonLd data={sectionBreadcrumb('Road trips', '/road-trips', locale)} />
       <JsonLd data={list} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">

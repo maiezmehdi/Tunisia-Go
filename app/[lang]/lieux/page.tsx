@@ -10,6 +10,7 @@ import { getCatalog } from '@/lib/i18n/catalog';
 import { applyOverrides, loadPlaceOverrides } from '@/lib/placeOverrides';
 import { placePath } from '@/lib/placePages';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
+import { sectionBreadcrumb } from '@/lib/structuredData';
 
 type Params = { params: Promise<{ lang: string }> };
 
@@ -70,6 +71,7 @@ export default async function PlacesIndex({ params }: Params) {
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
+      <JsonLd data={sectionBreadcrumb(locale === 'en' ? 'Places' : 'Lieux', '/lieux', locale)} />
       <JsonLd data={list} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">

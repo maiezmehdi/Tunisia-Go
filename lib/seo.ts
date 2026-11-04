@@ -49,15 +49,18 @@ export function pageMetadata({
   title,
   description,
   index = true,
+  image: cardImage,
 }: {
   lang: Locale;
   path: string;
   title: string;
   description: string;
   index?: boolean;
+  /** Share card for this page, instead of the site-wide one. */
+  image?: { url: string; alt: string };
 }): Metadata {
   description = trimDescription(description);
-  const image = { url: '/og.png', width: 1200, height: 630, alt: SITE_NAME };
+  const image = { url: cardImage?.url ?? '/og.png', width: 1200, height: 630, alt: cardImage?.alt ?? SITE_NAME };
   return {
     title,
     description,
