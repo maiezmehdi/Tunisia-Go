@@ -5,6 +5,7 @@ import BrandLogo from '@/components/BrandLogo';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
+import NearbyStays from '@/components/NearbyStays';
 import PlaceClose from '@/components/PlaceClose';
 import PlaceRating from '@/components/PlaceRating';
 import PlaceReport from '@/components/PlaceReport';
@@ -220,6 +221,8 @@ export default async function PlacePage({ params }: Params) {
                 {place.didYouKnow}
               </blockquote>
             )}
+
+            <NearbyStays placeId={place.id} locale={locale} className="mt-12" />
           </div>
 
           <aside className="space-y-8">

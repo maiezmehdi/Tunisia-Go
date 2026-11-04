@@ -7,6 +7,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import AddSpotLink from '@/components/AddSpotLink';
 import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
+import NearbyStays from '@/components/NearbyStays';
 import PlaceRating from '@/components/PlaceRating';
 import SeasonStrip from '@/components/SeasonStrip';
 import TripButton from '@/components/TripButton';
@@ -115,7 +116,7 @@ function DrawerContent({
   onNavigate: (placeId: string) => void;
   month: number | null;
 }) {
-  const { t, catalog } = useLocale();
+  const { t, catalog, locale } = useLocale();
   const category = catalog.categoryById[place.category];
   const stopIndex = itinerary ? itinerary.stops.indexOf(place.id) : -1;
   const prevId = itinerary && stopIndex > 0 ? itinerary.stops[stopIndex - 1] : null;
@@ -203,6 +204,8 @@ function DrawerContent({
               </Pill>
             </div>
           </div>
+
+          <NearbyStays placeId={place.id} locale={locale} className="mt-6" />
 
           <ul className="mt-5 divide-y divide-sand-200 border-y border-sand-200">
             <ActionRow
