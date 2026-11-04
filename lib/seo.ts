@@ -27,6 +27,21 @@ export function alternates(path: string, lang: Locale): Metadata['alternates'] {
   };
 }
 
+/**
+ * Shortens a description to what Google shows (about 155 characters): it cuts at the end of a
+ * sentence when one fits, else at a word, and never in the middle of a word.
+ */
+export function trimDescription(text: string, max = 155): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const head = clean.slice(0, max);
+  const sentence = Math.max(head.lastIndexOf('. '), head.lastIndexOf('! '), head.lastIndexOf('? '));
+  if (sentence >= 80) return head.slice(0, sentence + 1);
+  const word = head.lastIndexOf(' ');
+  const cut = (word > 0 ? head.slice(0, word) : head).replace(/[\s,;:–—-]+$/, '');
+  return `${cut}…`.length <= max ? `${cut}…` : cut;
+}
+
 /** Title, description, canonical, language alternates and social cards for a page. */
 export function pageMetadata({
   lang,
@@ -41,6 +56,7 @@ export function pageMetadata({
   description: string;
   index?: boolean;
 }): Metadata {
+  description = trimDescription(description);
   const image = { url: '/og.png', width: 1200, height: 630, alt: SITE_NAME };
   return {
     title,

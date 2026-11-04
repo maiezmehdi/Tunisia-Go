@@ -63,7 +63,7 @@ export function exploreData(places: Place[], itineraries: Itinerary[], photos: R
       '@type': 'TouristTrip',
       name: it.name,
       description: it.description,
-      url: abs(`${localePath('/explore', lang)}?trip=${it.id}`),
+      url: tripUrl(it.id, lang),
       touristType: 'Road trip',
       itinerary: {
         '@type': 'ItemList',
@@ -106,6 +106,46 @@ export function placePageData(place: Place, photos: Photo[], lang: Locale) {
           item: abs(localePath('/lieux', lang)),
         },
         { '@type': 'ListItem', position: 3, name: place.name, item: abs(localePath(placePath(place.id), lang)) },
+      ],
+    },
+  ];
+}
+
+const tripUrl = (id: string, lang: Locale) => abs(localePath(`/road-trips/${id}`, lang));
+
+/** A road trip's own page: the trip through its stops, plus a breadcrumb back to the list of road trips. */
+export function tripPageData(trip: Itinerary, stops: Place[], lang: Locale) {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'TouristTrip',
+      name: trip.name,
+      description: trip.tagline ? `${trip.tagline}. ${trip.description}` : trip.description,
+      url: tripUrl(trip.id, lang),
+      inLanguage: lang,
+      touristType: 'Road trip',
+      itinerary: {
+        '@type': 'ItemList',
+        numberOfItems: stops.length,
+        itemListElement: stops.map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'TouristAttraction',
+            name: p.name,
+            url: abs(localePath(placePath(p.id), lang)),
+            '@id': abs(`${localePath(placePath(p.id), lang)}#place`),
+          },
+        })),
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: SITE_NAME, item: abs(localePath('/', lang)) },
+        { '@type': 'ListItem', position: 2, name: 'Road trips', item: abs(localePath('/road-trips', lang)) },
+        { '@type': 'ListItem', position: 3, name: trip.name, item: tripUrl(trip.id, lang) },
       ],
     },
   ];
