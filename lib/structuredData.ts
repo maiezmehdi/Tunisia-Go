@@ -1,6 +1,7 @@
 import type { Itinerary, Photo, Place } from '@/data/types';
 import type { Locale } from '@/lib/i18n/config';
 import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
+import { regionSlug } from '@/lib/regionPages';
 import { SITE_NAME, SITE_URL, localePath } from '@/lib/seo';
 
 const abs = (path: string) => `${SITE_URL}${path}`;
@@ -161,4 +162,42 @@ export function sectionBreadcrumb(name: string, path: string, lang: Locale) {
       { '@type': 'ListItem', position: 2, name, item: abs(localePath(path, lang)) },
     ],
   };
+}
+
+/** « Que voir à… » page: the region's places as a list of tourist attractions, plus a breadcrumb. */
+export function regionPageData(region: string, places: Place[], lang: Locale) {
+  const url = abs(localePath(`/que-voir/${regionSlug(region)}`, lang));
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: lang === 'en' ? `What to see in ${region}` : `Que voir à ${region}`,
+      url,
+      numberOfItems: places.length,
+      itemListElement: places.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'TouristAttraction',
+          name: p.name,
+          url: abs(localePath(placePath(p.id), lang)),
+          '@id': abs(`${localePath(placePath(p.id), lang)}#place`),
+        },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: SITE_NAME, item: abs(localePath('/', lang)) },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: lang === 'en' ? 'Places' : 'Lieux',
+          item: abs(localePath('/lieux', lang)),
+        },
+        { '@type': 'ListItem', position: 3, name: region, item: url },
+      ],
+    },
+  ];
 }

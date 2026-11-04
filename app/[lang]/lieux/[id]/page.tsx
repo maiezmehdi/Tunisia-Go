@@ -21,6 +21,7 @@ import { getCatalog } from '@/lib/i18n/catalog';
 import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { formatUpdated, placePath } from '@/lib/placePages';
+import { hasRegionPage, regionPath } from '@/lib/regionPages';
 import { loadRatingStats } from '@/lib/ratings';
 import { pageMetadata } from '@/lib/seo';
 import { placePageData } from '@/lib/structuredData';
@@ -161,7 +162,18 @@ export default async function PlacePage({ params }: Params) {
             </span>
           )}
         </div>
-        <p className="mt-1 text-sm text-charcoal-500">{place.region}</p>
+        <p className="mt-1 text-sm text-charcoal-500">
+          {hasRegionPage(place.region) ? (
+            <a
+              href={regionPath(place.region)}
+              className="underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
+            >
+              {place.region}
+            </a>
+          ) : (
+            place.region
+          )}
+        </p>
         <p className="mt-5 max-w-2xl font-serif text-xl italic text-charcoal-700">{place.tagline}</p>
         <PlaceRating placeId={place.id} average={rating?.average ?? null} votes={rating?.votes ?? 0} />
 

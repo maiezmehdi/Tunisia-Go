@@ -9,6 +9,7 @@ import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { applyOverrides, loadPlaceOverrides } from '@/lib/placeOverrides';
 import { placePath } from '@/lib/placePages';
+import { hasRegionPage, regionPath } from '@/lib/regionPages';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
 import { sectionBreadcrumb } from '@/lib/structuredData';
 
@@ -25,6 +26,7 @@ const COPY = {
     lead: 'Chaque lieu a sa page : histoire, usages, cuisine, meilleure période et itinéraire. Pour les voir sur la carte, ouvrez l’explorateur.',
     openMap: 'Ouvrir la carte',
     best: 'Idéal',
+    seeRegion: 'Que voir ici',
   },
   en: {
     brandTag: 'Places',
@@ -36,6 +38,7 @@ const COPY = {
     lead: 'Every place has its own page: history, customs, food, best time and directions. To see them on the map, open the explorer.',
     openMap: 'Open the map',
     best: 'Best',
+    seeRegion: 'What to see',
   },
 } as const;
 
@@ -101,7 +104,17 @@ export default async function PlacesIndex({ params }: Params) {
         <div className="mt-12 space-y-12">
           {[...byRegion.entries()].map(([region, places]) => (
             <section key={region}>
-              <h2 className="border-b border-sand-200 pb-2 font-serif text-2xl">{region}</h2>
+              <h2 className="flex items-baseline justify-between gap-4 border-b border-sand-200 pb-2 font-serif text-2xl">
+                {region}
+                {hasRegionPage(region) && (
+                  <a
+                    href={regionPath(region)}
+                    className="font-sans text-sm text-charcoal-500 underline-offset-4 hover:text-charcoal hover:underline"
+                  >
+                    {c.seeRegion}
+                  </a>
+                )}
+              </h2>
               <ul className="mt-2 divide-y divide-sand-200">
                 {places.map((p) => (
                   <li key={p.id}>
