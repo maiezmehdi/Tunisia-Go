@@ -78,7 +78,7 @@ export default function BrandLogo({
   tag?: string | null;
   tone?: 'dark' | 'light';
   size?: number;
-  /** Phones: smaller words, no tag line. */
+  /** Phones: smaller words (the tag line stays). */
   compact?: boolean;
   /** Phones: the mark alone, for crowded headers. */
   markOnlyOnPhone?: boolean;
@@ -98,11 +98,7 @@ export default function BrandLogo({
           Tunisia Go
         </span>
         {tag && (
-          <span
-            className={`mt-1.5 whitespace-nowrap font-serif text-[9.5px] uppercase tracking-[0.22em] ${sub} ${
-              compact ? 'hidden sm:block' : ''
-            }`}
-          >
+          <span className={`mt-1.5 whitespace-nowrap font-serif text-[9.5px] uppercase tracking-[0.22em] ${sub}`}>
             {tag}
           </span>
         )}
