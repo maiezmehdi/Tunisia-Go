@@ -7,6 +7,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import AddSpotLink from '@/components/AddSpotLink';
 import BrandIcon, { type Brand } from '@/components/BrandIcon';
 import CultureCard from '@/components/CultureCard';
+import NearbyAgencies from '@/components/NearbyAgencies';
 import NearbyStays from '@/components/NearbyStays';
 import PlaceRating from '@/components/PlaceRating';
 import SeasonStrip from '@/components/SeasonStrip';
@@ -206,6 +207,8 @@ function DrawerContent({
           </div>
 
           <NearbyStays placeId={place.id} locale={locale} className="mt-6" />
+
+          <NearbyAgencies governorate={place.region} locale={locale} className="mt-6" />
 
           <ul className="mt-5 divide-y divide-sand-200 border-y border-sand-200">
             <ActionRow
