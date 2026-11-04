@@ -97,7 +97,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     lang: locale,
     path: placePath(id),
     title: COPY[locale].metaTitle(place.name),
-    description: `${place.tagline}. ${place.description}`.replace(/\s+/g, ' ').slice(0, 300),
+    description: `${place.tagline}. ${place.description}`,
   });
 }
 
@@ -273,7 +273,7 @@ export default async function PlacePage({ params }: Params) {
                   {itineraries.map((it) => (
                     <li key={it.id}>
                       <a
-                        href={`/explore?trip=${it.id}`}
+                        href={`/road-trips/${it.id}`}
                         className="text-sm text-charcoal underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal"
                       >
                         {it.name}

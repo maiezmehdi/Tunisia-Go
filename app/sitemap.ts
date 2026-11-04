@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-import { PLACES } from '@/data/tunisiaData';
+import { ITINERARIES, PLACES } from '@/data/tunisiaData';
 import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
 import { SITE_URL, localePath } from '@/lib/seo';
 
@@ -9,6 +9,7 @@ const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
   { path: '/', priority: 1, changeFrequency: 'weekly' },
   { path: '/explore', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/lieux', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/road-trips', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/evenements', priority: 0.7, changeFrequency: 'weekly' },
   { path: '/guides', priority: 0.5, changeFrequency: 'weekly' },
   { path: '/pratique', priority: 0.7, changeFrequency: 'monthly' },
@@ -23,6 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...PLACES.map((place) => ({
       path: placePath(place.id),
       priority: 0.6,
+      changeFrequency: 'monthly' as const,
+      lastModified: new Date(CONTENT_UPDATED),
+    })),
+    ...ITINERARIES.map((trip) => ({
+      path: `/road-trips/${trip.id}`,
+      priority: 0.7,
       changeFrequency: 'monthly' as const,
       lastModified: new Date(CONTENT_UPDATED),
     })),

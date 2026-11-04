@@ -28,6 +28,11 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
           </a>
         </li>
         <li>
+          <a href="/road-trips" className={anchor}>
+            {t.allRoadTrips}
+          </a>
+        </li>
+        <li>
           <a href="/evenements" className={anchor}>
             {t.events}
           </a>
