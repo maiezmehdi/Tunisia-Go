@@ -1,0 +1,26 @@
+# Tunisia Go
+
+> Guide indépendant de la Tunisie : lieux hors des sentiers battus, road trips jour par jour, carte interactive et conseils locaux. Site bilingue (français et anglais), gratuit, sans compte obligatoire.
+
+Tunisia Go présente des lieux qui valent le détour (histoire, usages, cuisine, meilleure période, durée de visite), des itinéraires en road trip avec toutes leurs étapes, un carnet de voyage personnel (« Mon voyage »), un lexique des mots du cru et des guides locaux. Les photos viennent de Wikimedia Commons. Contact : contact@tunisiagoo.com
+
+## Pages principales
+- [Accueil](https://www.tunisiagoo.com/): présentation du guide
+- [Tous les lieux](https://www.tunisiagoo.com/lieux): une fiche par lieu, classée par région
+- [Road trips](https://www.tunisiagoo.com/road-trips): itinéraires avec étapes et durée
+- [Carte interactive](https://www.tunisiagoo.com/explore): lieux et road trips sur la carte
+- [Événements](https://www.tunisiagoo.com/evenements): festivals et rendez-vous
+- [Guides locaux](https://www.tunisiagoo.com/guides): guides et agences inscrits
+- [Pratique](https://www.tunisiagoo.com/pratique): conseils, usages et lexique « Les mots du cru »
+
+## English
+- [Home](https://www.tunisiagoo.com/en): an independent guide to Tunisia
+- [All places](https://www.tunisiagoo.com/en/lieux): one page per place, by region
+- [Road trips](https://www.tunisiagoo.com/en/road-trips): routes with stops and length
+- [Interactive map](https://www.tunisiagoo.com/en/explore)
+- [Events](https://www.tunisiagoo.com/en/evenements)
+- [Local guides](https://www.tunisiagoo.com/en/guides)
+- [Practical tips](https://www.tunisiagoo.com/en/pratique)
+
+## Plan du site
+- [Sitemap](https://www.tunisiagoo.com/sitemap.xml)

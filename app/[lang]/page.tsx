@@ -18,15 +18,16 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     ? pageMetadata({
         lang: 'en',
         path: '/',
-        title: 'Tunisia Go · Tunisia, the other journey',
-        description: 'Off-the-beaten-track places, great road trips and an interactive map to see Tunisia differently.',
+        title: 'Tunisia Go · Road trips, hidden places and map of Tunisia',
+        description:
+          'Plan your trip to Tunisia: off-the-beaten-track places, day-by-day road trips, an interactive map, local tips and guides.',
       })
     : pageMetadata({
         lang: 'fr',
         path: '/',
-        title: 'Tunisia Go · La Tunisie, l’autre voyage',
+        title: 'Tunisia Go · Road trips et lieux secrets de la Tunisie',
         description:
-          'Lieux hors des sentiers battus, grands road trips et carte interactive pour découvrir la Tunisie autrement.',
+          'Préparez votre voyage en Tunisie : lieux hors des sentiers battus, road trips jour par jour, carte interactive, conseils locaux et guides.',
       });
 }
 
