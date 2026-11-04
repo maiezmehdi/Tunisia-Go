@@ -30,7 +30,7 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 | `app/page.tsx` | Server page: loads the photos, then renders the explorer |
 | `components/Explorer.tsx` | Main layout: top bar with layer filters, Map / Split toggle, editorial feed, map, road trips panel and drawer |
 | `components/InteractiveMap.tsx` | Leaflet map with category markers, glowing hover/active states, itinerary route lines and camera moves |
-| `components/ActionDrawer.tsx` | Place inspector: photo carousel, story, action hub (Booking, Airbnb, transfer, WhatsApp guide, call, Google Maps, Waze) |
+| `components/ActionDrawer.tsx` | Place inspector: photo carousel, story, action hub (Tunisie Booking, Airbnb, transfer, WhatsApp guide, call, Google Maps, Waze) |
 | `components/ItinerarySelector.tsx` | Circuit picker with stops, leg distances and driving times, and a Google Maps link for the full route |
 | `components/CultureCard.tsx` | "Did you know?" snippet with read-aloud narration, plus History / Customs / Food / Best time tabs |
 | `components/EditorialFeed.tsx` | Magazine-style list shown next to the map in Split mode |
@@ -49,9 +49,9 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 - **Phone and WhatsApp numbers** are placeholders (`+216 00 000 000`). Set real
   numbers per place in `data/tunisiaData.ts`, or one number for all places with
   `NEXT_PUBLIC_GUIDE_WHATSAPP` and `NEXT_PUBLIC_TRANSFER_WHATSAPP`.
-- **Affiliate ids** for Booking.com and Airbnb are read from
-  `NEXT_PUBLIC_BOOKING_AID` and `NEXT_PUBLIC_AIRBNB_AFFILIATE`. Without them the
-  buttons open plain searches for the place.
+- **Stays**: the « Tunisie Booking » button opens https://tn.tunisiebooking.com/. The
+  Airbnb affiliate id is read from `NEXT_PUBLIC_AIRBNB_AFFILIATE`; without it the
+  button opens a plain search for the place.
 - **Map key**: set `NEXT_PUBLIC_CARTO_API_KEY` (in Vercel: Settings → Environment
   Variables, then redeploy). Without it CARTO shows an "API key required" watermark.
 - **Photos** come from the English Wikipedia article in each place's `wiki` field.

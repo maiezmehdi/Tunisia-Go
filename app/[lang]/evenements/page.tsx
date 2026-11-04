@@ -10,7 +10,7 @@ import { PLACES } from '@/data/tunisiaData';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { loadEvents } from '@/lib/events';
-import { bookingUrl } from '@/lib/links';
+import { tunisieBookingUrl } from '@/lib/links';
 import { loadPhotos } from '@/lib/photos';
 import { placePath } from '@/lib/placePages';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
@@ -81,32 +81,34 @@ export default async function EventsPage({ params }: Params) {
     [...new Set(events.map((e) => e.placeId))].map((id) => raw.get(id)).filter((p): p is NonNullable<typeof p> => !!p),
   );
 
-  const jsonLd = events.filter((e) => e.confirmed && e.start).map((e) => {
-    const place = places.get(e.placeId);
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'Event',
-      name: e.title[locale],
-      description: e.description[locale],
-      startDate: e.start,
-      endDate: e.end,
-      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-      location: place
-        ? {
-            '@type': 'Place',
-            name: place.name,
-            address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
-            geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
-          }
-        : undefined,
-      url: `${SITE_URL}${localePath('/evenements', locale)}#${e.id}`,
-    };
-  });
+  const jsonLd = events
+    .filter((e) => e.confirmed && e.start)
+    .map((e) => {
+      const place = places.get(e.placeId);
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        name: e.title[locale],
+        description: e.description[locale],
+        startDate: e.start,
+        endDate: e.end,
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: place
+          ? {
+              '@type': 'Place',
+              name: place.name,
+              address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
+              geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
+            }
+          : undefined,
+        url: `${SITE_URL}${localePath('/evenements', locale)}#${e.id}`,
+      };
+    });
 
   const actionHref = (e: TunisiaEvent, a: EventAction): string | null => {
     if (a.kind === 'stay') {
       const p = raw.get(e.placeId);
-      return p ? bookingUrl(p) : null;
+      return p ? tunisieBookingUrl() : null;
     }
     if (a.kind === 'info') return e.source ?? null;
     return a.url ?? null;
@@ -140,9 +142,9 @@ export default async function EventsPage({ params }: Params) {
 
         <div className="mt-12 space-y-14">
           {ORDER.map((kind) => {
-            const list = events.filter((e) => e.kind === kind).sort(
-              (a, b) => Number(b.confirmed) - Number(a.confirmed),
-            );
+            const list = events
+              .filter((e) => e.kind === kind)
+              .sort((a, b) => Number(b.confirmed) - Number(a.confirmed));
             if (list.length === 0) return null;
             return (
               <section key={kind}>

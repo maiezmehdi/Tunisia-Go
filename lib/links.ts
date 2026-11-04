@@ -6,7 +6,6 @@ import type { Place } from '@/data/types';
  * they can be set per deployment without touching the code.
  */
 
-const BOOKING_AID = process.env.NEXT_PUBLIC_BOOKING_AID ?? '';
 const AIRBNB_AFFILIATE = process.env.NEXT_PUBLIC_AIRBNB_AFFILIATE ?? '';
 const GUIDE_WHATSAPP = process.env.NEXT_PUBLIC_GUIDE_WHATSAPP ?? '';
 const TRANSFER_WHATSAPP = process.env.NEXT_PUBLIC_TRANSFER_WHATSAPP ?? '';
@@ -17,12 +16,9 @@ function withParams(base: string, params: Record<string, string>): string {
   return url.toString();
 }
 
-export function bookingUrl(place: Place): string {
-  return withParams('https://www.booking.com/searchresults.html', {
-    ss: place.stayQuery,
-    aid: BOOKING_AID,
-    label: `tunisiago-${place.id}`,
-  });
+// Tunisie Booking (Tunisian booking site): the link opens its home page, where the person searches the stay.
+export function tunisieBookingUrl(): string {
+  return 'https://tn.tunisiebooking.com/';
 }
 
 export function airbnbUrl(place: Place): string {

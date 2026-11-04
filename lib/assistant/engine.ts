@@ -339,7 +339,7 @@ const TEXT = {
     tipsGeneral: 'Quelques conseils valables partout :',
     allGuides: 'Tous les cahiers pratiques',
     budget:
-      'Je ne connais pas les prix : le site n’en donne pas encore. Pour les hébergements, les liens Booking et Airbnb de chaque fiche montrent les tarifs du moment.',
+      'Je ne connais pas les prix : le site n’en donne pas encore. Pour les hébergements, les liens Tunisie Booking et Airbnb de chaque fiche montrent les tarifs du moment.',
     wordsIntro: 'Quelques mots pour commencer :',
     wordsFound: 'Voici comment on le dit :',
     allWords: 'Tous les mots du cru',
@@ -408,7 +408,7 @@ const TEXT = {
     tipsGeneral: 'A few tips that apply everywhere:',
     allGuides: 'All practical guides',
     budget:
-      'I do not know prices: the site does not list them yet. For places to stay, the Booking and Airbnb links on each place show current rates.',
+      'I do not know prices: the site does not list them yet. For places to stay, the Tunisie Booking and Airbnb links on each place show current rates.',
     wordsIntro: 'A few words to start with:',
     wordsFound: 'Here is how to say it:',
     allWords: 'All local words',
