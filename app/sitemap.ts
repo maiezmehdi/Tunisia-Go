@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 
 import { ITINERARIES, PLACES } from '@/data/tunisiaData';
 import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
+import { PAGE_REGIONS, regionPath } from '@/lib/regionPages';
 import { SITE_URL, localePath } from '@/lib/seo';
 
 // Public pages, each in French (/path) and English (/en/path).
@@ -28,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...PLACES.map((place) => ({
       path: placePath(place.id),
       priority: 0.6,
+      changeFrequency: 'monthly' as const,
+      lastModified: new Date(CONTENT_UPDATED),
+    })),
+    ...PAGE_REGIONS.map((r) => ({
+      path: regionPath(r.region),
+      priority: 0.7,
       changeFrequency: 'monthly' as const,
       lastModified: new Date(CONTENT_UPDATED),
     })),
