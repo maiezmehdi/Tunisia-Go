@@ -98,6 +98,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     path: placePath(id),
     title: COPY[locale].metaTitle(place.name),
     description: `${place.tagline}. ${place.description}`,
+    image: { url: `/api/og/${id}?lang=${locale}`, alt: `${place.name}, ${place.region}` },
   });
 }
 
