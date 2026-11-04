@@ -38,10 +38,20 @@ const COPY = {
     forgotSend: 'Envoyer le lien',
     forgotSent:
       'Si un compte existe avec cette adresse, un e-mail vient de partir. Pensez à regarder les courriers indésirables.',
+    sentTitle: 'Vérifiez votre boîte mail',
+    sentBody:
+      'Si un compte existe avec {email}, nous venons d’y envoyer un e-mail contenant un lien pour choisir un nouveau mot de passe.',
+    sentNote: 'Le lien ne peut servir qu’une fois et reste valable peu de temps.',
+    sentHelp: 'Rien reçu ? Regardez les courriers indésirables, puis renvoyez le lien.',
+    sentAgain: 'Renvoyer le lien',
+    sentResent: 'Le lien a été renvoyé.',
+    newLead: 'Lien vérifié. Choisissez maintenant un nouveau mot de passe pour votre compte.',
+    doneTitle: 'Mot de passe modifié',
     backToLogin: 'Retour à la connexion',
     newTitle: 'Choisir un nouveau mot de passe',
     newSave: 'Enregistrer et me connecter',
-    newDone: 'Votre mot de passe a bien été modifié. Vous êtes connecté.',
+    newDone:
+      'Votre nouveau mot de passe est enregistré et vous êtes connecté. Utilisez-le à votre prochaine connexion.',
     newExpired: 'Ce lien n’est plus valable. Demandez-en un nouveau avec « Mot de passe oublié ? ».',
     continueUp: 'Créer mon compte',
     continueProPrefix: 'Continuer',
@@ -103,10 +113,18 @@ const COPY = {
     forgotLead: 'Enter your e-mail address and we will send you a link to choose a new password.',
     forgotSend: 'Send the link',
     forgotSent: 'If an account exists with this address, an e-mail is on its way. Check your spam folder too.',
+    sentTitle: 'Check your inbox',
+    sentBody: 'If an account exists with {email}, we have just sent an e-mail with a link to choose a new password.',
+    sentNote: 'The link works only once and stays valid for a short time.',
+    sentHelp: 'Nothing yet? Check your spam folder, then send the link again.',
+    sentAgain: 'Send the link again',
+    sentResent: 'The link has been sent again.',
+    newLead: 'Link verified. Now choose a new password for your account.',
+    doneTitle: 'Password changed',
     backToLogin: 'Back to sign in',
     newTitle: 'Choose a new password',
     newSave: 'Save and sign me in',
-    newDone: 'Your password has been changed. You are signed in.',
+    newDone: 'Your new password is saved and you are signed in. Use it next time you sign in.',
     newExpired: 'This link is no longer valid. Ask for a new one with “Forgot your password?”.',
     continueUp: 'Create my account',
     continueProPrefix: 'Continue',
@@ -156,7 +174,7 @@ const primary =
   'rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700 disabled:opacity-60';
 
 /** Sign in, create an account (traveller or guide/agency), and the signed-in account page. */
-export default function AccountPage() {
+export default function AccountPage({ lead }: { lead?: string }) {
   const { locale } = useLocale();
   const c = COPY[locale];
   const { tokens, account, setTokens, signOut } = useProAuth();
@@ -169,6 +187,7 @@ export default function AccountPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [forgot, setForgot] = useState(false);
   const [sent, setSent] = useState(false);
+  const [resent, setResent] = useState(false);
   const [recovery, setRecovery] = useState<ProTokens | null>(null);
   const [passwordSet, setPasswordSet] = useState(false);
   const [entry, setEntry] = useState<Entry | 'none' | 'error' | null>(null);
@@ -258,15 +277,20 @@ export default function AccountPage() {
 
   const sendLink = async (e: React.FormEvent) => {
     e.preventDefault();
+    return requestLink(false);
+  };
+
+  const requestLink = async (again: boolean) => {
     setBusy(true);
     setError('');
+    setResent(false);
     try {
       const res = await fetch('/api/pro-auth/recover', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, lang: locale }),
       });
-      if (res.ok) return setSent(true);
+      if (res.ok) return again ? setResent(true) : setSent(true);
       setError(
         res.status === 400 ? c.badEmail : res.status === 429 ? c.tooMany : res.status === 503 ? c.off : c.failed,
       );
@@ -291,6 +315,7 @@ export default function AccountPage() {
       if (res.ok) {
         setPassword('');
         setPasswordSet(true);
+        window.scrollTo({ top: 0 });
         setRecovery(null);
         return setTokens(recovery);
       }
@@ -326,6 +351,7 @@ export default function AccountPage() {
     return (
       <form onSubmit={saveNewPassword} className="space-y-4" noValidate>
         <h2 className="font-serif text-2xl">{c.newTitle}</h2>
+        <p className="text-sm text-charcoal-500">{c.newLead}</p>
         <label className="block text-sm font-medium text-charcoal">
           {c.password}
           <input
@@ -452,9 +478,23 @@ export default function AccountPage() {
     return (
       <>
         {passwordSet && (
-          <p role="status" className="mb-6 rounded-2xl border border-sand-200 bg-white px-5 py-3 text-sm text-charcoal">
-            {c.newDone}
-          </p>
+          <div
+            role="status"
+            className="mb-6 flex items-start gap-3 rounded-3xl border border-sand-200 bg-white px-5 py-4"
+          >
+            <span
+              aria-hidden
+              className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-charcoal text-cream"
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12.5l4.5 4.5L19 7.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <div>
+              <p className="text-[15px] font-medium text-charcoal">{c.doneTitle}</p>
+              <p className="mt-0.5 text-sm text-charcoal-500">{c.newDone}</p>
+            </div>
+          </div>
         )}
         <AccountShell
           email={account.email}
@@ -472,9 +512,23 @@ export default function AccountPage() {
       <form onSubmit={sendLink} className="space-y-4" noValidate>
         <h2 className="font-serif text-2xl">{c.forgotTitle}</h2>
         {sent ? (
-          <p role="status" className="text-sm text-charcoal-700">
-            {c.forgotSent}
-          </p>
+          <div role="status" className="space-y-3 rounded-3xl border border-sand-200 bg-white p-5">
+            <p className="text-[15px] font-medium text-charcoal">{c.sentTitle}</p>
+            <p className="text-sm text-charcoal-700">{c.sentBody.replace('{email}', email.trim())}</p>
+            <p className="text-sm text-charcoal-500">{c.sentNote}</p>
+            <p className="text-sm text-charcoal-500">
+              {c.sentHelp}{' '}
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => requestLink(true)}
+                className="text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal disabled:opacity-60"
+              >
+                {busy ? c.sending : c.sentAgain}
+              </button>
+            </p>
+            {resent && <p className="text-sm text-charcoal">{c.sentResent}</p>}
+          </div>
         ) : (
           <>
             <p className="text-sm text-charcoal-500">{c.forgotLead}</p>
@@ -506,6 +560,7 @@ export default function AccountPage() {
             onClick={() => {
               setForgot(false);
               setSent(false);
+              setResent(false);
               setError('');
             }}
             className="text-sm text-charcoal-500 underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
@@ -525,6 +580,7 @@ export default function AccountPage() {
 
   return (
     <div>
+      {lead && <p className="-mt-5 mb-8 text-charcoal-500">{lead}</p>}
       <div className="mb-5 flex flex-wrap gap-2">
         {(['signup', 'login'] as const).map((m) => (
           <button
