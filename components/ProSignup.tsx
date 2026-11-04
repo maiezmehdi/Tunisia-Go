@@ -35,6 +35,7 @@ const COPY = {
     seeList: 'Voir les guides et agences',
     invalid: 'Vérifiez votre nom et votre numéro WhatsApp (avec l’indicatif du pays).',
     invalidCard: 'Ce numéro de carte ne semble pas valide. Corrigez-le ou laissez le champ vide.',
+    invalidSocial: 'Un de vos liens de réseaux ne semble pas valide. Collez l’adresse de votre page ou votre @nom.',
     needSocials: 'Indiquez au moins un réseau social ou un site.',
     needConsent: 'Cochez la case pour autoriser l’affichage.',
     tooMany: 'Trop d’envois pour le moment. Réessayez plus tard.',
@@ -64,6 +65,7 @@ const COPY = {
     seeList: 'See guides and agencies',
     invalid: 'Check your name and your WhatsApp number (with the country code).',
     invalidCard: 'This card number does not look valid. Correct it or leave the field empty.',
+    invalidSocial: 'One of your network links does not look valid. Paste your page address or your @name.',
     needSocials: 'Give at least one social network or website.',
     needConsent: 'Tick the box to allow the listing to be shown.',
     tooMany: 'Too many submissions for now. Please try again later.',
@@ -92,6 +94,9 @@ export default function ProSignup({ accessToken, onExpired }: { accessToken: str
     activities: [],
     priceNote: '',
     placeId: '',
+    facebook: '',
+    instagram: '',
+    tiktok: '',
     photoPath: '',
     photoUrl: '',
   });
@@ -123,6 +128,9 @@ export default function ProSignup({ accessToken, onExpired }: { accessToken: str
           activities: profile.activities,
           priceNote: profile.priceNote,
           placeId: profile.placeId,
+          facebook: profile.facebook,
+          instagram: profile.instagram,
+          tiktok: profile.tiktok,
           photoPath: profile.photoPath,
           card: kind === 'guide' ? card : '',
           socials: kind === 'agency' ? socials : '',
@@ -142,6 +150,7 @@ export default function ProSignup({ accessToken, onExpired }: { accessToken: str
       }
       if (res.status === 429) return fail(c.tooMany);
       if (data.error === 'invalid_card') return fail(c.invalidCard);
+      if (data.error === 'invalid_social') return fail(c.invalidSocial);
       if (data.error === 'exists') return fail(c.exists);
       if (data.error === 'invalid')
         return fail(kind === 'agency' && socials.trim().length < 3 ? c.needSocials : c.invalid);

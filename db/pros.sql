@@ -34,3 +34,6 @@ alter table public.pro_listings add column if not exists bio text, add column if
 alter table public.pro_listings add column if not exists experience text;
 alter table public.pro_listings add column if not exists languages text[], add column if not exists activities text[], add column if not exists price_note text;
 insert into storage.buckets (id, name, public) values ('pro-photos', 'pro-photos', true) on conflict (id) do nothing;
+
+-- Optional social links of a guide or agency (full https addresses, built from a link or an @name).
+alter table public.pro_listings add column if not exists facebook text, add column if not exists instagram text, add column if not exists tiktok text;

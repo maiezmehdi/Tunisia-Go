@@ -12,6 +12,7 @@ import {
   authUserId,
   cleanPhotoPath,
   cleanPlaceId,
+  cleanSocial,
   normalizeCard,
   normalizeWhatsApp,
 } from '@/lib/pros';
@@ -55,6 +56,9 @@ export async function POST(request: Request) {
   const cardRaw = text(body.card, 40);
   const card = cardRaw ? normalizeCard(cardRaw) : null;
   const socials = text(body.socials, 200);
+  const facebook = cleanSocial('facebook', body.facebook);
+  const instagram = cleanSocial('instagram', body.instagram);
+  const tiktok = cleanSocial('tiktok', body.tiktok);
   const bio = text(body.bio, BIO_MAX);
   const experience = text(body.experience, EXPERIENCE_MAX);
   const languages = cleanIds(body.languages, PRO_LANGUAGES);
@@ -64,6 +68,9 @@ export async function POST(request: Request) {
   const photoPath = cleanPhotoPath(body.photoPath, owner);
   if (!kind || name.length < 2 || !whatsapp) return NextResponse.json({ error: 'invalid' }, { status: 400 });
   if (cardRaw && !card) return NextResponse.json({ error: 'invalid_card' }, { status: 400 });
+  if (facebook === null || instagram === null || tiktok === null) {
+    return NextResponse.json({ error: 'invalid_social' }, { status: 400 });
+  }
   if (body.consent !== true) return NextResponse.json({ error: 'consent' }, { status: 400 });
   // An agency has no personal guide card: it is asked for its networks, so it needs at least one.
   if (kind === 'agency' && socials.length < 3) return NextResponse.json({ error: 'invalid' }, { status: 400 });
@@ -76,6 +83,9 @@ export async function POST(request: Request) {
       whatsapp,
       card_number: card,
       socials: socials || null,
+      facebook: facebook || null,
+      instagram: instagram || null,
+      tiktok: tiktok || null,
       bio: bio || null,
       experience: experience || null,
       languages,

@@ -13,6 +13,7 @@ import {
   authUserId,
   cleanPhotoPath,
   cleanPlaceId,
+  cleanSocial,
   normalizeCard,
 } from '@/lib/pros';
 import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
@@ -34,6 +35,9 @@ interface Row {
   whatsapp: string;
   card_number: string | null;
   socials: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  tiktok: string | null;
   bio: string | null;
   experience: string | null;
   languages: string[] | null;
@@ -62,7 +66,7 @@ export async function POST(request: Request) {
     const [row] = await selectRows<Row>(
       cfg,
       'pro_listings',
-      `select=id,status,kind,name,whatsapp,card_number,socials,bio,experience,languages,activities,price_note,place_id,photo_path&owner_id=eq.${owner}&limit=1`,
+      `select=id,status,kind,name,whatsapp,card_number,socials,facebook,instagram,tiktok,bio,experience,languages,activities,price_note,place_id,photo_path&owner_id=eq.${owner}&limit=1`,
     );
     if (!row) return NextResponse.json({ error: 'none' }, { status: 404 });
 
@@ -78,6 +82,12 @@ export async function POST(request: Request) {
       const cardRaw = text(body.card, 40);
       const card = cardRaw ? normalizeCard(cardRaw) : null;
       const socials = text(body.socials, 200);
+      const facebook = cleanSocial('facebook', body.facebook);
+      const instagram = cleanSocial('instagram', body.instagram);
+      const tiktok = cleanSocial('tiktok', body.tiktok);
+      if (facebook === null || instagram === null || tiktok === null) {
+        return NextResponse.json({ error: 'invalid_social' }, { status: 400 });
+      }
       const bio = text(body.bio, BIO_MAX);
       const experience = text(body.experience, EXPERIENCE_MAX);
       const languages = cleanIds(body.languages, PRO_LANGUAGES);
@@ -94,6 +104,9 @@ export async function POST(request: Request) {
         name,
         card_number: card,
         socials: socials || null,
+        facebook: facebook || null,
+        instagram: instagram || null,
+        tiktok: tiktok || null,
         bio: bio || null,
         experience: experience || null,
         languages,
@@ -120,6 +133,9 @@ export async function POST(request: Request) {
       whatsapp: row.whatsapp,
       card: row.card_number ?? '',
       socials: row.socials ?? '',
+      facebook: row.facebook ?? '',
+      instagram: row.instagram ?? '',
+      tiktok: row.tiktok ?? '',
       bio: row.bio ?? '',
       experience: row.experience ?? '',
       languages: row.languages ?? [],

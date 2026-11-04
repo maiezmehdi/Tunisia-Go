@@ -15,6 +15,10 @@ export interface ProProfile {
   activities: string[];
   priceNote: string;
   placeId: string;
+  /** Optional links or @names; the server turns them into full addresses. */
+  facebook: string;
+  instagram: string;
+  tiktok: string;
   /** Path of the uploaded photo in storage, sent back when the entry is saved. */
   photoPath: string;
   /** What to show as the photo: the stored one, or the one just picked. */
@@ -33,6 +37,8 @@ const COPY = {
     place: 'Lieu où vous exercez',
     placeHint:
       'Le lieu du site le plus proche de votre activité. Il place votre fiche sur la carte et vous fait apparaître sur les fiches de sa région. Sans lieu, vous n’apparaissez sur aucune fiche.',
+    networks: 'Vos réseaux (facultatif)',
+    networksHint: 'Un lien ou votre @nom. Ils s’affichent en icônes sur votre fiche.',
     placeNone: 'Choisir un lieu',
     bio: 'Présentation',
     bioHint: 'Qui vous êtes, ce que vous proposez, les langues que vous parlez.',
@@ -55,6 +61,8 @@ const COPY = {
     place: 'Where you work',
     placeHint:
       'The site’s place closest to your activity. It puts your listing on the map and shows you on the fiches of its region. Without a place, you appear on no fiche.',
+    networks: 'Your networks (optional)',
+    networksHint: 'A link or your @name. They show as icons on your listing.',
     placeNone: 'Choose a place',
     bio: 'About you',
     bioHint: 'Who you are, what you offer, the languages you speak.',
@@ -265,6 +273,31 @@ export default function ProProfileFields({
 
       {chips('languages', c.languages, PRO_LANGUAGES, <LanguageIcon className="text-charcoal-500" />)}
       {chips('activities', c.activities, PRO_ACTIVITIES, <ActivityIcon className="text-charcoal-500" />)}
+
+      <fieldset>
+        <legend className="text-sm font-medium text-charcoal">{c.networks}</legend>
+        {(
+          [
+            ['facebook', 'Facebook'],
+            ['instagram', 'Instagram'],
+            ['tiktok', 'TikTok'],
+          ] as const
+        ).map(([key, label]) => (
+          <label key={key} className="mt-2 flex items-center gap-3 text-sm text-charcoal-700">
+            <span className="w-20 shrink-0">{label}</span>
+            <input
+              className={`${field} !mt-0 font-normal`}
+              value={value[key]}
+              maxLength={200}
+              autoCapitalize="none"
+              autoCorrect="off"
+              placeholder={key === 'facebook' ? 'facebook.com/…' : '@…'}
+              onChange={(e) => onChange({ [key]: e.target.value })}
+            />
+          </label>
+        ))}
+        <span className="mt-1 block text-xs font-normal text-charcoal-500">{c.networksHint}</span>
+      </fieldset>
 
       <label className="block text-sm font-medium text-charcoal">
         <span className="flex items-center gap-2">

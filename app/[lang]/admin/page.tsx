@@ -149,6 +149,9 @@ export default async function AdminPage() {
     whatsapp: string;
     card_number: string | null;
     socials: string | null;
+    facebook: string | null;
+    instagram: string | null;
+    tiktok: string | null;
     auto_published: boolean;
     bio: string | null;
     experience: string | null;
@@ -168,6 +171,7 @@ export default async function AdminPage() {
         whatsapp: r.whatsapp,
         card: r.card_number,
         socials: r.socials,
+        networks: [r.facebook, r.instagram, r.tiktok].filter((x): x is string => !!x),
         autoPublished: r.auto_published,
         reports: proReports.filter((x) => x.listing_id === r.id).length,
         bio: r.bio,

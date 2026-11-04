@@ -27,6 +27,7 @@ const COPY = {
     removed: 'Votre fiche est retirée du site.',
     invalid: 'Vérifiez le nom et les réseaux.',
     invalidCard: 'Ce numéro de carte ne semble pas valide.',
+    invalidSocial: 'Un de vos liens de réseaux ne semble pas valide.',
     failed: 'L’enregistrement n’a pas abouti. Réessayez.',
     back: 'Voir les guides et agences',
   },
@@ -49,6 +50,7 @@ const COPY = {
     removed: 'Your listing has been removed from the site.',
     invalid: 'Check the name and the networks.',
     invalidCard: 'This card number does not look valid.',
+    invalidSocial: 'One of your network links does not look valid.',
     failed: 'Saving did not work. Please try again.',
     back: 'See guides and agencies',
   },
@@ -64,6 +66,9 @@ export interface Entry {
   whatsapp: string;
   card: string;
   socials: string;
+  facebook: string;
+  instagram: string;
+  tiktok: string;
   bio: string;
   experience: string;
   languages: string[];
@@ -111,6 +116,16 @@ export default function ProEdit({
         name: entry.name,
         card: entry.card,
         socials: entry.socials,
+        facebook: entry.facebook,
+        instagram: entry.instagram,
+        tiktok: entry.tiktok,
+        bio: entry.bio,
+        experience: entry.experience,
+        languages: entry.languages,
+        activities: entry.activities,
+        priceNote: entry.priceNote,
+        placeId: entry.placeId,
+        photoPath: entry.photoPath,
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string; status?: Entry['status'] };
       if (res.ok) {
@@ -119,7 +134,15 @@ export default function ProEdit({
       }
       setState('ready');
       if (res.status === 401) return onExpired();
-      setError(data.error === 'invalid_card' ? c.invalidCard : data.error === 'invalid' ? c.invalid : c.failed);
+      setError(
+        data.error === 'invalid_card'
+          ? c.invalidCard
+          : data.error === 'invalid_social'
+            ? c.invalidSocial
+            : data.error === 'invalid'
+              ? c.invalid
+              : c.failed,
+      );
     } catch {
       setState('ready');
       setError(c.failed);

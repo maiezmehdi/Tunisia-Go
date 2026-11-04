@@ -1,6 +1,6 @@
 'use client';
 
-import { ActivityIcon, LanguageIcon, PriceIcon } from '@/components/ProIcons';
+import { ActivityIcon, FacebookIcon, InstagramIcon, LanguageIcon, PriceIcon, TikTokIcon } from '@/components/ProIcons';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -16,6 +16,7 @@ export interface DirectoryPro {
   whatsappUrl: string | null;
   socials: string | null;
   socialsHref: string | null;
+  networks: { id: 'facebook' | 'instagram' | 'tiktok'; href: string }[];
   cardDeclared: boolean;
   bio: string | null;
   experience: string | null;
@@ -181,6 +182,27 @@ export default function ProsDirectory({ pros, labels }: { pros: DirectoryPro[]; 
                 ) : (
                   <p className="mt-2 break-all text-sm text-charcoal-500">{p.socials}</p>
                 ))}
+              {p.networks.length > 0 && (
+                <div className="mt-3 flex items-center gap-3 text-charcoal-500">
+                  {p.networks.map((n) => {
+                    const Icon = n.id === 'facebook' ? FacebookIcon : n.id === 'instagram' ? InstagramIcon : TikTokIcon;
+                    const label = n.id === 'facebook' ? 'Facebook' : n.id === 'instagram' ? 'Instagram' : 'TikTok';
+                    return (
+                      <a
+                        key={n.id}
+                        href={n.href}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        aria-label={`${label} : ${p.name}`}
+                        title={label}
+                        className="transition hover:text-charcoal"
+                      >
+                        <Icon />
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                 {p.whatsappUrl && (
                   <a
