@@ -46,9 +46,9 @@ Other scripts: `npm run build`, `npm start`, `npm run typecheck`.
 
 ## Mock data to replace before launch
 
-- **Phone and WhatsApp numbers** are placeholders (`+216 00 000 000`). Set real
-  numbers per place in `data/tunisiaData.ts`, or one number for all places with
-  `NEXT_PUBLIC_GUIDE_WHATSAPP` and `NEXT_PUBLIC_TRANSFER_WHATSAPP`.
+- **Phone numbers**: the « Appeler le lieu » row only shows for a place with a real
+  `contact.phone` in `data/tunisiaData.ts`. The guide row only shows when a guide or agency
+  is published for the place's region (`/api/pros-regions`).
 - **Stays**: the « Tunisie Booking » button opens https://tn.tunisiebooking.com/. The
   Airbnb affiliate id is read from `NEXT_PUBLIC_AIRBNB_AFFILIATE`; without it the
   button opens a plain search for the place.

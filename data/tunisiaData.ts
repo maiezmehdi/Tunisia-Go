@@ -28,8 +28,7 @@ function postcards(_category: CategoryId, captions: string[]): PlaceImage[] {
   return captions.map((caption) => ({ caption }));
 }
 
-// No real guide or venue numbers yet: the contact buttons show « Disponible bientôt »
-// until NEXT_PUBLIC_GUIDE_WHATSAPP / NEXT_PUBLIC_TRANSFER_WHATSAPP are set (lib/links.ts).
+// No venue numbers yet: the « Appeler le lieu » row only appears for a place that has a real `contact.phone`.
 const contact = (): PlaceContact => ({});
 
 export const PLACES: Place[] = [

@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Maximize2, Phone, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Phone, Users, X } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import AddSpotLink from '@/components/AddSpotLink';
@@ -17,15 +17,7 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { lockPageScroll } from '@/lib/scrollLock';
 import { useBackToClose } from '@/lib/useBackToClose';
-import {
-  airbnbUrl,
-  tunisieBookingUrl,
-  googleMapsUrl,
-  guideWhatsAppUrl,
-  phoneUrl,
-  transferWhatsAppUrl,
-  wazeUrl,
-} from '@/lib/links';
+import { airbnbUrl, tunisieBookingUrl, googleMapsUrl, phoneUrl, wazeUrl } from '@/lib/links';
 
 export interface ActionDrawerProps {
   place: Place | null;
@@ -124,6 +116,7 @@ function DrawerContent({
   const nextId =
     itinerary && stopIndex >= 0 && stopIndex < itinerary.stops.length - 1 ? itinerary.stops[stopIndex + 1] : null;
   const phone = phoneUrl(place);
+  const hasGuides = useRegionHasGuides(place.region);
 
   return (
     <>
@@ -210,27 +203,28 @@ function DrawerContent({
 
           <NearbyAgencies governorate={place.region} locale={locale} className="mt-6" />
 
-          <ul className="mt-5 divide-y divide-sand-200 border-y border-sand-200">
-            <ActionRow
-              href={guideWhatsAppUrl(place)}
-              brand="whatsapp"
-              title={t.contactGuide}
-              subtitle={place.contact.guideName ? t.guideIn(place.contact.guideName, place.region) : t.localGuide}
-            />
-            <ActionRow
-              href={transferWhatsAppUrl(place)}
-              brand="whatsapp"
-              title={t.bookTransfer}
-              subtitle={t.bookTransferHint}
-            />
-            <ActionRow
-              href={phone}
-              leading={<Phone className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
-              title={t.callVenue}
-              subtitle={place.contact.phone}
-              external={false}
-            />
-          </ul>
+          {(phone || hasGuides) && (
+            <ul className="mt-5 divide-y divide-sand-200 border-y border-sand-200">
+              {hasGuides && (
+                <ActionRow
+                  href={`${locale === 'en' ? '/en' : ''}/guides`}
+                  leading={<Users className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
+                  title={t.regionGuidesTitle}
+                  subtitle={t.regionGuidesHint(place.region)}
+                  external={false}
+                />
+              )}
+              {phone && (
+                <ActionRow
+                  href={phone}
+                  leading={<Phone className="h-4 w-4 shrink-0 text-charcoal-500" strokeWidth={1.5} />}
+                  title={t.callVenue}
+                  subtitle={place.contact.phone}
+                  external={false}
+                />
+              )}
+            </ul>
+          )}
 
           <div className="mt-5 grid grid-cols-2 gap-2">
             <Pill href={googleMapsUrl(place)} brand="googlemaps" primary>
@@ -267,6 +261,25 @@ function DrawerContent({
       </div>
     </>
   );
+}
+
+let guideRegions: Promise<string[]> | null = null;
+
+/** True when at least one guide or agency is published for the region, so the link never leads to an empty page. */
+function useRegionHasGuides(region: string): boolean {
+  const [regions, setRegions] = useState<string[]>([]);
+  useEffect(() => {
+    guideRegions ??= fetch('/api/pros-regions')
+      .then((r) => (r.ok ? r.json() : { regions: [] }))
+      .then((d: { regions?: string[] }) => d.regions ?? [])
+      .catch(() => []);
+    let alive = true;
+    void guideRegions.then((r) => alive && setRegions(r));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return regions.includes(region);
 }
 
 /** Points to the regional « Cahier pratique » on the Practical page. */
@@ -348,7 +361,7 @@ function Pill({
   );
 }
 
-/** A contact row. Without a real number (href null) it stays visible but inactive, marked « Bientôt ». */
+/** A contact row: a link, shown only when there is something real behind it. */
 function ActionRow({
   href,
   brand,
@@ -357,40 +370,14 @@ function ActionRow({
   subtitle,
   external = true,
 }: {
-  href: string | null;
+  href: string;
   brand?: Brand;
   leading?: ReactNode;
   title: string;
   subtitle?: string;
   external?: boolean;
 }) {
-  const { t } = useLocale();
   const icon = brand ? <BrandIcon brand={brand} className="h-4 w-4 shrink-0 text-charcoal-500" /> : leading;
-
-  if (!href) {
-    return (
-      <li>
-        <div
-          aria-disabled="true"
-          tabIndex={0}
-          data-tip={t.comingSoon}
-          className="flex cursor-default items-center justify-between gap-4 py-3.5 outline-none"
-        >
-          <span className="flex min-w-0 items-center gap-3 opacity-50">
-            {icon}
-            <span className="min-w-0">
-              <span className="block text-sm font-medium text-charcoal">{title}</span>
-              {subtitle && <span className="block truncate text-xs text-charcoal-500">{subtitle}</span>}
-            </span>
-          </span>
-          <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-charcoal-300">
-            <span className="sr-only">{t.comingSoon}</span>
-            <span aria-hidden>{t.soon}</span>
-          </span>
-        </div>
-      </li>
-    );
-  }
 
   return (
     <li>

@@ -34,31 +34,9 @@ function waLink(number: string, text: string): string {
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
 }
 
-// A link is only built from a real number: without one the button shows « Disponible bientôt ».
-export function guideWhatsAppUrl(place: Place): string | null {
-  const number = GUIDE_WHATSAPP || place.contact.whatsapp || '';
-  if (!number) return null;
-  const greeting = place.contact.guideName ? `Bonjour ${place.contact.guideName}` : 'Bonjour';
-  return waLink(
-    number,
-    `${greeting}, je prépare une visite de ${place.name} (${place.region}) via Tunisia Go. Êtes-vous disponible pour une visite guidée ?`,
-  );
-}
-
-export function transferWhatsAppUrl(place: Place): string | null {
-  const number = TRANSFER_WHATSAPP || GUIDE_WHATSAPP || place.contact.whatsapp || '';
-  if (!number) return null;
-  return waLink(
-    number,
-    `Bonjour, je souhaite réserver un transfert vers ${place.name} (${place.region}). Date : … · Départ : … · Passagers : …`,
-  );
-}
-
-/** The venue's own number, else the guide line (a WhatsApp number is also a phone number). */
+/** The venue's own number. No number, no link: nothing else is called in its place. */
 export function phoneUrl(place: Place): string | null {
-  if (place.contact.phone) return `tel:${place.contact.phone}`;
-  const digits = GUIDE_WHATSAPP.replace(/\D/g, '');
-  return digits ? `tel:+${digits}` : null;
+  return place.contact.phone ? `tel:${place.contact.phone}` : null;
 }
 
 export function googleMapsUrl(place: Place): string {

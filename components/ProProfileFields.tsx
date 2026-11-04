@@ -31,7 +31,8 @@ const COPY = {
     uploading: 'Envoi de la photo…',
     photoError: 'La photo n’a pas pu être envoyée. Essayez une autre image (JPEG ou PNG).',
     place: 'Lieu où vous exercez',
-    placeHint: 'Le lieu du site le plus proche de votre activité : il place votre fiche sur la carte.',
+    placeHint:
+      'Le lieu du site le plus proche de votre activité. Il place votre fiche sur la carte et vous fait apparaître sur les fiches de sa région. Sans lieu, vous n’apparaissez sur aucune fiche.',
     placeNone: 'Choisir un lieu',
     bio: 'Présentation',
     bioHint: 'Qui vous êtes, ce que vous proposez, les langues que vous parlez.',
@@ -52,7 +53,8 @@ const COPY = {
     uploading: 'Sending the photo…',
     photoError: 'The photo could not be sent. Try another image (JPEG or PNG).',
     place: 'Where you work',
-    placeHint: 'The site’s place closest to your activity: it puts your listing on the map.',
+    placeHint:
+      'The site’s place closest to your activity. It puts your listing on the map and shows you on the fiches of its region. Without a place, you appear on no fiche.',
     placeNone: 'Choose a place',
     bio: 'About you',
     bioHint: 'Who you are, what you offer, the languages you speak.',
