@@ -350,8 +350,9 @@ function TripCardView({ trip, index }: { trip: TripCard; index: number }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={photo.src}
-          alt=""
+          alt={itinerary.name}
           loading="lazy"
+          decoding="async"
           className="absolute inset-0 -z-20 h-full w-full object-cover transition duration-[1.4s] ease-out group-hover:scale-105"
         />
       ) : (
@@ -447,6 +448,7 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
             src={photo.src}
             alt={place.name}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition duration-[1.4s] ease-out group-hover:scale-105"
           />
         ) : (
