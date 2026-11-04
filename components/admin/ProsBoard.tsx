@@ -12,6 +12,7 @@ export interface AdminPro {
   whatsapp: string;
   card: string | null;
   socials: string | null;
+  networks: string[];
   autoPublished: boolean;
   reports: number;
   bio: string | null;
@@ -127,6 +128,13 @@ export default function ProsBoard({ pros, tableMissing }: { pros: AdminPro[]; ta
                   {p.placeName && <p>Lieu d’exercice : {p.placeName}</p>}
                   {p.card && <p>Carte déclarée : {p.card}</p>}
                   {p.socials && <p className="break-all">Réseaux : {p.socials}</p>}
+                  {p.networks.map((href) => (
+                    <p key={href} className="break-all">
+                      <a href={href} target="_blank" rel="noopener noreferrer nofollow" className="underline">
+                        {href}
+                      </a>
+                    </p>
+                  ))}
                   {p.bio && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.bio}</p>}
                   {p.experience && <p className="mt-1 whitespace-pre-line text-charcoal-500">{p.experience}</p>}
                   {p.details && <p className="mt-1 text-charcoal-500">{p.details}</p>}

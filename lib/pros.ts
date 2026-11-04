@@ -38,6 +38,38 @@ export function cleanIds(value: unknown, list: readonly { id: string }[]): strin
   return [...new Set(value.filter((v): v is string => typeof v === 'string' && allowed.has(v)))];
 }
 
+export const SOCIAL_NETWORKS = ['facebook', 'instagram', 'tiktok'] as const;
+export type SocialNetwork = (typeof SOCIAL_NETWORKS)[number];
+
+const SOCIAL_RULES: Record<SocialNetwork, { hosts: string[]; base: string }> = {
+  facebook: { hosts: ['facebook.com', 'fb.com', 'fb.me'], base: 'https://www.facebook.com/' },
+  instagram: { hosts: ['instagram.com'], base: 'https://www.instagram.com/' },
+  tiktok: { hosts: ['tiktok.com'], base: 'https://www.tiktok.com/@' },
+};
+
+/**
+ * A social link from a full address or an @name. Returns '' when empty, null when it is neither
+ * a plain https address on that network nor a plausible name, otherwise the full https address.
+ */
+export function cleanSocial(network: SocialNetwork, raw: unknown): string | null {
+  if (typeof raw !== 'string') return '';
+  const value = raw.trim();
+  if (!value) return '';
+  const rule = SOCIAL_RULES[network];
+  if (/^[a-z]+:\/\//i.test(value) || value.includes('/') || value.includes('.')) {
+    try {
+      const url = new URL(/^[a-z]+:\/\//i.test(value) ? value : `https://${value}`);
+      const host = url.hostname.replace(/^(www|m|web)\./, '');
+      const ok = url.protocol === 'https:' && rule.hosts.some((h) => host === h || host.endsWith(`.${h}`));
+      return ok && url.pathname.length > 1 ? url.toString().slice(0, 200) : null;
+    } catch {
+      return null;
+    }
+  }
+  const handle = value.replace(/^@/, '');
+  return /^[A-Za-z0-9._-]{2,50}$/.test(handle) ? `${rule.base}${handle}` : null;
+}
+
 export interface PublicPro {
   id: string;
   kind: ProKind;
@@ -45,6 +77,9 @@ export interface PublicPro {
   /** Digits with country code, ready for a wa.me link. */
   whatsapp: string;
   socials: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  tiktok: string | null;
   /** True when a professional card number was given. The number itself is never published. */
   cardDeclared: boolean;
   bio: string | null;
@@ -103,6 +138,9 @@ interface ProRow {
   name: string;
   whatsapp: string;
   socials: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  tiktok: string | null;
   card_number: string | null;
   bio: string | null;
   experience: string | null;
@@ -121,7 +159,7 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
     const rows = await selectRows<ProRow>(
       cfg,
       'pro_listings',
-      'select=id,kind,name,whatsapp,socials,card_number,bio,experience,languages,activities,price_note,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
+      'select=id,kind,name,whatsapp,socials,facebook,instagram,tiktok,card_number,bio,experience,languages,activities,price_note,place_id,photo_path&status=eq.published&order=created_at.asc&limit=500',
       { revalidate: 3600, tags: [PROS_TAG] },
     );
     return rows.map((r) => ({
@@ -130,6 +168,9 @@ export async function loadPublishedPros(): Promise<PublicPro[]> {
       name: r.name,
       whatsapp: r.whatsapp,
       socials: r.socials,
+      facebook: r.facebook,
+      instagram: r.instagram,
+      tiktok: r.tiktok,
       cardDeclared: !!r.card_number,
       bio: r.bio,
       experience: r.experience,

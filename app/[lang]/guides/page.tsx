@@ -102,6 +102,11 @@ export default async function GuidesPage({ params }: Params) {
       whatsappUrl: proWhatsAppUrl(p.whatsapp, p.name, locale),
       socials: p.socials,
       socialsHref: p.socials ? socialsHref(p.socials) : null,
+      networks: [
+        { id: 'facebook' as const, href: socialsHref(p.facebook ?? '') },
+        { id: 'instagram' as const, href: socialsHref(p.instagram ?? '') },
+        { id: 'tiktok' as const, href: socialsHref(p.tiktok ?? '') },
+      ].filter((n): n is { id: 'facebook' | 'instagram' | 'tiktok'; href: string } => !!n.href),
       cardDeclared: p.cardDeclared,
       bio: p.bio,
       experience: p.experience,
