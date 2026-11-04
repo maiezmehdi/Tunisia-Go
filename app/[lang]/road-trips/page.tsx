@@ -8,6 +8,8 @@ import SoundToggle from '@/components/SoundToggle';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
+import { faqData } from '@/lib/structuredData';
+import { tripFaq } from '@/lib/tripFaq';
 import { sectionBreadcrumb } from '@/lib/structuredData';
 
 type Params = { params: Promise<{ lang: string }> };
@@ -24,6 +26,7 @@ const COPY = {
     days: (n: number) => `${n} jours`,
     stops: (n: number) => `${n} étapes`,
     openMap: 'Ouvrir la carte',
+    faq: 'Questions fréquentes',
   },
   en: {
     brandTag: 'Road trips',
@@ -36,6 +39,7 @@ const COPY = {
     days: (n: number) => `${n} days`,
     stops: (n: number) => `${n} stops`,
     openMap: 'Open the map',
+    faq: 'Frequently asked questions',
   },
 } as const;
 
@@ -52,6 +56,7 @@ export default async function RoadTripsIndex({ params }: Params) {
   const c = COPY[locale];
   const { itineraries } = getCatalog(locale);
 
+  const faq = tripFaq(itineraries, locale);
   const list = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -69,6 +74,7 @@ export default async function RoadTripsIndex({ params }: Params) {
     <main className="min-h-dvh bg-cream text-charcoal">
       <JsonLd data={sectionBreadcrumb('Road trips', '/road-trips', locale)} />
       <JsonLd data={list} />
+      <JsonLd data={faqData(faq)} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />
@@ -109,6 +115,18 @@ export default async function RoadTripsIndex({ params }: Params) {
             </li>
           ))}
         </ul>
+
+        <section className="mt-16">
+          <h2 className="font-serif text-3xl">{c.faq}</h2>
+          <div className="mt-4 divide-y divide-sand-200 border-y border-sand-200">
+            {faq.map((item) => (
+              <details key={item.q} className="group py-4">
+                <summary className="cursor-pointer list-none font-medium text-charcoal">{item.q}</summary>
+                <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-charcoal-500">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
       </div>
       <div className="border-t border-sand-200">
         <MadeBy className="mx-auto max-w-5xl px-4 py-6 sm:px-6" />
