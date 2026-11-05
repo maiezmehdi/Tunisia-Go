@@ -286,7 +286,7 @@ const EN_MONTH_NAMES = [
 const TEXT = {
   fr: {
     welcome:
-      'Bonjour. Je peux vous proposer un road trip, une idée de lieu, des conseils pratiques ou quelques mots de derja. Choisissez ci-dessous ou écrivez votre question.',
+      'Bonjour, je suis votre partenaire de voyage Tunisia Go. Dites-moi ce qui vous fait rêver, le temps dont vous disposez ou la région qui vous attire, et je vous propose un parcours. Vous pouvez aussi me demander un conseil ou un mot de derja.',
     menu: {
       trip: 'Préparer un road trip',
       idea: 'Une idée de lieu',
@@ -355,7 +355,7 @@ const TEXT = {
   },
   en: {
     welcome:
-      'Hello. I can suggest a road trip, a place to discover, practical tips or a few words of Tunisian Arabic. Pick one below or type your question.',
+      'Hello, I am your Tunisia Go travel partner. Tell me what you dream of, how much time you have or which region draws you, and I will suggest a route. You can also ask me for advice or a word of Tunisian Arabic.',
     menu: { trip: 'Plan a road trip', idea: 'A place to discover', tips: 'Practical tips', words: 'A few local words' },
     askDays: 'How many days will you have?',
     days: [
