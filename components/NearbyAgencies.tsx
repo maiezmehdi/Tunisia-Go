@@ -37,8 +37,7 @@ function AgencyCard({ agency, locale }: { agency: Agency; locale: Locale }) {
     <li className="py-4">
       <p className="text-[15px] font-medium text-charcoal">{agency.name}</p>
       <p className="mt-0.5 text-sm text-charcoal-500">
-        {c.category(agency.category)}
-        {agency.address ? ` · ${agency.address}` : ''}
+        {[agency.category ? c.category(agency.category) : null, agency.address].filter(Boolean).join(' · ')}
       </p>
       {(agency.phone || agency.email || agency.site) && (
         <div className="mt-3 flex flex-wrap gap-2">
