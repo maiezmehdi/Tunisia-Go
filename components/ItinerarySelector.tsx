@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Route, X } from 'lucide-react';
+import { ChevronDown, Minus, Route, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -39,6 +39,8 @@ export default function ItinerarySelector({
   const [collapsed, setCollapsed] = useState(false);
   // Phones only: the panel starts folded into a small chip so the map stays visible.
   const [sheetOpen, setSheetOpen] = useState(false);
+  // Larger screens: the list of road trips is folded into a small button until it is clicked.
+  const [deskOpen, setDeskOpen] = useState(false);
   const active = itineraries.find((i) => i.id === activeId) ?? null;
   const isPhone = useIsPhone();
   // On phones the open panel takes the whole screen and the page behind it stays still.
@@ -54,6 +56,11 @@ export default function ItinerarySelector({
       window.removeEventListener('keydown', onKey);
     };
   }, [fullScreen]);
+
+  // A road trip opened from a link or the assistant shows its panel straight away.
+  useEffect(() => {
+    if (activeId) setDeskOpen(true);
+  }, [activeId]);
 
   // Fold the stop list away while a place is open, so it does not hide the map.
   useEffect(() => {
@@ -78,7 +85,7 @@ export default function ItinerarySelector({
       className={`no-scrollbar pointer-events-auto w-full overflow-x-hidden ${
         fullScreen
           ? 'h-full overflow-y-auto bg-cream pb-[env(safe-area-inset-bottom)]'
-          : `max-h-full max-w-[400px] overflow-y-auto rounded-3xl bg-cream/95 border border-sand-200 shadow-soft backdrop-blur-md sm:block ${sheetOpen ? 'block' : 'hidden'}`
+          : `max-h-full max-w-[400px] overflow-y-auto rounded-3xl bg-cream/95 border border-sand-200 shadow-soft backdrop-blur-md ${deskOpen ? 'sm:block' : 'sm:hidden'} ${sheetOpen ? 'block' : 'hidden'}`
       }`}
     >
       <div
@@ -99,20 +106,25 @@ export default function ItinerarySelector({
             {t.close}
             <X className="h-3.5 w-3.5" strokeWidth={1.5} />
           </button>
-          {active && (
-            <div className="hidden sm:flex">
-              <IconButton
-                label={collapsed ? t.expandItinerary : t.collapseItinerary}
-                onClick={() => setCollapsed((c) => !c)}
-                expanded={!collapsed}
-              >
-                <ChevronDown className={`h-4 w-4 transition ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.5} />
-              </IconButton>
-              <IconButton label={t.clearItinerary} onClick={() => onChange(null)}>
-                <X className="h-4 w-4" strokeWidth={1.5} />
-              </IconButton>
-            </div>
-          )}
+          <div className="hidden sm:flex">
+            {active && (
+              <>
+                <IconButton
+                  label={collapsed ? t.expandItinerary : t.collapseItinerary}
+                  onClick={() => setCollapsed((c) => !c)}
+                  expanded={!collapsed}
+                >
+                  <ChevronDown className={`h-4 w-4 transition ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+                </IconButton>
+                <IconButton label={t.clearItinerary} onClick={() => onChange(null)}>
+                  <X className="h-4 w-4" strokeWidth={1.5} />
+                </IconButton>
+              </>
+            )}
+            <IconButton label={t.close} onClick={() => setDeskOpen(false)}>
+              <Minus className="h-4 w-4" strokeWidth={1.5} />
+            </IconButton>
+          </div>
         </div>
       </div>
       <div className="flex flex-wrap gap-1.5 px-5 pb-4 pt-3">
@@ -268,6 +280,17 @@ export default function ItinerarySelector({
           </button>
         )}
       </div>
+
+      <button
+        type="button"
+        onClick={() => setDeskOpen(true)}
+        aria-expanded={false}
+        className={`pointer-events-auto items-center gap-2 rounded-pill border border-sand-200 bg-cream/95 py-2 pl-4 pr-3 text-sm text-charcoal shadow-soft backdrop-blur-md transition hover:border-charcoal-300 ${deskOpen ? 'hidden' : 'hidden sm:flex'}`}
+      >
+        <Route aria-hidden className="h-3.5 w-3.5 shrink-0 text-charcoal-500" strokeWidth={1.75} />
+        <span className="max-w-[260px] truncate">{active ? active.name : t.roadTripsCount(itineraries.length)}</span>
+        <ChevronDown className="h-3.5 w-3.5 shrink-0 rotate-180 text-charcoal-500" strokeWidth={1.5} />
+      </button>
 
       {fullScreen ? createPortal(<div className="fixed inset-0 z-[1400] bg-cream">{panel}</div>, document.body) : panel}
     </>
