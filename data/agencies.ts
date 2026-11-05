@@ -1,14 +1,17 @@
 /**
- * Travel agencies approved by the ONTT in the south, from its official directory (read on 4 November 2026).
+ * Travel agencies approved by the ONTT, from its official directory: the south (read on 4 November 2026)
+ * and Tunis / Carthage coast (data/agencies-tunis.ts, November 2026).
  * They are listed as found: the directory says nothing about the services they offer, so none is promised.
  * Kept apart from future "Partenaires".
  */
-export type AgencyRegion = 'gafsa-tozeur' | 'kebili' | 'tataouine' | 'gabes' | 'djerba-zarzis';
+import { TUNIS_AGENCIES } from './agencies-tunis';
+
+export type AgencyRegion = 'gafsa-tozeur' | 'kebili' | 'tataouine' | 'gabes' | 'djerba-zarzis' | 'tunis-carthage';
 
 export interface Agency {
   region: AgencyRegion;
-  /** ONTT licence category, A or B. */
-  category: 'A' | 'B';
+  /** ONTT licence category, A or B, when the directory extract gives it. */
+  category?: 'A' | 'B';
   name: string;
   /** Eight digits, without the country code. */
   phone?: string;
@@ -18,8 +21,8 @@ export interface Agency {
 }
 
 export const AGENCIES_SOURCE = {
-  label: 'Annuaire officiel de l’ONTT, relevé du 4 novembre 2026',
-  labelEn: 'Official ONTT directory, read on 4 November 2026',
+  label: 'Annuaire officiel de l’ONTT, relevé en novembre 2026',
+  labelEn: 'Official ONTT directory, read in November 2026',
   url: 'https://www.discovertunisia.com/informations_touristiques',
 } as const;
 
@@ -31,9 +34,13 @@ const REGION_OF_GOVERNORATE: Record<string, AgencyRegion> = {
   Tataouine: 'tataouine',
   Gabès: 'gabes',
   Médenine: 'djerba-zarzis',
+  Tunis: 'tunis-carthage',
+  Ariana: 'tunis-carthage',
+  'Ben Arous': 'tunis-carthage',
+  Manouba: 'tunis-carthage',
 };
 
-export const AGENCIES: Agency[] = [
+const SOUTH_AGENCIES: Agency[] = [
   {
     region: 'gafsa-tozeur',
     category: 'A',
@@ -1715,6 +1722,8 @@ export const AGENCIES: Agency[] = [
     address: 'N° 1 Avenue Abdelhamid Kadhi',
   },
 ];
+
+export const AGENCIES: Agency[] = [...SOUTH_AGENCIES, ...TUNIS_AGENCIES];
 
 export function agenciesFor(governorate: string): { region: AgencyRegion; agencies: Agency[] } | null {
   const region = REGION_OF_GOVERNORATE[governorate];
