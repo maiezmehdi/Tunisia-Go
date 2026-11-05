@@ -660,6 +660,16 @@ const READY_MADE: Record<string, CategoryId[]> = {
   'wild-north': ['beach'],
   'high-tell': ['heritage'],
   'djerba-slow': ['culture', 'cycling'],
+  'tunis-bay': ['heritage'],
+  'around-tunis': ['heritage'],
+  'bizerte-lagoon': ['beach'],
+  'north-west-marble': ['heritage'],
+  'wild-cap-bon': ['beach'],
+  'quiet-sahel': ['beach', 'culture'],
+  'sfax-kerkennah': ['culture'],
+  'gabes-sea-mountains': ['culture'],
+  'gafsa-savanna': ['sahara'],
+  'grand-tour': ['heritage'],
 };
 
 function proposeTrip(profile: Profile, locale: Locale): Reply {

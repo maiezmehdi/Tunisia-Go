@@ -14,31 +14,31 @@ const THEMES: { id: string; fr: string; en: string; trips: string[] }[] = [
     id: 'roman',
     fr: 'les ruines romaines',
     en: 'Roman ruins',
-    trips: ['roman-heritage', 'high-tell'],
+    trips: ['roman-heritage', 'high-tell', 'north-west-marble', 'around-tunis'],
   },
   {
     id: 'desert',
     fr: 'le désert et les ksour',
     en: 'the desert and the ksour',
-    trips: ['star-wars', 'ksour-route', 'deep-south-4x4'],
+    trips: ['star-wars', 'ksour-route', 'deep-south-4x4', 'gafsa-savanna'],
   },
   {
     id: 'coast',
     fr: 'la mer et les îles',
     en: 'the sea and the islands',
-    trips: ['cap-bon', 'djerba-slow'],
+    trips: ['cap-bon', 'djerba-slow', 'wild-cap-bon', 'bizerte-lagoon', 'quiet-sahel', 'sfax-kerkennah'],
   },
   {
     id: 'mountain',
     fr: 'la montagne et les oasis',
     en: 'the mountains and oases',
-    trips: ['mountain-oases', 'wild-north'],
+    trips: ['mountain-oases', 'wild-north', 'gabes-sea-mountains'],
   },
   {
     id: 'cities',
     fr: 'les villes saintes et les médinas',
     en: 'holy cities and medinas',
-    trips: ['sacred-medinas'],
+    trips: ['sacred-medinas', 'tunis-bay', 'grand-tour'],
   },
 ];
 

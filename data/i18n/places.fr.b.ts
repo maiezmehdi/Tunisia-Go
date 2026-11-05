@@ -1144,4 +1144,64 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     visitDuration: '1 à 2 heures',
     captions: ['Un bunker de la ligne', 'Le musée', 'La plaine vers les monts'],
   },
+  'dar-jellouli': {
+    name: 'Musée Dar Jellouli, Sfax',
+    tagline: 'Un palais du XVIIe siècle dans la médina de Sfax',
+    description:
+      'Dar Jellouli est une grande demeure du XVIIe siècle au cœur de la médina de Sfax. Le musée y montre les costumes, les bijoux et la vie d’autrefois dans une maison sfaxienne, autour d’une cour intérieure.',
+    didYouKnow: 'La demeure a été restaurée pour devenir un musée consacré aux arts et traditions populaires de Sfax.',
+    insights: {
+      history: 'Les riches familles de Sfax bâtissaient autour d’une cour centrale, à l’abri de la rue et de la chaleur.',
+      customs: 'Vérifiez les horaires sur place, ils changent selon la saison.',
+      food: 'Mangez dans la médina ou sur le port : poisson et calamars, spécialités de Sfax.',
+      bestTime: 'D’octobre à mai.',
+    },
+    visitDuration: '1 heure',
+    captions: ['La cour du palais', 'Les costumes de l’ancienne Sfax', 'La médina autour du musée'],
+  },
+  'sebkhet-kelbia': {
+    name: 'Sebkhet Kelbia',
+    tagline: 'La deuxième zone humide du pays',
+    description:
+      'Sebkhet Kelbia est un grand lac salé peu profond, au sud de Hammamet, classé site Ramsar depuis 2007. Après Ichkeul, c’est la deuxième zone humide du pays, et un lieu d’observation pour les oiseaux d’eau.',
+    didYouKnow: 'Le niveau du lac change beaucoup d’une année à l’autre : certaines années il est presque à sec.',
+    insights: {
+      history: 'Le site est protégé comme zone humide d’importance internationale depuis 2007.',
+      customs: 'Venez tôt avec des jumelles, et gardez vos distances avec les oiseaux.',
+      food: 'Les villages voisins vendent huile d’olive et pain de four.',
+      bestTime: 'De novembre à mars, pour les oiseaux.',
+    },
+    visitDuration: '2 heures',
+    captions: ['Le lac salé à l’aube', 'Des oiseaux d’eau sur la rive', 'La plaine autour du lac'],
+  },
+  'djebel-zaghouan': {
+    name: 'Djebel Zaghouan (randonnée)',
+    tagline: 'Le plus haut sommet de l’est tunisien',
+    description:
+      'Le djebel Zaghouan culmine à 1 295 m, au-dessus de la ville. Le sentier part au-dessus du temple des Eaux et monte vers la crête, avec une vue sur la plaine et, par temps clair, sur la mer.',
+    didYouKnow: 'L’eau de la montagne alimentait Carthage par un aqueduc de plus de 130 km.',
+    insights: {
+      history: 'Les Romains captaient les sources du djebel pour approvisionner Carthage.',
+      customs: 'Partez tôt, emportez de l’eau et de bonnes chaussures. Demandez le sentier aux habitants.',
+      food: 'Zaghouan est connue pour ses eaux de source et ses fleurs d’oranger.',
+      bestTime: 'De mars à mai et d’octobre à novembre.',
+    },
+    visitDuration: 'Une demi-journée à une journée',
+    captions: ['Le sentier au-dessus du temple des Eaux', 'La crête du sommet', 'La vue sur la plaine'],
+  },
+  'el-hamma': {
+    name: 'Sources chaudes d’El Hamma',
+    tagline: 'Les sources de l’antique Aquae Tacapitanae',
+    description:
+      'À une trentaine de kilomètres de Gabès, El Hamma est connue pour ses sources chaudes, de 34 à 45 °C. Les Romains les appelaient Aquae Tacapitanae. Les bains et l’oasis voisine en font une halte simple.',
+    didYouKnow: 'En arabe, « el hamma » désigne justement les sources chaudes.',
+    insights: {
+      history: 'Les Romains faisaient déjà des cures dans ces eaux, à l’époque de Tacapae (Gabès).',
+      customs: 'Les bains sont souvent séparés pour les hommes et les femmes. Prévoyez une serviette.',
+      food: 'Dattes et légumes de l’oasis, et le marché de Gabès tout près.',
+      bestTime: 'De novembre à mars, quand l’eau chaude fait du bien.',
+    },
+    visitDuration: '2 heures',
+    captions: ['Les sources chaudes', 'La ville d’El Hamma', 'L’oasis autour des sources'],
+  },
 };

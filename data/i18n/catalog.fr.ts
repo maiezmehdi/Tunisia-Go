@@ -72,4 +72,64 @@ export const ITINERARIES_FR: Record<string, Pick<Itinerary, 'name' | 'tagline' |
     description:
       'Le marché de Houmt Souk, les fresques de Djerbahood, la synagogue de la Ghriba et les potiers de Guellala, une journée à vélo sur les petites routes de l’île, puis les palmiers et les plages de Zarzis.',
   },
+  'tunis-bay': {
+    name: 'Tunis et sa baie',
+    tagline: 'Le premier séjour de presque tous les visiteurs',
+    description:
+      'De la médina de Tunis au Bardo, puis de La Goulette à Carthage, Sidi Bou Saïd et Gammarth : deux jours autour de la capitale et de sa baie.',
+  },
+  'around-tunis': {
+    name: 'Les environs de Tunis',
+    tagline: 'Ruines romaines et montagne, à moins d’une heure',
+    description:
+      'Oudna, le Bou Kornine, Zaghouan, le djebel Zaghouan et Thuburbo Majus : une escapade en deux jours depuis la capitale.',
+  },
+  'bizerte-lagoon': {
+    name: 'Lagune et caps de Bizerte',
+    tagline: 'Plages et villages de la côte nord-est',
+    description:
+      'D’Utique à Bizerte, par Ghar El Melh, Rafraf et Sidi Ali El Mekki : une côte très prisée des Tunisiens.',
+  },
+  'north-west-marble': {
+    name: 'Marbre et forêts du Nord-Ouest',
+    tagline: 'Villas souterraines, carrières et forêts',
+    description:
+      'Les villas romaines enterrées de Bulla Regia, les carrières de marbre de Chemtou, puis les forêts d’El Feidja et d’Aïn Draham jusqu’à Tabarka.',
+  },
+  'wild-cap-bon': {
+    name: 'Le Cap Bon sauvage',
+    tagline: 'La pointe du cap, moins connue que Hammamet',
+    description:
+      'Korbous, El Haouaria, Kerkouane et Kélibia : l’extrémité du cap, qui complète le road trip du Cap Bon.',
+  },
+  'quiet-sahel': {
+    name: 'Le Sahel tranquille',
+    tagline: 'Villages et petits ports, loin des hôtels',
+    description:
+      'D’Hergla à Mahdia, par Takrouna, Sebkhet Kelbia, Monastir, Lamta et Salakta : le Sahel loin des zones hôtelières.',
+  },
+  'sfax-kerkennah': {
+    name: 'Sfax et Kerkennah',
+    tagline: 'Une région presque absente des circuits',
+    description:
+      'La médina de Sfax, le musée Dar Jellouli, Thyna et les îles Kerkennah, en deux jours.',
+  },
+  'gabes-sea-mountains': {
+    name: 'Gabès, de la mer aux montagnes',
+    tagline: 'La seule oasis au bord de la mer',
+    description:
+      'Le marché de Jara et l’oasis de Chenini, puis les sources chaudes d’El Hamma, la ligne Mareth et Toujane, dans le Dahar.',
+  },
+  'gafsa-savanna': {
+    name: 'Gafsa et la savane',
+    tagline: 'Une région sans circuit aujourd’hui',
+    description:
+      'Les piscines romaines de Gafsa, le train du bey au Lézard Rouge et les oryx du parc de Bou Hedma.',
+  },
+  'grand-tour': {
+    name: 'Le grand tour de Tunisie',
+    tagline: 'Le circuit nord-sud classique, en une boucle',
+    description:
+      'De Carthage à Djerba, par Sidi Bou Saïd, Dougga, Kairouan, El Jem, Tozeur, Douz et Matmata : le circuit des agences, en dix jours.',
+  },
 };
