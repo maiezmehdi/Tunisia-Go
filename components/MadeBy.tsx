@@ -1,5 +1,6 @@
 'use client';
 
+import { TikTokIcon } from '@/components/ProIcons';
 import { openConsent } from '@/lib/consent';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
@@ -50,6 +51,18 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
         <li>
           <a href="mailto:contact@tunisiagoo.com" className={anchor}>
             {t.contact}
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.tiktok.com/@tunisiagoo"
+            target="_blank"
+            rel="noopener noreferrer me"
+            aria-label="TikTok"
+            className={`${anchor} inline-flex items-center gap-1.5`}
+          >
+            <TikTokIcon className="h-3.5 w-3.5" />
+            TikTok
           </a>
         </li>
         <li>
