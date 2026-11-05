@@ -23,3 +23,9 @@ create table if not exists public.events (
 );
 alter table public.events enable row level security;
 create index if not exists events_published_idx on public.events (published, sort);
+
+-- Events proposed by visitors (form on /evenements): saved hidden (published = false, proposed = true)
+-- with a contact to check them; /admin shows them first, publishing one clears the flag.
+alter table public.events
+  add column if not exists proposed boolean not null default false,
+  add column if not exists contact text;

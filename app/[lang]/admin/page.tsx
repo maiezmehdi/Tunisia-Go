@@ -245,6 +245,8 @@ export default async function AdminPage() {
         endDate: r.end_date ?? '',
         ticketUrl: r.ticket_url ?? '',
         infoUrl: r.info_url ?? '',
+        proposed: r.proposed === true,
+        contact: r.contact ?? '',
       })),
     )
     .catch(() => {

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import BrandLogo from '@/components/BrandLogo';
+import EventProposalForm from '@/components/EventProposalForm';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
@@ -243,6 +244,13 @@ export default async function EventsPage({ params }: Params) {
         </div>
 
         <p className="mt-14 max-w-2xl text-sm leading-relaxed text-charcoal-500">{c.note}</p>
+
+        <EventProposalForm
+          locale={locale}
+          places={[...catalog.places]
+            .map((p) => ({ id: p.id, name: p.name }))
+            .sort((x, y) => x.name.localeCompare(y.name, locale))}
+        />
       </div>
       <div className="border-t border-sand-200">
         <MadeBy className="mx-auto max-w-5xl px-4 py-6 sm:px-6" />

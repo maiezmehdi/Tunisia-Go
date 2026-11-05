@@ -3,7 +3,7 @@ import { PLACES } from '@/data/tunisiaData';
 const KINDS = ['music', 'gathering', 'culture'] as const;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-function text(value: unknown, max: number): string | null {
+export function text(value: unknown, max: number): string | null {
   return typeof value === 'string' && value.trim() && value.trim().length <= max ? value.trim() : null;
 }
 
@@ -62,4 +62,32 @@ export function parseEventInput(raw: unknown): { row: Record<string, unknown> } 
       sort,
     },
   };
+}
+
+/** Validates a public proposal: the visitor writes one language, which is copied into both until /admin translates. */
+export function parseEventProposal(raw: unknown): { row: Record<string, unknown> } | { error: string } {
+  const b = (raw ?? {}) as Record<string, unknown>;
+  const contact = text(b.contact, 120);
+  if (!contact) return { error: 'contact' };
+  const parsed = parseEventInput({
+    kind: b.kind,
+    placeId: b.placeId,
+    titleFr: b.title,
+    titleEn: b.title,
+    descFr: b.description,
+    descEn: b.description,
+    whenFr: b.when,
+    whenEn: b.when,
+    startDate: b.startDate,
+    endDate: b.endDate,
+    ticketUrl: b.ticketUrl,
+    infoUrl: b.infoUrl,
+    confirmed: false,
+    published: false,
+  });
+  if ('error' in parsed) {
+    const map: Record<string, string> = { title_fr: 'title', desc_fr: 'description', when_fr: 'when' };
+    return { error: map[parsed.error] ?? parsed.error };
+  }
+  return { row: { ...parsed.row, published: false, proposed: true, contact } };
 }
