@@ -39,8 +39,12 @@ export async function POST(request: Request) {
   // The conversation must start with the visitor.
   while (history.length && history[0].role !== 'user') history.shift();
 
+  const plan = (Array.isArray(body?.plan) ? body.plan : [])
+    .filter((id): id is string => typeof id === 'string' && /^[\w-]{1,60}$/.test(id))
+    .slice(0, 12);
+
   try {
-    return NextResponse.json(await answer({ question, history, locale }));
+    return NextResponse.json(await answer({ question, history, locale, plan }));
   } catch (error) {
     console.error('assistant: gemini', error);
     return NextResponse.json({ error: 'failed' }, { status: 502 });

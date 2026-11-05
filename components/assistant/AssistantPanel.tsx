@@ -73,6 +73,19 @@ const UI = {
   },
 };
 
+/** Writes the text a few letters at a time once `enabled`; shows everything at once when motion is reduced. */
+function useTypewriter(text: string, enabled: boolean, active: boolean): { shown: string; done: boolean } {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!active || !enabled || count >= text.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return setCount(text.length);
+    const id = window.setTimeout(() => setCount((c) => Math.min(text.length, c + 2)), count === 0 ? 350 : 24);
+    return () => window.clearTimeout(id);
+  }, [text, enabled, active, count]);
+  if (!active) return { shown: text, done: true };
+  return { shown: text.slice(0, count), done: count >= text.length };
+}
+
 function fresh(locale: Locale): Conversation {
   const reply = welcome(locale);
   return { locale, profile: EMPTY_PROFILE, messages: [{ id: 1, from: 'bot', text: reply.text, reply }] };
@@ -96,6 +109,7 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
   const [conv, setConv] = useState<Conversation>(() => load(locale));
   const [draft, setDraft] = useState('');
   const [pending, setPending] = useState<string | null>(null);
+  const [run, setRun] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -156,23 +170,23 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
     if (!text || pending) return;
     setDraft('');
     const local = onMessage(text, conv.profile, locale, trip.ids.length);
-    // The guided road trip and ready-made trip plans stay with the built-in assistant.
-    if (conv.profile.step || local.reply.trip) return push(text, local);
+    // The AI is the one who talks and decides; the built-in assistant only builds the stop list of a plan and answers when the AI cannot.
     setPending(text);
     try {
       const history = conv.messages.slice(-6).map((m) => ({ role: m.from === 'me' ? 'user' : 'model', text: m.text }));
       const res = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text, history, locale }),
+        body: JSON.stringify({ question: text, history, locale, plan: local.reply.trip }),
       });
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as { text?: string; places?: string[]; itinerary?: string };
       if (!data.text) throw new Error('empty');
       push(text, {
-        profile: conv.profile,
+        profile: local.reply.trip ? local.profile : conv.profile,
         reply: {
           text: data.text,
+          trip: local.reply.trip,
           places: data.places?.length ? data.places : undefined,
           itinerary: data.itinerary,
           chips: menu(locale),
@@ -205,7 +219,10 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
         <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
-            onClick={() => setConv(fresh(locale))}
+            onClick={() => {
+              setConv(fresh(locale));
+              setRun((r) => r + 1);
+            }}
             className="rounded-pill px-2.5 py-1.5 text-xs text-charcoal-500 transition hover:text-charcoal"
           >
             {ui.restart}
@@ -242,7 +259,14 @@ export default function AssistantPanel({ open, onClose }: { open: boolean; onClo
               {m.text}
             </p>
           ) : (
-            <BotMessage key={m.id} reply={m.reply!} showChips={m.id === lastBot} onChoose={choose} />
+            <BotMessage
+              key={`${m.id}-${m.id === 1 ? run : 0}`}
+              reply={m.reply!}
+              showChips={m.id === lastBot}
+              onChoose={choose}
+              typing={m.id === 1 && conv.messages.length === 1}
+              open={open}
+            />
           ),
         )}
         {pending && (
@@ -286,17 +310,22 @@ function BotMessage({
   reply,
   showChips,
   onChoose,
+  typing,
+  open,
 }: {
   reply: Reply;
   showChips: boolean;
   onChoose: (label: string, action: Action) => void;
+  typing: boolean;
+  open: boolean;
 }) {
+  const { shown, done } = useTypewriter(reply.text, open, typing);
   const { locale, catalog } = useLocale();
   const ui = UI[locale];
   const itinerary = reply.itinerary ? catalog.itineraries.find((it) => it.id === reply.itinerary) : undefined;
   return (
     <div className="max-w-[95%] space-y-3 text-sm leading-relaxed">
-      <p>{reply.text}</p>
+      <p aria-label={reply.text}>{shown}</p>
       {reply.ai && <p className="text-xs text-charcoal-300">{ui.aiNote}</p>}
 
       {reply.trip && <TripBlock ids={reply.trip} />}
@@ -366,7 +395,7 @@ function BotMessage({
         </p>
       )}
 
-      {showChips && reply.chips && (
+      {done && showChips && reply.chips && (
         <div className="flex flex-wrap gap-2 pt-1">
           {reply.chips.map((c) => (
             <button

@@ -89,45 +89,77 @@ export interface AssistantAnswer {
 
 const PER_SOURCE = 900;
 
-function system(locale: Locale, context: Source[]): string {
+/** One line per place and road trip: lets the assistant recommend from the whole catalogue, not only from the pages that matched. */
+function overview(locale: Locale): { text: string; refs: Set<string> } {
+  const { places, itineraries, placeById } = getCatalog(locale);
+  const refs = new Set<string>();
+  const lines: string[] = [];
+  for (const p of places) {
+    refs.add(`p:${p.id}`);
+    lines.push(`p:${p.id} | ${p.name} | ${p.region} | ${p.tagline}`);
+  }
+  for (const it of itineraries) {
+    refs.add(`i:${it.id}`);
+    const stops = it.stops
+      .map((id) => placeById[id]?.name)
+      .filter(Boolean)
+      .join(', ');
+    lines.push(`i:${it.id} | ${it.name} | ${it.days} ${locale === 'fr' ? 'jours' : 'days'} | ${stops}`);
+  }
+  return { text: lines.join('\n'), refs };
+}
+
+function system(locale: Locale, context: Source[], plan: string[] | undefined): string {
   const lang = locale === 'fr' ? 'French' : 'English';
   const docs = context.length
     ? context.map((s) => `[${s.ref}] ${s.title}\n${s.text.slice(0, PER_SOURCE)}`).join('\n\n')
-    : '(no page matches this question)';
+    : '(no detailed page matches this message)';
+  const { placeById } = getCatalog(locale);
+  const planNames = (plan ?? []).map((id) => placeById[id]?.name).filter(Boolean);
   return [
-    'You are the travel assistant of Tunisia Go, an independent travel guide to Tunisia. You talk with visitors preparing a trip.',
-    `Answer in ${lang}, in a warm, natural, conversational voice, like a friend who knows the country well. Be concise: 2 to 5 short sentences, no lists unless asked, no markdown, no emoji, no title.`,
-    'Use ONLY the pages below. Never add a fact, price, date, hour, distance or name that is not in them. If the pages do not answer, say so simply and suggest what the site does cover; do not guess.',
-    'Never claim to have booked or checked anything. Do not give medical, legal or safety guarantees.',
-    'If the visitor writes in another language, answer in their language.',
-    'On the very last line, write SOURCES: followed by the refs of the pages you actually used, separated by commas (for example SOURCES: p:douz,i:grand-sud). Write SOURCES: none if you used none.',
+    'You are the travel partner of Tunisia Go, an independent travel guide to Tunisia. You are the visitor\'s only point of contact: you talk with them, understand what they really want, and decide what to suggest. You are not a menu and not a search box.',
+    `Answer in ${lang} (or in the visitor\'s language if they write in another one), in a warm, natural voice, like a friend who knows the country well.`,
+    'Understand every message the way a person would: typos, slang, Arabic or franglais words, half sentences, and follow-ups like "and in winter?" or "the second one" (use the conversation). Take the initiative: if you can propose something good, propose it. When the request is too open to answer well, give a first useful suggestion AND ask one short question to refine it (days, season, region, who travels). Never answer with a list of menu options.',
+    'Be concise: 2 to 6 short sentences, no markdown, no emoji, no title. Recommend by name. Compare options and say which one you would pick and why.',
+    'Facts: every specific fact (distance, price, date, opening hour, name, number) must come from the CATALOGUE and PAGES below. Never invent one. For general sense (what to pack, how to pace a trip, how to combine places) you may reason freely. If a detail is not on the site, say so simply and offer what the site does cover.',
+    'Never claim to have booked or checked anything. No medical, legal or safety guarantees.',
+    planNames.length
+      ? `The site has just built this ordered plan for the visitor, shown under your message as cards: ${planNames.join(' > ')}. Introduce it in your own words (why this route, how to pace it). Do not repeat the whole list.`
+      : '',
+    'On the very last line, write SOURCES: followed by the refs (p:..., i:...) of the places and road trips you recommend or rely on, separated by commas (for example SOURCES: p:douz,i:ksour-route). At most 3 places and 1 road trip. Write SOURCES: none if you used none.',
     '',
-    'PAGES:',
+    'CATALOGUE (ref | name | region or duration | tagline or stops):',
+    overview(locale).text,
+    '',
+    'PAGES (details for this question):',
     docs,
-  ].join('\n');
+  ]
+    .filter((l, i, all) => l !== '' || all[i - 1] !== '')
+    .join('\n');
 }
 
 export async function answer(input: {
   question: string;
   history: GeminiTurn[];
   locale: Locale;
+  plan?: string[];
 }): Promise<AssistantAnswer> {
-  const recent = input.history.filter((t) => t.role === 'user').slice(-2);
-  const context = retrieve([...recent.map((t) => t.text), input.question].join(' '), input.locale);
+  const recent = input.history.filter((t) => t.role === 'user').slice(-3);
+  const context = retrieve([...recent.map((t) => t.text), input.question].join(' '), input.locale, 8);
   const out = await generate({
-    system: system(input.locale, context),
+    system: system(input.locale, context, input.plan),
     turns: [...input.history, { role: 'user', text: input.question }],
-    temperature: 0.5,
-    maxOutputTokens: 600,
+    temperature: 0.6,
+    maxOutputTokens: 800,
     timeoutMs: 20000,
   });
   const match = out.match(/\n?\s*SOURCES:\s*(.*)\s*$/i);
   const text = (match ? out.slice(0, match.index) : out).trim();
   const refs = new Set((match?.[1] ?? '').split(/[,\s]+/).filter(Boolean));
-  const allowed = new Set(context.map((s) => s.ref));
+  const allowed = overview(input.locale).refs;
   const used = [...refs].filter((r) => allowed.has(r));
   return {
-    text: text.slice(0, 1200),
+    text: text.slice(0, 1400),
     places: used
       .filter((r) => r.startsWith('p:'))
       .map((r) => r.slice(2))
