@@ -1,17 +1,22 @@
-'use client';
+"use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
-import AddSpotLink from '@/components/AddSpotLink';
-import BrandLogo from '@/components/BrandLogo';
-import LanguageSwitch from '@/components/LanguageSwitch';
-import MobileMenu from '@/components/MobileMenu';
-import ProAuthButton from '@/components/ProAuthButton';
-import SoundToggle from '@/components/SoundToggle';
-import MadeBy from '@/components/MadeBy';
-import ProAccountSection from '@/components/ProAccountSection';
-import LineArtPortrait from '@/components/landing/LineArtPortrait';
+import AddSpotLink from "@/components/AddSpotLink";
+import BrandLogo from "@/components/BrandLogo";
+import LanguageSwitch from "@/components/LanguageSwitch";
+import MobileMenu from "@/components/MobileMenu";
+import ProAuthButton from "@/components/ProAuthButton";
+import SoundToggle from "@/components/SoundToggle";
+import MadeBy from "@/components/MadeBy";
+import ProAccountSection from "@/components/ProAccountSection";
+import LineArtPortrait from "@/components/landing/LineArtPortrait";
 import {
   ATLAS,
   HERO_CANDIDATES,
@@ -20,10 +25,10 @@ import {
   LANDING_COPY,
   TRIP_STORIES,
   type TripStory,
-} from '@/components/landing/content';
-import type { Itinerary, Photo, Place } from '@/data/types';
-import { formatKm, summarizeRoute } from '@/lib/geo';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+} from "@/components/landing/content";
+import type { Itinerary, Photo, Place } from "@/data/types";
+import { formatKm, summarizeRoute } from "@/lib/geo";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 /** Landing copy and catalog in the visitor's language. */
 function useLanding() {
@@ -48,11 +53,14 @@ export default function Landing({ photos }: LandingProps) {
   const heroId = HERO_CANDIDATES.find((id) => firstPhoto(id));
   // The first hero photo, then Mos Espa, then another landscape; they fade into each other.
   const slideIds = [heroId, ...HERO_EXTRA, ...HERO_CANDIDATES]
-    .filter((id, i, all): id is string => !!id && all.indexOf(id) === i && !!firstPhoto(id))
+    .filter(
+      (id, i, all): id is string =>
+        !!id && all.indexOf(id) === i && !!firstPhoto(id),
+    )
     .slice(0, HERO_MAX_SLIDES);
   const slides = slideIds.map((id) => ({
     photo: firstPhoto(id)!,
-    placeName: catalog.placeById[id]?.name ?? '',
+    placeName: catalog.placeById[id]?.name ?? "",
   }));
 
   const usedPhotos = new Map<string, Photo>();
@@ -96,8 +104,15 @@ const SLIDE_MS = 6500;
 function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '18%']);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0%", reduce ? "0%" : "18%"],
+  );
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const { catalog, copy } = useLanding();
   const c = copy.hero;
@@ -105,24 +120,33 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
   const [slide, setSlide] = useState(0);
   useEffect(() => {
     if (reduce || slides.length < 2) return;
-    const timer = window.setInterval(() => setSlide((i) => (i + 1) % slides.length), SLIDE_MS);
+    const timer = window.setInterval(
+      () => setSlide((i) => (i + 1) % slides.length),
+      SLIDE_MS,
+    );
     return () => window.clearInterval(timer);
   }, [reduce, slides.length]);
 
   return (
-    <section ref={ref} className="relative isolate h-[100svh] min-h-[560px] overflow-hidden bg-charcoal text-cream">
+    <section
+      ref={ref}
+      className="relative isolate h-[100svh] min-h-[560px] overflow-hidden bg-charcoal text-cream"
+    >
       <motion.div style={{ y }} className="absolute inset-0 -z-20">
         {slides.length ? (
           slides.map(({ photo, placeName }, i) => (
             <motion.img
               key={photo.src}
               src={photo.src}
-              alt={i === slide ? placeName : ''}
+              alt={i === slide ? placeName : ""}
               aria-hidden={i !== slide}
               initial={{ scale: reduce ? 1 : 1.08 }}
               animate={{ scale: 1 }}
               transition={{ duration: 2.4, ease: EASE }}
-              style={{ opacity: i === slide ? 1 : 0, transition: 'opacity 1.8s ease-in-out' }}
+              style={{
+                opacity: i === slide ? 1 : 0,
+                transition: "opacity 1.8s ease-in-out",
+              }}
               className="absolute inset-0 h-full w-full object-cover"
             />
           ))
@@ -156,7 +180,11 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
             {copy.nav.events}
           </a>
           <ProAuthButton className="hidden whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline sm:block" />
-          <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
+          <AddSpotLink
+            from="landing-nav"
+            variant="pill-light"
+            className="hidden sm:inline-flex"
+          />
           <a
             href="/explore"
             className="hidden whitespace-nowrap rounded-pill border border-cream/40 px-4 py-1.5 sm:inline-block text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
@@ -254,7 +282,10 @@ function Manifesto() {
   ];
 
   return (
-    <section id="manifeste" className="scroll-mt-0 px-5 py-24 sm:px-10 sm:py-36">
+    <section
+      id="manifeste"
+      className="scroll-mt-0 px-5 py-24 sm:px-10 sm:py-36"
+    >
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-12">
         <Reveal className="lg:col-span-4">
           <SectionLabel index="01">{c.label}</SectionLabel>
@@ -283,8 +314,12 @@ function Manifesto() {
               {figures.map((f) => (
                 <div key={f.label} className="pt-6 pr-4">
                   <dt className="sr-only">{f.label}</dt>
-                  <dd className="font-serif text-4xl tabular-nums sm:text-5xl">{f.value}</dd>
-                  <dd className="mt-2 text-xs leading-snug text-charcoal-500 sm:text-sm">{f.label}</dd>
+                  <dd className="font-serif text-4xl tabular-nums sm:text-5xl">
+                    {f.value}
+                  </dd>
+                  <dd className="mt-2 text-xs leading-snug text-charcoal-500 sm:text-sm">
+                    {f.label}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -321,7 +356,7 @@ function Escapes({ trips }: { trips: TripCard[] }) {
         </Reveal>
       </div>
 
-      <div className="no-scrollbar mt-14 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-5 px-5 pb-4 sm:scroll-px-10 sm:px-10 xl:px-[max(2.5rem,calc((100vw-72rem)/2+2.5rem))]">
+      <div className="no-scrollbar mt-14 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pb-4 sm:gap-5 sm:scroll-px-10 sm:px-10 xl:px-[max(2.5rem,calc((100vw-72rem)/2+2.5rem))]">
         {trips.map((t, i) => (
           <TripCardView key={t.itinerary.id} trip={t} index={i} />
         ))}
@@ -334,17 +369,15 @@ function TripCardView({ trip, index }: { trip: TripCard; index: number }) {
   const { story, itinerary, photo } = trip;
   const { catalog, copy } = useLanding();
   const c = copy.escapes;
-  const stops = itinerary.stops.map((id) => catalog.placeById[id]).filter((p): p is Place => !!p);
+  const stops = itinerary.stops
+    .map((id) => catalog.placeById[id])
+    .filter((p): p is Place => !!p);
   const km = summarizeRoute(stops).totalKm;
 
   return (
-    <motion.a
+    <a
       href={`/explore?trip=${itinerary.id}`}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.8, delay: index * 0.08, ease: EASE }}
-      className="group relative isolate flex aspect-[3/4] w-[82vw] max-w-[400px] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-3xl bg-charcoal p-6 text-cream sm:w-[360px] lg:w-[400px]"
+      className="group relative isolate flex aspect-[4/5] w-[78vw] max-w-[400px] shrink-0 transform-gpu snap-start flex-col justify-end overflow-hidden rounded-3xl bg-charcoal p-5 text-cream sm:aspect-[3/4] sm:w-[360px] sm:p-6 lg:w-[400px]"
     >
       {photo ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -358,24 +391,30 @@ function TripCardView({ trip, index }: { trip: TripCard; index: number }) {
       ) : (
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_30%_20%,#B04A30_0%,#1A1A1A_70%)]" />
       )}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/85 via-black/35 to-black/10" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/90 via-black/60 to-black/10 sm:from-black/85 sm:via-black/35" />
 
-      <div className="absolute inset-x-6 top-6 flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-cream/75">
-        <span>{String(index + 1).padStart(2, '0')}</span>
+      <div className="absolute inset-x-5 top-5 flex items-center justify-between sm:inset-x-6 sm:top-6 text-[11px] uppercase tracking-[0.24em] text-cream/75">
+        <span>{String(index + 1).padStart(2, "0")}</span>
         <span>{story.kicker}</span>
       </div>
 
-      <h3 className="font-serif text-3xl leading-tight tracking-tight">{itinerary.name}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-cream/80">{story.text}</p>
+      <h3 className="font-serif text-2xl leading-tight tracking-tight sm:text-3xl">
+        {itinerary.name}
+      </h3>
+      <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-cream/90 sm:mt-3 sm:text-cream/80">
+        {story.text}
+      </p>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-cream/20 pt-4 text-xs text-cream/75">
-        <span className="tabular-nums">{c.meta(itinerary.days, stops.length, formatKm(km))}</span>
+        <span className="tabular-nums">
+          {c.meta(itinerary.days, stops.length, formatKm(km))}
+        </span>
         <span className="inline-flex items-center gap-2 text-cream">
           {c.seeTrip}
           <Arrow className="transition-transform group-hover:translate-x-1" />
         </span>
       </div>
-    </motion.a>
+    </a>
   );
 }
 
@@ -406,7 +445,9 @@ function Atlas({ vignettes }: { vignettes: VignetteCard[] }) {
               {c.title(catalog.places.length)}
             </h2>
           </div>
-          <p className="self-end text-sm leading-relaxed text-charcoal-500 lg:col-span-5 lg:col-start-8">{c.intro}</p>
+          <p className="self-end text-sm leading-relaxed text-charcoal-500 lg:col-span-5 lg:col-start-8">
+            {c.intro}
+          </p>
         </Reveal>
       </div>
 
@@ -417,7 +458,7 @@ function Atlas({ vignettes }: { vignettes: VignetteCard[] }) {
               <ul
                 key={copy}
                 aria-hidden={copy === 1}
-                className={`flex shrink-0 gap-5 pr-5 ${r === 0 ? 'atlas-track' : 'atlas-track atlas-track-reverse'}`}
+                className={`flex shrink-0 gap-5 pr-5 ${r === 0 ? "atlas-track" : "atlas-track atlas-track-reverse"}`}
               >
                 {row.map((v) => (
                   <li key={v.id}>
@@ -433,7 +474,13 @@ function Atlas({ vignettes }: { vignettes: VignetteCard[] }) {
   );
 }
 
-function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable: boolean }) {
+function VignetteView({
+  vignette,
+  tabbable,
+}: {
+  vignette: VignetteCard;
+  tabbable: boolean;
+}) {
   const { place, photo, caption } = vignette;
   return (
     <a
@@ -458,7 +505,9 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
         )}
       </div>
       <p className="mt-4 font-serif text-lg leading-snug">{caption}</p>
-      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-charcoal-300">{place.region}</p>
+      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-charcoal-300">
+        {place.region}
+      </p>
     </a>
   );
 }
@@ -469,14 +518,14 @@ function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable
 
 const PRO_COPY = {
   fr: {
-    title: 'Vous êtes guide ou agence ?',
-    text: 'Faites-vous connaître des voyageurs : un compte avec votre e-mail et un mot de passe, et vous modifiez votre fiche quand vous voulez. Les voyageurs vous écrivent directement sur WhatsApp.',
-    list: 'Voir les guides et agences',
+    title: "Vous êtes guide ou agence ?",
+    text: "Faites-vous connaître des voyageurs : un compte avec votre e-mail et un mot de passe, et vous modifiez votre fiche quand vous voulez. Les voyageurs vous écrivent directement sur WhatsApp.",
+    list: "Voir les guides et agences",
   },
   en: {
-    title: 'Are you a guide or an agency?',
-    text: 'Get known by travellers: create an account with your e-mail and a password, and change your listing whenever you like. Travellers write to you directly on WhatsApp.',
-    list: 'See guides and agencies',
+    title: "Are you a guide or an agency?",
+    text: "Get known by travellers: create an account with your e-mail and a password, and change your listing whenever you like. Travellers write to you directly on WhatsApp.",
+    list: "See guides and agencies",
   },
 } as const;
 
@@ -484,13 +533,20 @@ function ProSection() {
   const { locale } = useLocale();
   const c = PRO_COPY[locale];
   return (
-    <section id="guides" className="border-t border-sand-200 bg-sand-50 px-5 py-24 sm:px-10 sm:py-32">
+    <section
+      id="guides"
+      className="border-t border-sand-200 bg-sand-50 px-5 py-24 sm:px-10 sm:py-32"
+    >
       <Reveal className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-start">
         <div>
-          <h2 className="font-serif text-4xl leading-[1.08] tracking-tight text-charcoal sm:text-5xl">{c.title}</h2>
-          <p className="mt-5 max-w-md text-[17px] leading-relaxed text-charcoal-500">{c.text}</p>
+          <h2 className="font-serif text-4xl leading-[1.08] tracking-tight text-charcoal sm:text-5xl">
+            {c.title}
+          </h2>
+          <p className="mt-5 max-w-md text-[17px] leading-relaxed text-charcoal-500">
+            {c.text}
+          </p>
           <a
-            href={locale === 'fr' ? '/guides' : '/en/guides'}
+            href={locale === "fr" ? "/guides" : "/en/guides"}
             className="mt-6 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
           >
             {c.list}
@@ -528,7 +584,9 @@ function Finale() {
           <br />
           <span className="italic text-terracotta-300">{c.titleLine2}</span>
         </h2>
-        <p className="mt-8 max-w-lg text-base leading-relaxed text-cream/70">{c.body}</p>
+        <p className="mt-8 max-w-lg text-base leading-relaxed text-cream/70">
+          {c.body}
+        </p>
         <div className="mt-12 flex flex-wrap items-center gap-6">
           <a
             href="/explore"
@@ -545,8 +603,12 @@ function Finale() {
           </a>
         </div>
         <p className="mt-14 max-w-lg border-t border-cream/15 pt-6 text-sm text-cream/60">
-          {t.knowAPlace}{' '}
-          <AddSpotLink from="landing-finale" variant="text-light" className="text-cream underline decoration-cream/40">
+          {t.knowAPlace}{" "}
+          <AddSpotLink
+            from="landing-finale"
+            variant="text-light"
+            className="text-cream underline decoration-cream/40"
+          >
             {t.shareSecretSpot}
           </AddSpotLink>
         </p>
@@ -566,11 +628,18 @@ function Footer({ photos }: { photos: Photo[] }) {
         </div>
         {photos.length > 0 && (
           <details className="max-w-xl sm:text-right">
-            <summary className="cursor-pointer list-none transition hover:text-cream">{c.credits}</summary>
+            <summary className="cursor-pointer list-none transition hover:text-cream">
+              {c.credits}
+            </summary>
             <ul className="mt-3 space-y-1 leading-relaxed">
               {photos.map((p) => (
                 <li key={p.src}>
-                  <a href={p.sourceUrl} target="_blank" rel="noreferrer" className="hover:text-cream">
+                  <a
+                    href={p.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-cream"
+                  >
                     {p.title} · {p.author} · {p.license}
                   </a>
                 </li>
@@ -588,12 +657,20 @@ function Footer({ photos }: { photos: Photo[] }) {
 /* Small pieces                                                        */
 /* ------------------------------------------------------------------ */
 
-function Reveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+function Reveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
+      viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.9, delay, ease: EASE }}
       className={className}
     >
@@ -605,26 +682,34 @@ function Reveal({ children, className, delay = 0 }: { children: React.ReactNode;
 function SectionLabel({
   index,
   children,
-  tone = 'light',
+  tone = "light",
 }: {
   index: string;
   children: React.ReactNode;
-  tone?: 'light' | 'dark';
+  tone?: "light" | "dark";
 }) {
   return (
     <p
       className={`flex items-center gap-4 text-[11px] font-medium uppercase tracking-[0.3em] ${
-        tone === 'dark' ? 'text-cream/60' : 'text-charcoal-500'
+        tone === "dark" ? "text-cream/60" : "text-charcoal-500"
       }`}
     >
       <span className="tabular-nums text-terracotta">{index}</span>
-      <span className={`h-px w-10 ${tone === 'dark' ? 'bg-cream/25' : 'bg-sand-300'}`} />
+      <span
+        className={`h-px w-10 ${tone === "dark" ? "bg-cream/25" : "bg-sand-300"}`}
+      />
       {children}
     </p>
   );
 }
 
-function Credit({ photo, className = '' }: { photo: Photo; className?: string }) {
+function Credit({
+  photo,
+  className = "",
+}: {
+  photo: Photo;
+  className?: string;
+}) {
   const { copy } = useLanding();
   return (
     <a
@@ -638,9 +723,16 @@ function Credit({ photo, className = '' }: { photo: Photo; className?: string })
   );
 }
 
-function Arrow({ className = '' }: { className?: string }) {
+function Arrow({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 10" width="20" height="10" fill="none" aria-hidden className={className}>
+    <svg
+      viewBox="0 0 20 10"
+      width="20"
+      height="10"
+      fill="none"
+      aria-hidden
+      className={className}
+    >
       <path d="M0 5h18M14 1l4 4-4 4" stroke="currentColor" strokeWidth="1.2" />
     </svg>
   );
