@@ -1,12 +1,27 @@
 /**
- * Travel agencies approved by the ONTT, from its official directory: the south (read on 4 November 2026)
- * and Tunis / Carthage coast (data/agencies-tunis.ts, November 2026).
+ * Travel agencies approved by the ONTT, from its official directory: the south (read on 4 November 2026),
+ * Tunis / Carthage coast (data/agencies-tunis.ts) and the other regions (data/agencies-regions.ts), November 2026.
  * They are listed as found: the directory says nothing about the services they offer, so none is promised.
  * Kept apart from future "Partenaires".
  */
 import { TUNIS_AGENCIES } from './agencies-tunis';
+import { REGION_AGENCIES } from './agencies-regions';
 
-export type AgencyRegion = 'gafsa-tozeur' | 'kebili' | 'tataouine' | 'gabes' | 'djerba-zarzis' | 'tunis-carthage';
+export type AgencyRegion =
+  | 'gafsa-tozeur'
+  | 'kebili'
+  | 'tataouine'
+  | 'gabes'
+  | 'djerba-zarzis'
+  | 'tunis-carthage'
+  | 'nabeul-hammamet'
+  | 'tabarka-ain-draham'
+  | 'kairouan'
+  | 'mahdia'
+  | 'bizerte-beja'
+  | 'sfax'
+  | 'monastir-skanes'
+  | 'sousse';
 
 export interface Agency {
   region: AgencyRegion;
@@ -38,6 +53,15 @@ const REGION_OF_GOVERNORATE: Record<string, AgencyRegion> = {
   Ariana: 'tunis-carthage',
   'Ben Arous': 'tunis-carthage',
   Manouba: 'tunis-carthage',
+  Nabeul: 'nabeul-hammamet',
+  Jendouba: 'tabarka-ain-draham',
+  Kairouan: 'kairouan',
+  Mahdia: 'mahdia',
+  Bizerte: 'bizerte-beja',
+  Béja: 'bizerte-beja',
+  Sfax: 'sfax',
+  Monastir: 'monastir-skanes',
+  Sousse: 'sousse',
 };
 
 const SOUTH_AGENCIES: Agency[] = [
@@ -1723,7 +1747,7 @@ const SOUTH_AGENCIES: Agency[] = [
   },
 ];
 
-export const AGENCIES: Agency[] = [...SOUTH_AGENCIES, ...TUNIS_AGENCIES];
+export const AGENCIES: Agency[] = [...SOUTH_AGENCIES, ...TUNIS_AGENCIES, ...REGION_AGENCIES];
 
 export function agenciesFor(governorate: string): { region: AgencyRegion; agencies: Agency[] } | null {
   const region = REGION_OF_GOVERNORATE[governorate];
