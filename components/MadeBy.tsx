@@ -1,6 +1,6 @@
 'use client';
 
-import { TikTokIcon } from '@/components/ProIcons';
+import { LinkedInIcon, TikTokIcon } from '@/components/ProIcons';
 import { openConsent } from '@/lib/consent';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
@@ -63,6 +63,18 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
           >
             <TikTokIcon className="h-3.5 w-3.5" />
             TikTok
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.linkedin.com/company/tunisiagoo"
+            target="_blank"
+            rel="noopener noreferrer me"
+            aria-label="LinkedIn"
+            className={`${anchor} inline-flex items-center gap-1.5`}
+          >
+            <LinkedInIcon className="h-3.5 w-3.5" />
+            LinkedIn
           </a>
         </li>
         <li>

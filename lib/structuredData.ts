@@ -25,7 +25,7 @@ export function siteData(lang: Locale) {
       name: SITE_NAME,
       url: SITE_URL,
       logo: abs('/icons/icon-512.png'),
-      sameAs: ['https://www.tiktok.com/@tunisiagoo'],
+      sameAs: ['https://www.tiktok.com/@tunisiagoo', 'https://www.linkedin.com/company/tunisiagoo'],
     },
   ];
 }
