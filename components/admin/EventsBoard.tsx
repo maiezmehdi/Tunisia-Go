@@ -21,9 +21,12 @@ export interface AdminEvent {
   endDate: string;
   ticketUrl: string;
   infoUrl: string;
+  /** Sent by a visitor from /evenements, still to be checked. */
+  proposed?: boolean;
+  contact?: string;
 }
 
-type Form = Omit<AdminEvent, 'id'>;
+type Form = Omit<AdminEvent, 'id' | 'proposed' | 'contact'>;
 
 const EMPTY: Form = {
   published: true,
@@ -95,7 +98,7 @@ export default function EventsBoard({
   const open = (e?: AdminEvent) => {
     setError('');
     if (e) {
-      const { id, ...rest } = e;
+      const { id, proposed: _p, contact: _c, ...rest } = e;
       setEditing(id);
       setForm(rest);
     } else {
@@ -298,22 +301,37 @@ export default function EventsBoard({
 
       {!tableMissing && (
         <ul className="mt-6 divide-y divide-sand-200 border-y border-sand-200">
-          {events
+          {[...events]
+            .sort((a, b) => Number(b.proposed ?? false) - Number(a.proposed ?? false))
             .filter((e) => !gone.has(e.id))
             .map((e) => (
               <li key={e.id} className="flex flex-wrap items-start justify-between gap-4 py-4">
                 <div className="min-w-0 max-w-2xl">
                   <p className="text-sm font-medium text-charcoal">
                     {e.titleFr}
-                    {!e.published && (
-                      <span className="ml-2 rounded-pill bg-sand-100 px-2 py-0.5 text-xs font-normal text-charcoal-500">
-                        Masqué
+                    {e.proposed ? (
+                      <span className="ml-2 rounded-pill bg-terracotta-100 px-2 py-0.5 text-xs font-normal text-terracotta-700">
+                        Proposé · à valider
                       </span>
+                    ) : (
+                      !e.published && (
+                        <span className="ml-2 rounded-pill bg-sand-100 px-2 py-0.5 text-xs font-normal text-charcoal-500">
+                          Masqué
+                        </span>
+                      )
                     )}
                   </p>
                   <p className="mt-0.5 text-sm text-charcoal-500">
                     {e.whenFr} · {placeName(e.placeId)} · {e.confirmed ? 'Annoncé' : 'À confirmer'}
                   </p>
+                  {e.proposed && e.contact && (
+                    <p className="mt-0.5 text-sm text-charcoal-700">Contact : {e.contact}</p>
+                  )}
+                  {e.proposed && (
+                    <p className="mt-0.5 text-xs text-charcoal-300">
+                      Texte saisi dans une seule langue, recopié dans l’autre : corrigez la traduction avant de publier.
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button
@@ -330,7 +348,7 @@ export default function EventsBoard({
                     onClick={() => call(`/api/admin/events/${e.id}`, 'PATCH', { published: !e.published })}
                     className="rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 disabled:opacity-50"
                   >
-                    {e.published ? 'Masquer' : 'Afficher'}
+                    {e.published ? 'Masquer' : e.proposed ? 'Publier' : 'Afficher'}
                   </button>
                   <button
                     type="button"

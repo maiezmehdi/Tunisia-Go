@@ -40,6 +40,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if ('error' in parsed) return NextResponse.json({ error: 'invalid', field: parsed.error }, { status: 400 });
     patch = parsed.row;
   }
+  if (patch.published === true) patch.proposed = false;
   try {
     await updateRow(g.cfg, 'events', g.id, patch);
   } catch (error) {

@@ -20,6 +20,8 @@ export interface EventRow {
   ticket_url: string | null;
   info_url: string | null;
   sort: number;
+  proposed?: boolean;
+  contact?: string | null;
 }
 
 function actionsFor(row: Pick<EventRow, 'ticket_url' | 'info_url'>): EventAction[] {
