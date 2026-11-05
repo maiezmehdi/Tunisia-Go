@@ -124,8 +124,16 @@ export default function EventProposalForm({
   return (
     <section className="mt-14 border-t border-sand-200 pt-10" aria-label={c.open}>
       <details className="group">
-        <summary className="cursor-pointer font-serif text-2xl text-charcoal">{c.open}</summary>
-        <div className="mt-4 max-w-2xl">
+        <summary className="flex cursor-pointer list-none items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-charcoal-300 px-6 py-6 font-serif text-xl text-charcoal transition hover:border-charcoal hover:bg-sand-50 sm:text-2xl [&::-webkit-details-marker]:hidden">
+          <span
+            aria-hidden
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-charcoal font-sans text-xl leading-none text-cream group-open:hidden"
+          >
+            +
+          </span>
+          {c.open}
+        </summary>
+        <div className="mt-6 max-w-2xl">
           <p className="text-[15px] leading-relaxed text-charcoal-500">{c.intro}</p>
           {account === undefined || tokens === undefined ? (
             <p className="mt-6 text-sm text-charcoal-500">{c.checking}</p>
