@@ -153,8 +153,15 @@ html {
 .tg-hint {
   animation: tg-hint-in 0.35s ease-out both;
 }
+@keyframes tg-hint-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tg-hint-up {
+  animation: tg-hint-up 0.35s ease-out both;
+}
 @media (prefers-reduced-motion: reduce) {
-  .tg-hint { animation: none; }
+  .tg-hint, .tg-hint-up { animation: none; }
 }
 
 /* Instant tooltips on icon buttons (the native title takes about a second to appear). */
