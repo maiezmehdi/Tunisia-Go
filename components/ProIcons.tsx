@@ -65,3 +65,11 @@ export function TikTokIcon({ className = '' }: { className?: string }) {
     </svg>
   );
 }
+
+export function LinkedInIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg {...brand} className={className}>
+      <path d="M5.2 8.6h2.9V19H5.2V8.6zM6.7 4a1.7 1.7 0 1 1 0 3.4 1.7 1.7 0 0 1 0-3.4zM10.1 8.6h2.8V10c.4-.8 1.4-1.7 3-1.7 3 0 3.6 2 3.6 4.6V19h-2.9v-5.5c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V19h-2.9V8.6z" />
+    </svg>
+  );
+}
