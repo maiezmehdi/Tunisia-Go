@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 
 import { parseEventProposal } from '@/lib/eventInput';
+import { authUser } from '@/lib/pros';
 import { allow, clientIp, sameOrigin } from '@/lib/requestGuard';
 import { insertRow, supabaseConfig } from '@/lib/supabase';
 
 /**
- * A visitor proposes an event (no account). It is saved hidden, flagged "proposed", with a contact, in the same
- * "events" table (db/events.sql): /admin reviews it and publishes it. Nothing appears on the site before that.
+ * A signed-in guide, agency or partner proposes an event. It is saved hidden, flagged "proposed", with a contact,
+ * in the same "events" table (db/events.sql): /admin reviews it and publishes it. Nothing appears before that.
+ * Travellers and signed-out visitors cannot send one.
  */
 export const runtime = 'nodejs';
 
@@ -17,14 +19,20 @@ export async function POST(request: Request) {
   if (!cfg) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
   if (!sameOrigin(request)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   const ip = clientIp(request);
-  if (!allow(`event:h:${ip}`, 3, HOUR) || !allow(`event:d:${ip}`, 8, 24 * HOUR)) {
+  if (!allow(`event:ip:${ip}`, 30, HOUR)) {
     return NextResponse.json({ error: 'too_many' }, { status: 429, headers: { 'Retry-After': '3600' } });
   }
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
-  // Hidden field a person never fills: a bot that does is told "ok" and ignored.
-  if (typeof body?.website === 'string' && body.website.trim()) return NextResponse.json({ ok: true });
+  const user = await authUser(cfg, body?.accessToken);
+  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  if (user.kind !== 'pro' && user.kind !== 'partner') return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  if (!allow(`event:u:${user.id}`, 5, HOUR) || !allow(`event:d:${user.id}`, 15, 24 * HOUR)) {
+    return NextResponse.json({ error: 'too_many' }, { status: 429, headers: { 'Retry-After': '3600' } });
+  }
 
-  const parsed = parseEventProposal(body);
+  // The contact is optional: the e-mail of the account is used when it is left empty.
+  const contact = typeof body?.contact === 'string' && body.contact.trim() ? body.contact : user.email || ' ';
+  const parsed = parseEventProposal({ ...body, contact });
   if ('error' in parsed) return NextResponse.json({ error: 'invalid', field: parsed.error }, { status: 400 });
   try {
     await insertRow(cfg, 'events', parsed.row);

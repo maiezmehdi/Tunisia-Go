@@ -4,12 +4,18 @@ import { useState } from 'react';
 
 import type { EventKind } from '@/data/events';
 import type { Locale } from '@/lib/i18n/config';
+import { accountHref, useProAuth } from '@/lib/proAuth';
 
 const COPY = {
   fr: {
     open: 'Proposer un événement',
     intro:
       'Vous organisez un festival, une soirée ou un rendez-vous ? Décrivez-le : nous le vérifions avant de le publier, rien n’apparaît tout seul.',
+    reserved: 'Réservé aux comptes Guide ou agence et Partenaire.',
+    signIn: 'Se connecter',
+    createAccount: 'Créer un compte',
+    traveler: 'Votre compte est un compte Voyageur : il peut changer de type dans Réglages, sur la page Mon compte.',
+    checking: 'Vérification du compte…',
     title: 'Nom de l’événement',
     kind: 'Type',
     kinds: { music: 'Musique et festivals', gathering: 'Rassemblements et traditions', culture: 'Culture' } as Record<
@@ -22,8 +28,8 @@ const COPY = {
     whenHint: 'Ex. 19 – 22 décembre 2026',
     description: 'Description',
     link: 'Lien d’information ou de billetterie (facultatif)',
-    contact: 'Votre contact (WhatsApp ou e-mail)',
-    contactHint: 'Pour vérifier l’événement. Il n’est jamais affiché sur le site.',
+    contact: 'Contact pour vérifier (facultatif)',
+    contactHint: 'WhatsApp ou e-mail. Vide : l’e-mail de votre compte. Jamais affiché sur le site.',
     send: 'Envoyer la proposition',
     sending: 'Envoi…',
     thanks: 'Merci, votre proposition est bien reçue. Nous la vérifions et nous vous contactons si besoin.',
@@ -36,6 +42,11 @@ const COPY = {
     open: 'Suggest an event',
     intro:
       'Do you run a festival, a night or a gathering? Describe it: we check it before publishing, nothing appears on its own.',
+    reserved: 'Reserved for Guide or agency and Partner accounts.',
+    signIn: 'Sign in',
+    createAccount: 'Create an account',
+    traveler: 'Your account is a Traveller account: its type can be changed in Settings, on the My account page.',
+    checking: 'Checking your account…',
     title: 'Event name',
     kind: 'Type',
     kinds: { music: 'Music and festivals', gathering: 'Gatherings and traditions', culture: 'Culture' } as Record<
@@ -48,8 +59,8 @@ const COPY = {
     whenHint: 'E.g. 19 – 22 December 2026',
     description: 'Description',
     link: 'Info or ticket link (optional)',
-    contact: 'Your contact (WhatsApp or e-mail)',
-    contactHint: 'So we can check the event. It is never shown on the site.',
+    contact: 'Contact to check the event (optional)',
+    contactHint: 'WhatsApp or e-mail. Empty: your account e-mail. Never shown on the site.',
     send: 'Send the suggestion',
     sending: 'Sending…',
     thanks: 'Thank you, we received your suggestion. We will check it and contact you if needed.',
@@ -64,9 +75,9 @@ const input =
   'mt-1 w-full rounded-xl border border-sand-200 bg-white px-3 py-2 text-sm text-charcoal outline-none transition focus:border-charcoal-300';
 const label = 'text-xs font-medium uppercase tracking-[0.14em] text-charcoal-500';
 
-const EMPTY = { title: '', kind: 'music', placeId: '', when: '', description: '', infoUrl: '', contact: '', website: '' };
+const EMPTY = { title: '', kind: 'music', placeId: '', when: '', description: '', infoUrl: '', contact: '' };
 
-/** Public "suggest an event" form: saved hidden, reviewed in /admin before anything is published. */
+/** "Suggest an event" form for signed-in guides, agencies and partners: saved hidden, reviewed in /admin first. */
 export default function EventProposalForm({
   locale,
   places,
@@ -75,6 +86,8 @@ export default function EventProposalForm({
   places: { id: string; name: string }[];
 }) {
   const c = COPY[locale];
+  const { tokens, account } = useProAuth();
+  const allowed = account?.kind === 'pro' || account?.kind === 'partner';
   const [form, setForm] = useState(EMPTY);
   const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle');
   const [error, setError] = useState('');
@@ -89,7 +102,7 @@ export default function EventProposalForm({
     const res = await fetch('/api/event-proposal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, accessToken: tokens?.accessToken }),
     }).catch(() => null);
     if (res?.ok) {
       setForm(EMPTY);
@@ -98,7 +111,8 @@ export default function EventProposalForm({
     }
     setState('idle');
     const data = (await res?.json().catch(() => null)) as { field?: string } | null;
-    if (res?.status === 429) setError(c.errMany);
+    if (res?.status === 401 || res?.status === 403) setError(c.reserved);
+    else if (res?.status === 429) setError(c.errMany);
     else if (res?.status === 400) {
       setBad(data?.field ?? '');
       setError(c.errInvalid);
@@ -113,7 +127,30 @@ export default function EventProposalForm({
         <summary className="cursor-pointer font-serif text-2xl text-charcoal">{c.open}</summary>
         <div className="mt-4 max-w-2xl">
           <p className="text-[15px] leading-relaxed text-charcoal-500">{c.intro}</p>
-          {state === 'done' ? (
+          {account === undefined || tokens === undefined ? (
+            <p className="mt-6 text-sm text-charcoal-500">{c.checking}</p>
+          ) : !allowed ? (
+            <div className="mt-6">
+              <p className="text-sm text-charcoal-700">{c.reserved}</p>
+              {account?.kind === 'traveler' && <p className="mt-1 text-sm text-charcoal-500">{c.traveler}</p>}
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a
+                  href={`${accountHref(locale)}?mode=login`}
+                  className="rounded-pill bg-charcoal px-5 py-2 text-sm text-cream transition hover:bg-charcoal-700"
+                >
+                  {c.signIn}
+                </a>
+                {!account && (
+                  <a
+                    href={`${accountHref(locale)}?mode=signup&kind=pro`}
+                    className="rounded-pill border border-sand-200 px-5 py-2 text-sm text-charcoal-700 transition hover:border-charcoal-300"
+                  >
+                    {c.createAccount}
+                  </a>
+                )}
+              </div>
+            </div>
+          ) : state === 'done' ? (
             <div className="mt-6">
               <p role="status" className="text-sm text-charcoal-700">
                 {c.thanks}
@@ -199,7 +236,6 @@ export default function EventProposalForm({
               <label className="block sm:col-span-2">
                 <span className={label}>{c.contact}</span>
                 <input
-                  required
                   maxLength={120}
                   className={input + mark('contact')}
                   value={form.contact}
@@ -207,16 +243,6 @@ export default function EventProposalForm({
                 />
                 <span className="mt-1 block text-xs text-charcoal-300">{c.contactHint}</span>
               </label>
-              {/* Hidden from people; a bot that fills it is ignored. */}
-              <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-                <input
-                  tabIndex={-1}
-                  autoComplete="off"
-                  name="website"
-                  value={form.website}
-                  onChange={(e) => set('website', e.target.value)}
-                />
-              </div>
               {error && (
                 <p role="alert" className="text-sm text-terracotta-700 sm:col-span-2">
                   {error}
