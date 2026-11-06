@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
-import { CLICK_KINDS, CLICK_LABELS, type ClickKind } from "@/lib/clicks";
+import { CLICK_KINDS, CLICK_LABELS, type ClickKind } from '@/lib/clicks';
 
 export interface AdminClick {
   day: string;
@@ -13,22 +13,22 @@ export interface AdminClick {
 }
 
 const PERIODS = [
-  { days: 7, label: "7 jours" },
-  { days: 30, label: "30 jours" },
-  { days: 90, label: "90 jours" },
+  { days: 7, label: '7 jours' },
+  { days: 30, label: '30 jours' },
+  { days: 90, label: '90 jours' },
 ] as const;
 
 const PAGE_LABELS: Record<string, string> = {
-  home: "Accueil",
-  explore: "Carte",
-  lieux: "Pages des lieux",
-  guides: "Guides et agences",
-  "mon-voyage": "Mon voyage",
-  "road-trips": "Road trips",
-  pratique: "Pratique",
-  evenements: "Événements",
-  compte: "Mon compte",
-  other: "Autres pages",
+  home: 'Accueil',
+  explore: 'Carte',
+  lieux: 'Pages des lieux',
+  guides: 'Guides et agences',
+  'mon-voyage': 'Mon voyage',
+  'road-trips': 'Road trips',
+  pratique: 'Pratique',
+  evenements: 'Événements',
+  compte: 'Mon compte',
+  other: 'Autres pages',
 };
 
 /** Clicks on outside links (booking, WhatsApp, phone…) by type, section and place, over a chosen period. */
@@ -45,9 +45,7 @@ export default function ClicksBoard({
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const view = useMemo(() => {
-    const from = new Date(Date.parse(today) - (days - 1) * 86400000)
-      .toISOString()
-      .slice(0, 10);
+    const from = new Date(Date.parse(today) - (days - 1) * 86400000).toISOString().slice(0, 10);
     const rows = clicks.filter((c) => c.day >= from);
     const byKind = new Map<string, number>();
     const byPage = new Map<string, number>();
@@ -59,30 +57,21 @@ export default function ClicksBoard({
     }
     const total = rows.reduce((n, c) => n + c.clicks, 0);
     const top = <T,>(m: Map<string, number>, n: number) =>
-      [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n) as [
-        string,
-        number,
-      ][];
+      [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n) as [string, number][];
     return { total, byKind, pages: top(byPage, 10), places: top(byPlace, 10) };
   }, [clicks, days, today]);
 
-  const n = (v: number) => v.toLocaleString("fr-FR");
+  const n = (v: number) => v.toLocaleString('fr-FR');
 
   return (
-    <section
-      className="mt-16 border-t border-sand-200 pt-10"
-      aria-label="Clics sur les liens"
-    >
+    <section className="mt-16 border-t border-sand-200 pt-10" aria-label="Clics sur les liens">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl text-charcoal">
-            Clics sur les liens
-          </h2>
+          <h2 className="font-serif text-2xl text-charcoal">Clics sur les liens</h2>
           <p className="mt-1 text-sm text-charcoal-500">
-            Combien de fois les visiteurs cliquent sur Tunisie Booking, Airbnb,
-            WhatsApp, un téléphone ou un site. Comptés par jour, sans cookie ni
-            donnée personnelle. {n(view.total)} clic{view.total > 1 ? "s" : ""}{" "}
-            sur la période.
+            Combien de fois les visiteurs cliquent sur Tunisie Booking, Airbnb, WhatsApp, un téléphone ou un site.
+            Comptés par jour, sans cookie ni donnée personnelle. {n(view.total)} clic{view.total > 1 ? 's' : ''} sur la
+            période.
           </p>
         </div>
         <div role="group" aria-label="Période" className="flex gap-1">
@@ -94,8 +83,8 @@ export default function ClicksBoard({
               aria-pressed={days === p.days}
               className={`rounded-pill border px-3.5 py-1.5 text-sm transition ${
                 days === p.days
-                  ? "border-charcoal bg-charcoal text-cream"
-                  : "border-sand-200 text-charcoal-700 hover:border-charcoal-300"
+                  ? 'border-charcoal bg-charcoal text-cream'
+                  : 'border-sand-200 text-charcoal-700 hover:border-charcoal-300'
               }`}
             >
               {p.label}
@@ -106,18 +95,14 @@ export default function ClicksBoard({
 
       {tableMissing ? (
         <p className="mt-6 text-sm text-charcoal-500">
-          Le compteur n’existe pas encore : exécutez{" "}
-          <code>db/link-clicks.sql</code> dans Supabase.
+          Le compteur n’existe pas encore : exécutez <code>db/link-clicks.sql</code> dans Supabase.
         </p>
       ) : (
         <div className="mt-6 grid gap-10 lg:grid-cols-2">
           <Table
             title="Par type de lien"
             head="Type"
-            rows={CLICK_KINDS.map((k: ClickKind) => [
-              CLICK_LABELS[k],
-              view.byKind.get(k) ?? 0,
-            ])}
+            rows={CLICK_KINDS.map((k: ClickKind) => [CLICK_LABELS[k], view.byKind.get(k) ?? 0])}
             format={n}
           />
           <Table
@@ -174,9 +159,7 @@ function Table({
             {rows.map(([label, value]) => (
               <tr key={label}>
                 <td className="py-2.5 pr-4 text-charcoal">{label}</td>
-                <td className="py-2.5 text-right tabular-nums text-charcoal-700">
-                  {format(value)}
-                </td>
+                <td className="py-2.5 text-right tabular-nums text-charcoal-700">{format(value)}</td>
               </tr>
             ))}
           </tbody>
