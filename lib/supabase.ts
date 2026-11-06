@@ -45,6 +45,17 @@ export async function insertRow(cfg: SupabaseConfig, table: string, row: Record<
   if (!res.ok) throw new Error(`insert ${res.status}: ${await res.text().catch(() => '')}`);
 }
 
+/** Calls a database function (RPC) with named arguments. */
+export async function callFunction(cfg: SupabaseConfig, name: string, args: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`${cfg.url}/rest/v1/rpc/${name}`, {
+    method: 'POST',
+    headers: { ...authHeaders(cfg.key), 'Content-Type': 'application/json' },
+    body: JSON.stringify(args),
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`rpc ${res.status}: ${await res.text().catch(() => '')}`);
+}
+
 /**
  * Reads rows with a PostgREST query string, e.g. `select=*&status=eq.approved`.
  * Uncached by default; pass `cached` from statically built pages (they revalidate by tag).
