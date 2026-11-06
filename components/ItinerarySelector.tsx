@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Minus, Route, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, Minus, Route, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
-import OfflineTripButton from "@/components/OfflineTripButton";
-import { seasonFor } from "@/data/seasons";
-import type { Itinerary, Photo, Place } from "@/data/types";
-import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { lockPageScroll } from "@/lib/scrollLock";
-import { formatDuration, formatKm, summarizeRoute } from "@/lib/geo";
-import { googleMapsRouteUrl } from "@/lib/links";
-import { useMyTrip } from "@/lib/myTrip";
+import OfflineTripButton from '@/components/OfflineTripButton';
+import { seasonFor } from '@/data/seasons';
+import type { Itinerary, Photo, Place } from '@/data/types';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { lockPageScroll } from '@/lib/scrollLock';
+import { formatDuration, formatKm, summarizeRoute } from '@/lib/geo';
+import { googleMapsRouteUrl } from '@/lib/links';
+import { useMyTrip } from '@/lib/myTrip';
 
 export interface ItinerarySelectorProps {
   itineraries: Itinerary[];
@@ -26,7 +26,7 @@ export interface ItinerarySelectorProps {
   month?: number | null;
 }
 
-const TRIPS_HINT_KEY = "tg-trips-hint";
+const TRIPS_HINT_KEY = 'tg-trips-hint';
 
 export default function ItinerarySelector({
   itineraries,
@@ -50,19 +50,17 @@ export default function ItinerarySelector({
   useEffect(() => {
     let seen = true;
     try {
-      seen = localStorage.getItem(TRIPS_HINT_KEY) === "1";
+      seen = localStorage.getItem(TRIPS_HINT_KEY) === '1';
     } catch {
       /* storage blocked: skip the hint */
     }
     if (seen) return;
     let hide: number | undefined;
     const show = window.setTimeout(() => {
-      const visible = [deskChip.current, phoneChip.current].some(
-        (el) => el && el.offsetParent !== null,
-      );
+      const visible = [deskChip.current, phoneChip.current].some((el) => el && el.offsetParent !== null);
       if (!visible) return;
       try {
-        localStorage.setItem(TRIPS_HINT_KEY, "1");
+        localStorage.setItem(TRIPS_HINT_KEY, '1');
       } catch {
         /* ignore */
       }
@@ -82,12 +80,11 @@ export default function ItinerarySelector({
   useEffect(() => {
     if (!fullScreen) return;
     const unlock = lockPageScroll();
-    const onKey = (e: KeyboardEvent) =>
-      e.key === "Escape" && setSheetOpen(false);
-    window.addEventListener("keydown", onKey);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setSheetOpen(false);
+    window.addEventListener('keydown', onKey);
     return () => {
       unlock();
-      window.removeEventListener("keydown", onKey);
+      window.removeEventListener('keydown', onKey);
     };
   }, [fullScreen]);
 
@@ -105,44 +102,30 @@ export default function ItinerarySelector({
   }, [selectedPlaceId]);
 
   const stops = useMemo<Place[]>(
-    () =>
-      active
-        ? active.stops
-            .map((id) => catalog.placeById[id])
-            .filter((p): p is Place => !!p)
-        : [],
+    () => (active ? active.stops.map((id) => catalog.placeById[id]).filter((p): p is Place => !!p) : []),
     [active, catalog],
   );
   const route = useMemo(() => summarizeRoute(stops), [stops]);
-  const offSeason =
-    month === null
-      ? []
-      : stops.filter((s) => seasonFor(s.id, month) === "avoid");
+  const offSeason = month === null ? [] : stops.filter((s) => seasonFor(s.id, month) === 'avoid');
 
   const panel = (
     <div
-      role={fullScreen ? "dialog" : undefined}
+      role={fullScreen ? 'dialog' : undefined}
       aria-modal={fullScreen || undefined}
       aria-label={fullScreen ? t.roadTrips : undefined}
       className={`no-scrollbar pointer-events-auto w-full overflow-x-hidden ${
         fullScreen
-          ? "h-full overflow-y-auto bg-cream pb-[env(safe-area-inset-bottom)]"
-          : `max-h-full max-w-[400px] overflow-y-auto rounded-3xl bg-cream/95 border border-sand-200 shadow-soft backdrop-blur-md ${deskOpen ? "sm:block" : "sm:hidden"} ${sheetOpen ? "block" : "hidden"}`
+          ? 'h-full overflow-y-auto bg-cream pb-[env(safe-area-inset-bottom)]'
+          : `max-h-full max-w-[400px] overflow-y-auto rounded-3xl bg-cream/95 border border-sand-200 shadow-soft backdrop-blur-md ${deskOpen ? 'sm:block' : 'sm:hidden'} ${sheetOpen ? 'block' : 'hidden'}`
       }`}
     >
       <div
         className={`flex items-center justify-between px-5 pt-4 ${
-          fullScreen
-            ? "sticky top-0 z-10 bg-cream pb-3 pt-[max(1rem,env(safe-area-inset-top))]"
-            : ""
+          fullScreen ? 'sticky top-0 z-10 bg-cream pb-3 pt-[max(1rem,env(safe-area-inset-top))]' : ''
         }`}
       >
         <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
-          <Route
-            aria-hidden
-            className="h-3.5 w-3.5 shrink-0 text-charcoal-500"
-            strokeWidth={1.75}
-          />
+          <Route aria-hidden className="h-3.5 w-3.5 shrink-0 text-charcoal-500" strokeWidth={1.75} />
           {t.roadTrips}
         </p>
         <div className="-mr-2 flex">
@@ -162,15 +145,9 @@ export default function ItinerarySelector({
                   onClick={() => setCollapsed((c) => !c)}
                   expanded={!collapsed}
                 >
-                  <ChevronDown
-                    className={`h-4 w-4 transition ${collapsed ? "rotate-180" : ""}`}
-                    strokeWidth={1.5}
-                  />
+                  <ChevronDown className={`h-4 w-4 transition ${collapsed ? 'rotate-180' : ''}`} strokeWidth={1.5} />
                 </IconButton>
-                <IconButton
-                  label={t.clearItinerary}
-                  onClick={() => onChange(null)}
-                >
+                <IconButton label={t.clearItinerary} onClick={() => onChange(null)}>
                   <X className="h-4 w-4" strokeWidth={1.5} />
                 </IconButton>
               </>
@@ -195,8 +172,8 @@ export default function ItinerarySelector({
               aria-pressed={isActive}
               className={`shrink-0 rounded-pill border px-3.5 py-1.5 text-sm transition ${
                 isActive
-                  ? "border-charcoal bg-charcoal text-cream"
-                  : "border-sand-200 text-charcoal-700 hover:border-charcoal-300 hover:text-charcoal"
+                  ? 'border-charcoal bg-charcoal text-cream'
+                  : 'border-sand-200 text-charcoal-700 hover:border-charcoal-300 hover:text-charcoal'
               }`}
             >
               {it.name}
@@ -210,28 +187,19 @@ export default function ItinerarySelector({
           <motion.div
             key={active.id}
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
             <div className="border-t border-sand-200 px-5 pb-5 pt-4">
-              <h3 className="font-serif text-2xl leading-tight text-charcoal">
-                {active.name}
-              </h3>
-              <p className="mt-0.5 font-serif text-sm italic text-charcoal-500">
-                {active.tagline}
-              </p>
-              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-500">
-                {active.description}
-              </p>
+              <h3 className="font-serif text-2xl leading-tight text-charcoal">{active.name}</h3>
+              <p className="mt-0.5 font-serif text-sm italic text-charcoal-500">{active.tagline}</p>
+              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-500">{active.description}</p>
               {!!active.photos?.length && (
                 <ul className="mt-3 grid grid-cols-4 gap-1.5">
                   {active.photos.map((src, i) => (
-                    <li
-                      key={src}
-                      className="aspect-[4/3] overflow-hidden rounded-xl bg-sand"
-                    >
+                    <li key={src} className="aspect-[4/3] overflow-hidden rounded-xl bg-sand">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={src}
@@ -245,38 +213,26 @@ export default function ItinerarySelector({
               )}
               {active.community && (
                 <p className="mt-2 text-xs text-charcoal-300">
-                  {active.community.author
-                    ? t.suggestedBy(active.community.author)
-                    : t.suggestedByVisitor}
+                  {active.community.author ? t.suggestedBy(active.community.author) : t.suggestedByVisitor}
                 </p>
               )}
 
               <dl className="mt-4 grid grid-cols-3 divide-x divide-sand-200 border-y border-sand-200 py-3 text-center">
-                <Stat
-                  label={t.distance}
-                  value={`~${formatKm(route.totalKm)}`}
-                />
-                <Stat
-                  label={t.driving}
-                  value={`~${formatDuration(route.totalMinutes)}`}
-                />
+                <Stat label={t.distance} value={`~${formatKm(route.totalKm)}`} />
+                <Stat label={t.driving} value={`~${formatDuration(route.totalMinutes)}`} />
                 <Stat label={t.suggested} value={t.days(active.days)} />
               </dl>
 
               {month !== null && offSeason.length > 0 && (
                 <p className="mt-3 border-l-2 border-terracotta pl-3 text-xs leading-relaxed text-charcoal-700">
                   {t.offSeasonWarning(
-                    offSeason.length === stops.length
-                      ? null
-                      : offSeason.map((s) => s.name),
+                    offSeason.length === stops.length ? null : offSeason.map((s) => s.name),
                     t.months[month],
                   )}
                 </p>
               )}
 
-              <ol
-                className={`no-scrollbar mt-3 ${fullScreen ? "" : "max-h-[30vh] overflow-y-auto"}`}
-              >
+              <ol className={`no-scrollbar mt-3 ${fullScreen ? '' : 'max-h-[30vh] overflow-y-auto'}`}>
                 {stops.map((stop, i) => {
                   const leg = route.legs[i];
                   const selected = stop.id === selectedPlaceId;
@@ -287,24 +243,17 @@ export default function ItinerarySelector({
                         onClick={() => onSelectStop(stop.id)}
                         className="group flex w-full items-baseline gap-3 py-1.5 text-left"
                       >
-                        <span className="w-5 shrink-0 font-serif text-sm tabular-nums text-charcoal-300">
-                          {i + 1}
-                        </span>
+                        <span className="w-5 shrink-0 font-serif text-sm tabular-nums text-charcoal-300">{i + 1}</span>
                         <span
                           className={`truncate text-sm transition ${
-                            selected
-                              ? "text-terracotta-700"
-                              : "text-charcoal group-hover:text-terracotta-700"
+                            selected ? 'text-terracotta-700' : 'text-charcoal group-hover:text-terracotta-700'
                           }`}
                         >
                           {stop.name}
                         </span>
-                        {month !== null &&
-                          seasonFor(stop.id, month) === "avoid" && (
-                            <span className="shrink-0 text-[11px] text-charcoal-300">
-                              {t.offSeason}
-                            </span>
-                          )}
+                        {month !== null && seasonFor(stop.id, month) === 'avoid' && (
+                          <span className="shrink-0 text-[11px] text-charcoal-300">{t.offSeason}</span>
+                        )}
                       </button>
                       {leg && (
                         <p className="ml-8 border-l border-dashed border-sand-300 py-1 pl-3 text-[11px] text-charcoal-300">
@@ -316,9 +265,7 @@ export default function ItinerarySelector({
                 })}
               </ol>
 
-              <p className="mt-2 text-[11px] text-charcoal-300">
-                {t.estimatesNote}
-              </p>
+              <p className="mt-2 text-[11px] text-charcoal-300">{t.estimatesNote}</p>
 
               <a
                 href={googleMapsRouteUrl(stops)}
@@ -339,10 +286,7 @@ export default function ItinerarySelector({
 
   return (
     <>
-      <span
-        ref={phoneChip}
-        className={`relative sm:hidden ${sheetOpen ? "hidden" : "block"}`}
-      >
+      <span ref={phoneChip} className={`relative sm:hidden ${sheetOpen ? 'hidden' : 'block'}`}>
         {hint && !sheetOpen && <TripsHint />}
         <div className="pointer-events-auto flex items-center rounded-pill border border-sand-200 bg-cream/95 shadow-soft backdrop-blur-md">
           <button
@@ -351,18 +295,9 @@ export default function ItinerarySelector({
             aria-expanded={false}
             className="flex max-w-[60vw] items-center gap-2 py-2 pl-4 pr-3 text-sm text-charcoal"
           >
-            <Route
-              aria-hidden
-              className="h-3.5 w-3.5 shrink-0 text-charcoal-500"
-              strokeWidth={1.75}
-            />
-            <span className="truncate">
-              {active ? active.name : t.roadTripsCount(itineraries.length)}
-            </span>
-            <ChevronDown
-              className="h-3.5 w-3.5 shrink-0 rotate-180 text-charcoal-500"
-              strokeWidth={1.5}
-            />
+            <Route aria-hidden className="h-3.5 w-3.5 shrink-0 text-charcoal-500" strokeWidth={1.75} />
+            <span className="truncate">{active ? active.name : t.roadTripsCount(itineraries.length)}</span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 rotate-180 text-charcoal-500" strokeWidth={1.5} />
           </button>
           {active && (
             <button
@@ -378,10 +313,7 @@ export default function ItinerarySelector({
         </div>
       </span>
 
-      <span
-        ref={deskChip}
-        className={`relative ${deskOpen ? "hidden" : "hidden sm:block"}`}
-      >
+      <span ref={deskChip} className={`relative ${deskOpen ? 'hidden' : 'hidden sm:block'}`}>
         {hint && !deskOpen && <TripsHint />}
         <button
           type="button"
@@ -392,27 +324,13 @@ export default function ItinerarySelector({
           aria-expanded={false}
           className="pointer-events-auto flex items-center gap-2 rounded-pill border border-sand-200 bg-cream/95 py-2 pl-4 pr-3 text-sm text-charcoal shadow-soft backdrop-blur-md transition hover:border-charcoal-300"
         >
-          <Route
-            aria-hidden
-            className="h-3.5 w-3.5 shrink-0 text-charcoal-500"
-            strokeWidth={1.75}
-          />
-          <span className="max-w-[260px] truncate">
-            {active ? active.name : t.roadTripsCount(itineraries.length)}
-          </span>
-          <ChevronDown
-            className="h-3.5 w-3.5 shrink-0 rotate-180 text-charcoal-500"
-            strokeWidth={1.5}
-          />
+          <Route aria-hidden className="h-3.5 w-3.5 shrink-0 text-charcoal-500" strokeWidth={1.75} />
+          <span className="max-w-[260px] truncate">{active ? active.name : t.roadTripsCount(itineraries.length)}</span>
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 rotate-180 text-charcoal-500" strokeWidth={1.5} />
         </button>
       </span>
 
-      {fullScreen
-        ? createPortal(
-            <div className="fixed inset-0 z-[1400] bg-cream">{panel}</div>,
-            document.body,
-          )
-        : panel}
+      {fullScreen ? createPortal(<div className="fixed inset-0 z-[1400] bg-cream">{panel}</div>, document.body) : panel}
     </>
   );
 }
@@ -425,10 +343,7 @@ function TripsHint() {
       role="status"
       className="tg-hint-up pointer-events-none absolute bottom-full left-4 z-[1500] mb-3 w-max max-w-[15rem] rounded-2xl bg-charcoal px-3.5 py-2.5 text-left text-xs leading-snug text-cream shadow-soft"
     >
-      <span
-        aria-hidden
-        className="absolute -bottom-1 left-6 h-2.5 w-2.5 rotate-45 bg-charcoal"
-      />
+      <span aria-hidden className="absolute -bottom-1 left-6 h-2.5 w-2.5 rotate-45 bg-charcoal" />
       <span className="font-medium">{t.tripsHintTitle}</span>
       <span className="mt-0.5 block opacity-75">{t.tripsHint}</span>
     </span>
@@ -443,11 +358,8 @@ function AddStopsButton({ stopIds }: { stopIds: string[] }) {
   if (missing.length === 0) {
     return (
       <p className="mt-2 flex items-center justify-center gap-2 py-2 text-sm text-charcoal-500">
-        {t.allStopsInTrip} ·{" "}
-        <a
-          href="/mon-voyage"
-          className="underline underline-offset-4 hover:text-charcoal"
-        >
+        {t.allStopsInTrip} ·{' '}
+        <a href="/mon-voyage" className="underline underline-offset-4 hover:text-charcoal">
           {t.viewMyTrip}
         </a>
       </p>
@@ -468,11 +380,11 @@ function AddStopsButton({ stopIds }: { stopIds: string[] }) {
 function useIsPhone() {
   const [isPhone, setIsPhone] = useState(false);
   useEffect(() => {
-    const query = window.matchMedia("(max-width: 639px)");
+    const query = window.matchMedia('(max-width: 639px)');
     const update = () => setIsPhone(query.matches);
     update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
   }, []);
   return isPhone;
 }
@@ -504,9 +416,7 @@ function IconButton({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-[0.18em] text-charcoal-300">
-        {label}
-      </dt>
+      <dt className="text-[10px] uppercase tracking-[0.18em] text-charcoal-300">{label}</dt>
       <dd className="mt-0.5 text-sm text-charcoal">{value}</dd>
     </div>
   );

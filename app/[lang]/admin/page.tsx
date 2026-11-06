@@ -1,57 +1,38 @@
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 
-import BrandLogo from "@/components/BrandLogo";
-import AddPlaceForm from "@/components/admin/AddPlaceForm";
-import AdminBoard, {
-  type AdminSubmission,
-} from "@/components/admin/AdminBoard";
-import UsersBoard, { type AdminUser } from "@/components/admin/UsersBoard";
-import AdminShell, { type AdminGroup } from "@/components/admin/AdminShell";
-import AdminLogin from "@/components/admin/AdminLogin";
-import EventsBoard, { type AdminEvent } from "@/components/admin/EventsBoard";
-import PlaceOverridesBoard from "@/components/admin/PlaceOverridesBoard";
-import LexiconBoard, { type AdminWord } from "@/components/admin/LexiconBoard";
-import StatsBoard from "@/components/admin/StatsBoard";
-import TripsBoard, { type AdminTrip } from "@/components/admin/TripsBoard";
-import type { TripRow } from "@/lib/tripSuggest";
-import PartnersBoard, {
-  type AdminPartner,
-} from "@/components/admin/PartnersBoard";
-import ProsBoard, { type AdminPro } from "@/components/admin/ProsBoard";
-import ClicksBoard, { type AdminClick } from "@/components/admin/ClicksBoard";
-import RatingsBoard, {
-  type AdminRating,
-} from "@/components/admin/RatingsBoard";
-import ReportsBoard, {
-  type AdminReport,
-} from "@/components/admin/ReportsBoard";
-import { ADMIN_COOKIE, adminConfigured, adminSession } from "@/lib/adminAuth";
-import {
-  PRIVATE_BUCKET,
-  PUBLIC_BUCKET,
-  defaultCategory,
-  parseCoords,
-  type SubmissionRow,
-} from "@/lib/community";
-import { LEXICON } from "@/data/lexicon";
-import type { LexiconRow } from "@/lib/lexiconExtra";
-import { PLACES } from "@/data/tunisiaData";
-import type { EventRow } from "@/lib/events";
-import { PARTNER_TYPES } from "@/lib/partners";
-import { PRO_ACTIVITIES, PRO_LANGUAGES } from "@/lib/pros";
-import { loadRatingStatsFresh, type RatingStat } from "@/lib/ratings";
-import {
-  publicUrl,
-  selectRows,
-  signUrls,
-  supabaseConfig,
-} from "@/lib/supabase";
+import BrandLogo from '@/components/BrandLogo';
+import AddPlaceForm from '@/components/admin/AddPlaceForm';
+import AdminBoard, { type AdminSubmission } from '@/components/admin/AdminBoard';
+import UsersBoard, { type AdminUser } from '@/components/admin/UsersBoard';
+import AdminShell, { type AdminGroup } from '@/components/admin/AdminShell';
+import AdminLogin from '@/components/admin/AdminLogin';
+import EventsBoard, { type AdminEvent } from '@/components/admin/EventsBoard';
+import PlaceOverridesBoard from '@/components/admin/PlaceOverridesBoard';
+import LexiconBoard, { type AdminWord } from '@/components/admin/LexiconBoard';
+import StatsBoard from '@/components/admin/StatsBoard';
+import TripsBoard, { type AdminTrip } from '@/components/admin/TripsBoard';
+import type { TripRow } from '@/lib/tripSuggest';
+import PartnersBoard, { type AdminPartner } from '@/components/admin/PartnersBoard';
+import ProsBoard, { type AdminPro } from '@/components/admin/ProsBoard';
+import ClicksBoard, { type AdminClick } from '@/components/admin/ClicksBoard';
+import RatingsBoard, { type AdminRating } from '@/components/admin/RatingsBoard';
+import ReportsBoard, { type AdminReport } from '@/components/admin/ReportsBoard';
+import { ADMIN_COOKIE, adminConfigured, adminSession } from '@/lib/adminAuth';
+import { PRIVATE_BUCKET, PUBLIC_BUCKET, defaultCategory, parseCoords, type SubmissionRow } from '@/lib/community';
+import { LEXICON } from '@/data/lexicon';
+import type { LexiconRow } from '@/lib/lexiconExtra';
+import { PLACES } from '@/data/tunisiaData';
+import type { EventRow } from '@/lib/events';
+import { PARTNER_TYPES } from '@/lib/partners';
+import { PRO_ACTIVITIES, PRO_LANGUAGES } from '@/lib/pros';
+import { loadRatingStatsFresh, type RatingStat } from '@/lib/ratings';
+import { publicUrl, selectRows, signUrls, supabaseConfig } from '@/lib/supabase';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: "Modération · Tunisia Go",
+  title: 'Modération · Tunisia Go',
   robots: { index: false, follow: false },
 };
 
@@ -66,19 +47,11 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Notice({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Notice({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="max-w-xl rounded-3xl border border-sand-200 bg-sand-50 p-6">
       <h1 className="font-serif text-2xl text-charcoal">{title}</h1>
-      <div className="mt-3 space-y-2 text-sm leading-relaxed text-charcoal-700">
-        {children}
-      </div>
+      <div className="mt-3 space-y-2 text-sm leading-relaxed text-charcoal-700">{children}</div>
     </div>
   );
 }
@@ -89,9 +62,8 @@ export default async function AdminPage() {
       <Shell>
         <Notice title="Page pas encore activée">
           <p>
-            Ajoutez la variable{" "}
-            <code className="rounded bg-sand-100 px-1">ADMIN_PASSWORD</code>{" "}
-            dans Vercel (8 caractères minimum), puis redéployez.
+            Ajoutez la variable <code className="rounded bg-sand-100 px-1">ADMIN_PASSWORD</code> dans Vercel (8
+            caractères minimum), puis redéployez.
           </p>
         </Notice>
       </Shell>
@@ -114,12 +86,8 @@ export default async function AdminPage() {
       <Shell>
         <Notice title="Supabase n’est pas relié">
           <p>
-            Ajoutez{" "}
-            <code className="rounded bg-sand-100 px-1">SUPABASE_URL</code> et{" "}
-            <code className="rounded bg-sand-100 px-1">
-              SUPABASE_SECRET_KEY
-            </code>{" "}
-            dans Vercel, puis redéployez.
+            Ajoutez <code className="rounded bg-sand-100 px-1">SUPABASE_URL</code> et{' '}
+            <code className="rounded bg-sand-100 px-1">SUPABASE_SECRET_KEY</code> dans Vercel, puis redéployez.
           </p>
         </Notice>
       </Shell>
@@ -129,25 +97,21 @@ export default async function AdminPage() {
   let rows: SubmissionRow[] = [];
   let failed = false;
   try {
-    rows = await selectRows<SubmissionRow>(
-      cfg,
-      "spot_submissions",
-      "select=*&order=created_at.desc&limit=300",
-    );
+    rows = await selectRows<SubmissionRow>(cfg, 'spot_submissions', 'select=*&order=created_at.desc&limit=300');
   } catch (error) {
-    console.error("admin: list", error);
+    console.error('admin: list', error);
     failed = true;
   }
   // Reports are optional: without the table (db/place-reports.sql) the section just stays empty.
   const reports: AdminReport[] = await selectRows<{
     id: string;
     created_at: string;
-    status: "open" | "done";
+    status: 'open' | 'done';
     place_id: string;
     place_name: string | null;
     message: string;
     contact: string | null;
-  }>(cfg, "place_reports", "select=*&order=created_at.desc&limit=200")
+  }>(cfg, 'place_reports', 'select=*&order=created_at.desc&limit=200')
     .then((list) =>
       list.map((r) => ({
         id: r.id,
@@ -162,12 +126,10 @@ export default async function AdminPage() {
     .catch(() => []);
   // Ratings are optional too: without the table (db/place-ratings.sql) the section says how to create it.
   let ratingsMissing = false;
-  const ratingStats = await loadRatingStatsFresh().catch(
-    (): Record<string, RatingStat> => {
-      ratingsMissing = true;
-      return {};
-    },
-  );
+  const ratingStats = await loadRatingStatsFresh().catch((): Record<string, RatingStat> => {
+    ratingsMissing = true;
+    return {};
+  });
   const ratings: AdminRating[] = PLACES.map((p) => ({
     placeId: p.id,
     name: p.name,
@@ -176,20 +138,14 @@ export default async function AdminPage() {
   }));
   // Clicks on outside links: optional too (db/link-clicks.sql).
   let clicksMissing = false;
-  const clickFrom = new Date(Date.now() - 89 * 86400000)
-    .toISOString()
-    .slice(0, 10);
+  const clickFrom = new Date(Date.now() - 89 * 86400000).toISOString().slice(0, 10);
   const clicks: AdminClick[] = await selectRows<{
     day: string;
     kind: string;
     page: string;
     place_id: string;
     clicks: number;
-  }>(
-    cfg,
-    "link_clicks",
-    `select=day,kind,page,place_id,clicks&day=gte.${clickFrom}&limit=20000`,
-  )
+  }>(cfg, 'link_clicks', `select=day,kind,page,place_id,clicks&day=gte.${clickFrom}&limit=20000`)
     .then((rows) =>
       rows.map((r) => ({
         day: r.day,
@@ -205,16 +161,14 @@ export default async function AdminPage() {
     });
   // Guides and agencies are optional too: without db/pros.sql the section says how to create the tables.
   let prosMissing = false;
-  const proReports = await selectRows<{ listing_id: string }>(
-    cfg,
-    "pro_reports",
-    "select=listing_id&limit=5000",
-  ).catch(() => []);
+  const proReports = await selectRows<{ listing_id: string }>(cfg, 'pro_reports', 'select=listing_id&limit=5000').catch(
+    () => [],
+  );
   const pros: AdminPro[] = await selectRows<{
     id: string;
     created_at: string;
-    status: AdminPro["status"];
-    kind: AdminPro["kind"];
+    status: AdminPro['status'];
+    kind: AdminPro['kind'];
     name: string;
     whatsapp: string;
     card_number: string | null;
@@ -230,7 +184,7 @@ export default async function AdminPage() {
     price_note: string | null;
     place_id: string | null;
     photo_path: string | null;
-  }>(cfg, "pro_listings", "select=*&order=created_at.desc&limit=500")
+  }>(cfg, 'pro_listings', 'select=*&order=created_at.desc&limit=500')
     .then((list) =>
       list.map((r) => ({
         id: r.id,
@@ -241,28 +195,18 @@ export default async function AdminPage() {
         whatsapp: r.whatsapp,
         card: r.card_number,
         socials: r.socials,
-        networks: [r.facebook, r.instagram, r.tiktok].filter(
-          (x): x is string => !!x,
-        ),
+        networks: [r.facebook, r.instagram, r.tiktok].filter((x): x is string => !!x),
         autoPublished: r.auto_published,
         reports: proReports.filter((x) => x.listing_id === r.id).length,
         bio: r.bio,
         experience: r.experience,
         details: [
-          ...(r.languages ?? []).map(
-            (id) => PRO_LANGUAGES.find((l) => l.id === id)?.fr ?? id,
-          ),
-          ...(r.activities ?? []).map(
-            (id) => PRO_ACTIVITIES.find((a) => a.id === id)?.fr ?? id,
-          ),
+          ...(r.languages ?? []).map((id) => PRO_LANGUAGES.find((l) => l.id === id)?.fr ?? id),
+          ...(r.activities ?? []).map((id) => PRO_ACTIVITIES.find((a) => a.id === id)?.fr ?? id),
           ...(r.price_note ? [r.price_note] : []),
-        ].join(" · "),
-        placeName: r.place_id
-          ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null)
-          : null,
-        photoUrl: r.photo_path
-          ? publicUrl(cfg, "pro-photos", r.photo_path)
-          : null,
+        ].join(' · '),
+        placeName: r.place_id ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null) : null,
+        photoUrl: r.photo_path ? publicUrl(cfg, 'pro-photos', r.photo_path) : null,
       })),
     )
     .catch(() => {
@@ -274,7 +218,7 @@ export default async function AdminPage() {
   const partners: AdminPartner[] = await selectRows<{
     id: string;
     created_at: string;
-    status: AdminPartner["status"];
+    status: AdminPartner['status'];
     partner_type: string;
     name: string;
     place_id: string | null;
@@ -282,25 +226,19 @@ export default async function AdminPage() {
     description: string | null;
     whatsapp: string | null;
     website: string | null;
-  }>(cfg, "partner_listings", "select=*&order=updated_at.desc&limit=500")
+  }>(cfg, 'partner_listings', 'select=*&order=updated_at.desc&limit=500')
     .then((list) =>
       list.map((r) => ({
         id: r.id,
         createdAt: r.created_at,
         status: r.status,
-        typeLabel:
-          PARTNER_TYPES.find((t) => t.id === r.partner_type)?.fr ??
-          r.partner_type,
+        typeLabel: PARTNER_TYPES.find((t) => t.id === r.partner_type)?.fr ?? r.partner_type,
         name: r.name,
-        placeName: r.place_id
-          ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null)
-          : null,
+        placeName: r.place_id ? (PLACES.find((pl) => pl.id === r.place_id)?.name ?? null) : null,
         description: r.description,
         whatsapp: r.whatsapp,
         website: r.website,
-        photoUrl: r.photo_path
-          ? publicUrl(cfg, "pro-photos", r.photo_path)
-          : null,
+        photoUrl: r.photo_path ? publicUrl(cfg, 'pro-photos', r.photo_path) : null,
       })),
     )
     .catch(() => {
@@ -311,8 +249,8 @@ export default async function AdminPage() {
   let eventsMissing = false;
   const events: AdminEvent[] = await selectRows<EventRow>(
     cfg,
-    "events",
-    "select=*&order=sort.asc,created_at.asc&limit=300",
+    'events',
+    'select=*&order=sort.asc,created_at.asc&limit=300',
   )
     .then((list) =>
       list.map((r) => ({
@@ -327,12 +265,12 @@ export default async function AdminPage() {
         whenFr: r.when_fr,
         whenEn: r.when_en,
         confirmed: r.confirmed,
-        startDate: r.start_date ?? "",
-        endDate: r.end_date ?? "",
-        ticketUrl: r.ticket_url ?? "",
-        infoUrl: r.info_url ?? "",
+        startDate: r.start_date ?? '',
+        endDate: r.end_date ?? '',
+        ticketUrl: r.ticket_url ?? '',
+        infoUrl: r.info_url ?? '',
         proposed: r.proposed === true,
-        contact: r.contact ?? "",
+        contact: r.contact ?? '',
       })),
     )
     .catch(() => {
@@ -342,18 +280,14 @@ export default async function AdminPage() {
   // Accounts are optional too, and only owners see them.
   let usersMissing = false;
   const users: AdminUser[] =
-    session.role === "owner"
+    session.role === 'owner'
       ? await selectRows<{
           id: string;
           email: string;
-          role: "owner" | "editor";
+          role: 'owner' | 'editor';
           created_at: string;
           last_login_at: string | null;
-        }>(
-          cfg,
-          "admin_users",
-          "select=id,email,role,created_at,last_login_at&order=created_at.asc",
-        )
+        }>(cfg, 'admin_users', 'select=id,email,role,created_at,last_login_at&order=created_at.asc')
           .then((list) =>
             list.map((u) => ({
               id: u.id,
@@ -369,18 +303,14 @@ export default async function AdminPage() {
           })
       : [];
   // Edits of built-in places need place_overrides (db/place-overrides.sql).
-  const overridesMissing = await selectRows(
-    cfg,
-    "place_overrides",
-    "select=place_id&limit=1",
-  )
+  const overridesMissing = await selectRows(cfg, 'place_overrides', 'select=place_id&limit=1')
     .then(() => false)
     .catch(() => true);
   let lexiconMissing = false;
   const words: AdminWord[] = await selectRows<LexiconRow>(
     cfg,
-    "lexicon_words",
-    "select=*&order=created_at.asc&limit=300",
+    'lexicon_words',
+    'select=*&order=created_at.asc&limit=300',
   )
     .then((list) =>
       list.map((w) => ({
@@ -402,10 +332,7 @@ export default async function AdminPage() {
   ).catch(() => ({}) as Record<string, string>);
 
   const submissions: AdminSubmission[] = rows.map((r) => {
-    const guess =
-      r.lat !== null && r.lng !== null
-        ? ([r.lat, r.lng] as [number, number])
-        : parseCoords(r.location);
+    const guess = r.lat !== null && r.lng !== null ? ([r.lat, r.lng] as [number, number]) : parseCoords(r.location);
     return {
       id: r.id,
       createdAt: r.created_at,
@@ -420,15 +347,15 @@ export default async function AdminPage() {
       author: r.author,
       contact: r.contact,
       category: r.category ?? defaultCategory(r.type),
-      coords: guess ? `${guess[0]}, ${guess[1]}` : "",
+      coords: guess ? `${guess[0]}, ${guess[1]}` : '',
       photos: (r.photos ?? []).map((path) => ({
         path,
         url: (signed as Record<string, string>)[path] ?? null,
       })),
       reviewedAt: r.reviewed_at,
-      nameEn: r.name_en ?? "",
-      whyEn: r.why_en ?? "",
-      bestTimeEn: r.best_time_en ?? "",
+      nameEn: r.name_en ?? '',
+      whyEn: r.why_en ?? '',
+      bestTimeEn: r.best_time_en ?? '',
       publicPhotos: (r.public_photos ?? []).map((path) => ({
         path,
         url: publicUrl(cfg, PUBLIC_BUCKET, path),
@@ -440,16 +367,12 @@ export default async function AdminPage() {
   let tripsMissing = false;
   const placeNames: Record<string, string> = {
     ...Object.fromEntries(PLACES.map((p) => [p.id, p.name])),
-    ...Object.fromEntries(
-      rows
-        .filter((r) => r.status === "approved")
-        .map((r) => [`c-${r.id}`, r.name]),
-    ),
+    ...Object.fromEntries(rows.filter((r) => r.status === 'approved').map((r) => [`c-${r.id}`, r.name])),
   };
   const tripRows: TripRow[] = await selectRows<TripRow>(
     cfg,
-    "trip_submissions",
-    "select=*&order=created_at.desc&limit=300",
+    'trip_submissions',
+    'select=*&order=created_at.desc&limit=300',
   ).catch(() => {
     tripsMissing = true;
     return [];
@@ -466,11 +389,11 @@ export default async function AdminPage() {
     name: r.name,
     description: r.description,
     days: r.days,
-    stops: r.stops.map((id) => placeNames[id] ?? "(lieu retiré)"),
+    stops: r.stops.map((id) => placeNames[id] ?? '(lieu retiré)'),
     author: r.author,
     contact: r.contact,
-    nameEn: r.name_en ?? "",
-    descriptionEn: r.description_en ?? "",
+    nameEn: r.name_en ?? '',
+    descriptionEn: r.description_en ?? '',
     photos: (r.photos ?? []).map((path) => ({
       path,
       url: tripPhotoUrls[path] ?? null,
@@ -489,30 +412,28 @@ export default async function AdminPage() {
   }
 
   const placeList = PLACES.map((p) => ({ id: p.id, name: p.name }));
-  const count = (list: { status: string }[]) =>
-    list.filter((x) => x.status === "pending").length;
+  const count = (list: { status: string }[]) => list.filter((x) => x.status === 'pending').length;
   const pendingSubs = count(submissions);
   const pendingTrips = count(trips);
-  const openReports = reports.filter((x) => x.status === "open").length;
+  const openReports = reports.filter((x) => x.status === 'open').length;
 
   const groups: AdminGroup[] = [
     {
-      title: "Tableau de bord",
+      title: 'Tableau de bord',
       sections: [
         {
-          id: "accueil",
-          label: "Vue d’ensemble",
+          id: 'accueil',
+          label: 'Vue d’ensemble',
           content: (
             <StatsBoard
               counts={[
-                { label: "Lieux du site", value: PLACES.length },
+                { label: 'Lieux du site', value: PLACES.length },
                 {
-                  label: "Lieux ajoutés",
-                  value: submissions.filter((x) => x.status === "approved")
-                    .length,
+                  label: 'Lieux ajoutés',
+                  value: submissions.filter((x) => x.status === 'approved').length,
                 },
-                { label: "Événements", value: events.length },
-                { label: "Mots ajoutés", value: words.length },
+                { label: 'Événements', value: events.length },
+                { label: 'Mots ajoutés', value: words.length },
               ]}
               pending={pendingSubs + pendingTrips}
               openReports={openReports}
@@ -522,56 +443,45 @@ export default async function AdminPage() {
       ],
     },
     {
-      title: "À modérer",
+      title: 'À modérer',
       sections: [
         {
-          id: "propositions",
-          label: "Lieux proposés",
+          id: 'propositions',
+          label: 'Lieux proposés',
           badge: pendingSubs,
           content: <AdminBoard submissions={submissions} />,
         },
         {
-          id: "trips",
-          label: "Trips proposés",
+          id: 'trips',
+          label: 'Trips proposés',
           badge: pendingTrips,
           content: <TripsBoard trips={trips} tableMissing={tripsMissing} />,
         },
         {
-          id: "signalements",
-          label: "Signalements",
+          id: 'signalements',
+          label: 'Signalements',
           badge: openReports,
           content: <ReportsBoard reports={reports} />,
         },
       ],
     },
     {
-      title: "Contenu du site",
+      title: 'Contenu du site',
       sections: [
-        { id: "ajouter", label: "Ajouter un lieu", content: <AddPlaceForm /> },
+        { id: 'ajouter', label: 'Ajouter un lieu', content: <AddPlaceForm /> },
         {
-          id: "lieux",
-          label: "Lieux du site",
-          content: (
-            <PlaceOverridesBoard
-              places={placeList}
-              tableMissing={overridesMissing}
-            />
-          ),
+          id: 'lieux',
+          label: 'Lieux du site',
+          content: <PlaceOverridesBoard places={placeList} tableMissing={overridesMissing} />,
         },
         {
-          id: "evenements",
-          label: "Événements",
-          content: (
-            <EventsBoard
-              events={events}
-              places={placeList}
-              tableMissing={eventsMissing}
-            />
-          ),
+          id: 'evenements',
+          label: 'Événements',
+          content: <EventsBoard events={events} places={placeList} tableMissing={eventsMissing} />,
         },
         {
-          id: "mots",
-          label: "Mots du cru",
+          id: 'mots',
+          label: 'Mots du cru',
           content: (
             <LexiconBoard
               groups={LEXICON.map((g) => ({ id: g.id, title: g.title.fr }))}
@@ -583,52 +493,36 @@ export default async function AdminPage() {
       ],
     },
     {
-      title: "Communauté",
+      title: 'Communauté',
       sections: [
         {
-          id: "guides",
-          label: "Guides et agences",
+          id: 'guides',
+          label: 'Guides et agences',
           badge: count(pros),
           content: <ProsBoard pros={pros} tableMissing={prosMissing} />,
         },
         {
-          id: "partenaires",
-          label: "Partenaires",
+          id: 'partenaires',
+          label: 'Partenaires',
           badge: count(partners),
-          content: (
-            <PartnersBoard partners={partners} tableMissing={partnersMissing} />
-          ),
+          content: <PartnersBoard partners={partners} tableMissing={partnersMissing} />,
         },
         {
-          id: "clics",
-          label: "Clics sur les liens",
-          content: (
-            <ClicksBoard
-              clicks={clicks}
-              placeNames={placeNames}
-              tableMissing={clicksMissing}
-            />
-          ),
+          id: 'clics',
+          label: 'Clics sur les liens',
+          content: <ClicksBoard clicks={clicks} placeNames={placeNames} tableMissing={clicksMissing} />,
         },
         {
-          id: "avis",
-          label: "Avis (étoiles)",
-          content: (
-            <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />
-          ),
+          id: 'avis',
+          label: 'Avis (étoiles)',
+          content: <RatingsBoard ratings={ratings} tableMissing={ratingsMissing} />,
         },
-        ...(session.role === "owner"
+        ...(session.role === 'owner'
           ? [
               {
-                id: "comptes",
-                label: "Comptes admin",
-                content: (
-                  <UsersBoard
-                    users={users}
-                    me={session.email}
-                    tableMissing={usersMissing}
-                  />
-                ),
+                id: 'comptes',
+                label: 'Comptes admin',
+                content: <UsersBoard users={users} me={session.email} tableMissing={usersMissing} />,
               },
             ]
           : []),
