@@ -48,6 +48,12 @@ const COPY: Record<
         ],
       },
       {
+        title: 'Clics sur les liens',
+        body: [
+          'Quand vous cliquez sur un lien vers un service extérieur (Tunisie Booking, Airbnb, WhatsApp, téléphone, e-mail, site d’un hébergement ou d’une agence), nous ajoutons un au compteur du jour pour ce type de lien, la partie du site et, le cas échéant, le lieu concerné. Rien sur vous n’est enregistré : ni adresse IP, ni identifiant, ni cookie. Ce compteur sert seulement à savoir quels liens sont utiles.',
+        ],
+      },
+      {
         title: 'Mesure d’audience',
         body: [
           'Avec votre accord seulement, nous mesurons les visites (pages vues, lieux et road trips consultés, type d’appareil, pays) avec PostHog, hébergé dans l’Union européenne. Cela nous aide à savoir quels contenus vous sont utiles. Aucune donnée n’est vendue ni utilisée pour de la publicité.',
@@ -107,6 +113,12 @@ const COPY: Record<
         body: [
           'You can rate a place from 1 to 5 stars without creating an account. So that one person votes only once per place, we compute an encrypted fingerprint of your IP address with a secret key. The IP address itself is not stored, and the fingerprint cannot be turned back into it.',
           'We keep only that fingerprint, the place and your rating, hosted in the European Union (Supabase, Frankfurt). Your rating is also remembered in your browser (tg-rating-…) to show your choice.',
+        ],
+      },
+      {
+        title: 'Clicks on links',
+        body: [
+          'When you click a link to an outside service (Tunisie Booking, Airbnb, WhatsApp, phone, e-mail, the website of a lodging or agency), we add one to that day’s counter for that kind of link, the part of the site and, where relevant, the place. Nothing about you is stored: no IP address, no identifier, no cookie. The counter only tells us which links are useful.',
         ],
       },
       {

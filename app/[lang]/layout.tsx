@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 
 import AssistantLauncher from '@/components/assistant/AssistantLauncher';
+import ClickTracker from '@/components/ClickTracker';
 import CookieConsent from '@/components/CookieConsent';
 import InstallPrompt from '@/components/InstallPrompt';
 import ServiceWorker from '@/components/ServiceWorker';
@@ -78,6 +79,7 @@ export default async function RootLayout({
                   <TravelerSync />
                   {children}
                   <AssistantLauncher />
+                  <ClickTracker />
                   <CookieConsent />
                   <InstallPrompt />
                 </FavoritesProvider>

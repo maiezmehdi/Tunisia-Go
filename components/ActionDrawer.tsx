@@ -119,7 +119,7 @@ function DrawerContent({
   const hasGuides = useRegionHasGuides(place.region);
 
   return (
-    <>
+    <div data-place={place.id} className="contents">
       <div className="relative">
         <PhotoCarousel
           photos={photos}
@@ -263,7 +263,7 @@ function DrawerContent({
           <AddSpotLink from="place" className="mt-3" />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
