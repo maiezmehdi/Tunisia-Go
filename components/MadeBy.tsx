@@ -49,6 +49,11 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
           </a>
         </li>
         <li>
+          <a href="/mentions-legales" className={anchor}>
+            {t.legal}
+          </a>
+        </li>
+        <li>
           <a href="mailto:contact@tunisiagoo.com" className={anchor}>
             {t.contact}
           </a>

@@ -54,6 +54,7 @@ const en = {
   // Drawer
   close: 'Close',
   privacy: 'Privacy',
+  legal: 'Legal notice and terms',
   contact: 'Contact',
   contactLine: 'A question? Write to us at',
   allPlaces: 'All places',
@@ -220,6 +221,7 @@ const fr: UiStrings = {
   spotBenefit: 'Chaque lieu retenu apparaît sur la carte, avec votre prénom.',
   close: 'Fermer',
   privacy: 'Confidentialité',
+  legal: 'Mentions légales et CGU',
   contact: 'Contact',
   contactLine: 'Une question ? Écrivez-nous à',
   allPlaces: 'Tous les lieux',

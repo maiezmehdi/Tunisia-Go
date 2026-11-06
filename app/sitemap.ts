@@ -16,6 +16,7 @@ const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
   { path: '/pratique', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/spot-secret', priority: 0.4, changeFrequency: 'yearly' },
   { path: '/confidentialite', priority: 0.1, changeFrequency: 'yearly' },
+  { path: '/mentions-legales', priority: 0.1, changeFrequency: 'yearly' },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
