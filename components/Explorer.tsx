@@ -21,7 +21,7 @@ import CategoryGlyph from '@/components/CategoryGlyph';
 import { CATEGORIES } from '@/data/tunisiaData';
 import type { CategoryId, Itinerary, Photo, Place } from '@/data/types';
 import { applyOverrides, type PlaceOverride } from '@/lib/placeOverrides';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { SOUTH_TRIPS, useSound } from '@/lib/sound';
 
 // Leaflet touches `window`, so the map only renders in the browser.
@@ -309,19 +309,20 @@ export default function Explorer({
 }
 
 function HeaderLinks() {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const link =
     'whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline';
   return (
     <nav aria-label={t.travelTools} className="flex items-center gap-4">
       <MyTripLink className={link} />
-      <a href="/evenements" className={link}>
+      <a href={lp('/evenements')} className={link}>
         {t.events}
       </a>
-      <a href="/guides" className={link}>
+      <a href={lp('/guides')} className={link}>
         {t.guides}
       </a>
-      <a href="/pratique" className={link}>
+      <a href={lp('/pratique')} className={link}>
         {t.practical}
       </a>
       <ProAuthButton className={link} />

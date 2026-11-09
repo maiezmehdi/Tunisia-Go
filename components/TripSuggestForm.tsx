@@ -4,7 +4,7 @@ import { useRef, useState, type ReactNode } from 'react';
 
 import RewriteButton from '@/components/RewriteButton';
 import PhotoPicker, { type PickedPhoto } from '@/components/PhotoPicker';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import type { Locale } from '@/lib/i18n/config';
 import { track } from '@/lib/analytics';
 import { MAX_DAYS, MAX_STOPS, MAX_TRIP_PHOTOS, MIN_STOPS } from '@/lib/tripSuggest';
@@ -130,6 +130,7 @@ const small =
 
 /** Suggest a road trip: an ordered list of places from the map. Saved as pending and moderated in /admin. */
 export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
+  const lp = useLocalePath();
   const { locale } = useLocale();
   const c = COPY[locale];
   const openedAt = useRef(Date.now());
@@ -200,7 +201,7 @@ export default function TripSuggestForm({ places }: { places: PlaceChoice[] }) {
         <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-charcoal-500">{c.thanksBody(name)}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <a
-            href="/explore"
+            href={lp('/explore')}
             className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
           >
             {c.backToMap}

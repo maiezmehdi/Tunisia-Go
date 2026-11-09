@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import BrandLogo from '@/components/BrandLogo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
@@ -13,17 +14,21 @@ import PlaceReport from '@/components/PlaceReport';
 import SeasonStrip from '@/components/SeasonStrip';
 import SoundToggle from '@/components/SoundToggle';
 import TripButton from '@/components/TripButton';
+import { placeGuide } from '@/data/placeGuides';
 import { bestMonthsLabel } from '@/data/seasons';
+import type { Place } from '@/data/types';
 import { PLACES } from '@/data/tunisiaData';
 import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
+import { haversineKm } from '@/lib/geo';
 import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
+import { placeUpdated } from '@/data/contentDates';
 import { formatUpdated, placePath } from '@/lib/placePages';
 import { hasRegionPage, regionPath } from '@/lib/regionPages';
 import { loadRatingStats } from '@/lib/ratings';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 import { placePageData } from '@/lib/structuredData';
 
 // Photos come from Wikimedia Commons and are refreshed once a day.
@@ -51,7 +56,10 @@ const COPY = {
     wiki: 'Wikipédia',
     photosFrom: 'Photos : Wikimedia Commons',
     inTrips: 'Dans ces road trips',
-    nearby: (r: string) => `Autres lieux : ${r}`,
+    nearby: 'À voir aussi',
+    visit: (n: string) => `Visiter ${n}`,
+    home: 'Accueil',
+    places: 'Lieux',
     regionGuide: 'Cahier pratique',
     regionGuideHint: 'Usages, négociation et bonne saison, en quelques lignes.',
     unesco: 'Patrimoine mondial de l’UNESCO',
@@ -72,7 +80,10 @@ const COPY = {
     wiki: 'Wikipedia',
     photosFrom: 'Photos: Wikimedia Commons',
     inTrips: 'Part of these road trips',
-    nearby: (r: string) => `More places: ${r}`,
+    nearby: 'See also',
+    visit: (n: string) => `Visit ${n}`,
+    home: 'Home',
+    places: 'Places',
     regionGuide: 'Regional notes',
     regionGuideHint: 'Customs, bargaining and the right season, in a few lines.',
     unesco: 'UNESCO World Heritage',
@@ -94,11 +105,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { lang, id } = await params;
   const { locale, place } = await find(lang, id);
   if (!place) return {};
+  const guide = placeGuide(id, locale);
   return pageMetadata({
     lang: locale,
     path: placePath(id),
-    title: COPY[locale].metaTitle(place.name),
-    description: `${place.tagline}. ${place.description}`,
+    title: guide?.title ?? COPY[locale].metaTitle(place.name),
+    description: guide?.description ?? `${place.tagline}. ${place.description}`,
+    descriptionMax: guide ? 160 : undefined,
     image: { url: `/api/og/${id}?lang=${locale}`, alt: `${place.name}, ${place.region}` },
   });
 }
@@ -106,14 +119,22 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function PlacePage({ params }: Params) {
   const { lang, id } = await params;
   const { locale, catalog, place, overrides } = await find(lang, id);
+  const lp = (path: string) => localePath(path, locale);
   if (!place) notFound();
   const c = COPY[locale];
+  const visitGuide = placeGuide(place.id, locale);
   const rating = (await loadRatingStats())[place.id];
 
   const photos = withOverridePhotos(await loadPhotos([place]), overrides, { [place.id]: place.name })[place.id] ?? [];
   const photo = photos[0];
   const itineraries = catalog.itineraries.filter((it) => it.stops.includes(place.id));
-  const nearby = catalog.places.filter((p) => p.region === place.region && p.id !== place.id).slice(0, 6);
+  // « À voir aussi »: the region's other places, then the closest places of the same kind, 3 to 6 links.
+  const others = catalog.places.filter((p) => p.id !== place.id);
+  const byDistance = (a: Place, b: Place) => haversineKm(place.coords, a.coords) - haversineKm(place.coords, b.coords);
+  const sameRegion = others.filter((p) => p.region === place.region).sort(byDistance);
+  const sameKind = others.filter((p) => p.region !== place.region && p.category === place.category).sort(byDistance);
+  const closest = others.filter((p) => p.region !== place.region).sort(byDistance);
+  const nearby = [...new Map([...sameRegion, ...sameKind.slice(0, 3), ...closest].map((p) => [p.id, p])).values()].slice(0, 6);
   const guide = regionGuides(locale).find((g) => g.id === guideFor(place.id));
   const category = catalog.categoryById[place.category];
   const best = bestMonthsLabel(place.id, locale);
@@ -129,7 +150,7 @@ export default async function PlacePage({ params }: Params) {
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
-      <JsonLd data={placePageData(place, photos, locale)} />
+      <JsonLd data={placePageData(place, photos, locale, visitGuide?.description)} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />
@@ -139,7 +160,7 @@ export default async function PlacePage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/lieux"
+              href={lp('/lieux')}
               className="hidden text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline sm:inline"
             >
               {c.allPlaces}
@@ -150,7 +171,15 @@ export default async function PlacePage({ params }: Params) {
       </header>
 
       <article className="mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
+        <Breadcrumbs
+          items={[
+            { name: c.home, href: lp('/') },
+            { name: c.places, href: lp('/lieux') },
+            ...(hasRegionPage(place.region) ? [{ name: place.region, href: lp(regionPath(place.region)) }] : []),
+            { name: place.name },
+          ]}
+        />
+        <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
           {category.label}
           {place.unesco && ` · ${c.unesco}`}
         </p>
@@ -165,7 +194,7 @@ export default async function PlacePage({ params }: Params) {
         <p className="mt-1 text-sm text-charcoal-500">
           {hasRegionPage(place.region) ? (
             <a
-              href={regionPath(place.region)}
+              href={lp(regionPath(place.region))}
               className="underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
             >
               {place.region}
@@ -208,7 +237,7 @@ export default async function PlacePage({ params }: Params) {
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
               <a
-                href={`/explore?place=${place.id}`}
+                href={lp(`/explore?place=${place.id}`)}
                 className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
               >
                 {c.openMap}
@@ -223,6 +252,21 @@ export default async function PlacePage({ params }: Params) {
               </a>
             </div>
             <TripButton placeId={place.id} />
+
+            {visitGuide && (
+              <div className="mt-12 space-y-10">
+                {visitGuide.sections.map((section) => (
+                  <section key={section.heading}>
+                    <h2 className="font-serif text-2xl tracking-tight text-charcoal">{section.heading}</h2>
+                    {section.paragraphs.map((text) => (
+                      <p key={text.slice(0, 40)} className="mt-4 text-[17px] leading-relaxed text-charcoal-700">
+                        {text}
+                      </p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            )}
 
             <dl className="mt-10 divide-y divide-sand-200 border-y border-sand-200">
               {(['history', 'customs', 'food', 'bestTime'] as const).map((key) => (
@@ -269,7 +313,7 @@ export default async function PlacePage({ params }: Params) {
 
             {guide && (
               <a
-                href={`/pratique#${guideAnchor(guide.id)}`}
+                href={lp(`/pratique#${guideAnchor(guide.id)}`)}
                 className="group block border-l-2 border-sand-300 py-1 pl-5 transition hover:border-charcoal"
               >
                 <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
@@ -289,7 +333,7 @@ export default async function PlacePage({ params }: Params) {
                   {itineraries.map((it) => (
                     <li key={it.id}>
                       <a
-                        href={`/road-trips/${it.id}`}
+                        href={lp(`/road-trips/${it.id}`)}
                         className="text-sm text-charcoal underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal"
                       >
                         {it.name}
@@ -304,18 +348,18 @@ export default async function PlacePage({ params }: Params) {
         </div>
 
         {nearby.length > 0 && (
-          <nav aria-label={c.nearby(place.region)} className="mt-16 border-t border-sand-200 pt-8">
+          <nav aria-label={c.nearby} className="mt-16 border-t border-sand-200 pt-8">
             <h2 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
-              {c.nearby(place.region)}
+              {c.nearby}
             </h2>
             <ul className="mt-4 flex flex-wrap gap-2">
               {nearby.map((p) => (
                 <li key={p.id}>
                   <a
-                    href={placePath(p.id)}
+                    href={lp(placePath(p.id))}
                     className="inline-block rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 hover:text-charcoal"
                   >
-                    {p.name}
+                    {c.visit(p.name)}
                   </a>
                 </li>
               ))}
@@ -325,7 +369,7 @@ export default async function PlacePage({ params }: Params) {
 
         <footer className="mt-16 space-y-4 border-t border-sand-200 pt-6 text-sm text-charcoal-500">
           <p>
-            {c.updated(formatUpdated(locale))}
+            {c.updated(formatUpdated(locale, placeUpdated(place.id)))}
             {wikiLink && (
               <>
                 {' '}

@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 
 import { track } from '@/lib/analytics';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 
 type Variant = 'pill' | 'pill-light' | 'floating' | 'primary' | 'text' | 'text-light';
 
@@ -33,11 +33,12 @@ export default function AddSpotLink({
   className?: string;
   children?: ReactNode;
 }) {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const withPlus = variant !== 'text' && variant !== 'text-light';
   return (
     <a
-      href="/spot-secret"
+      href={lp('/spot-secret')}
       onClick={() => track('spot_cta_clicked', { from })}
       className={`${STYLES[variant]} ${className}`}
     >

@@ -12,7 +12,7 @@ import {
   type Profile,
   type Reply,
 } from '@/lib/assistant/engine';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import type { Locale } from '@/lib/i18n/config';
 import { useMyTrip } from '@/lib/myTrip';
 import { useBackToClose } from '@/lib/useBackToClose';
@@ -319,6 +319,7 @@ function BotMessage({
   typing: boolean;
   open: boolean;
 }) {
+  const lp = useLocalePath();
   const { shown, done } = useTypewriter(reply.text, open, typing);
   const { locale, catalog } = useLocale();
   const ui = UI[locale];
@@ -346,7 +347,7 @@ function BotMessage({
           <p className="mt-1 font-serif text-base">{itinerary.name}</p>
           <p className="text-charcoal-500">{itinerary.tagline}</p>
           <a
-            href={`/explore?trip=${encodeURIComponent(itinerary.id)}`}
+            href={lp(`/explore?trip=${encodeURIComponent(itinerary.id)}`)}
             className="mt-2 inline-block underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
           >
             {ui.seeTrip}
@@ -386,7 +387,7 @@ function BotMessage({
           {reply.links.map((l) => (
             <a
               key={l.href}
-              href={l.href}
+              href={lp(l.href)}
               className="underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
             >
               {l.label}
@@ -414,6 +415,7 @@ function BotMessage({
 }
 
 function PlaceCard({ id, index }: { id: string; index?: number }) {
+  const lp = useLocalePath();
   const { locale, catalog } = useLocale();
   const ui = UI[locale];
   const trip = useMyTrip();
@@ -431,7 +433,7 @@ function PlaceCard({ id, index }: { id: string; index?: number }) {
         <p className="mt-1 text-charcoal-700">{place.tagline}</p>
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
           <a
-            href={`/explore?place=${encodeURIComponent(id)}`}
+            href={lp(`/explore?place=${encodeURIComponent(id)}`)}
             className="underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
           >
             {ui.open}
@@ -451,6 +453,7 @@ function PlaceCard({ id, index }: { id: string; index?: number }) {
 }
 
 function TripBlock({ ids }: { ids: string[] }) {
+  const lp = useLocalePath();
   const { locale } = useLocale();
   const ui = UI[locale];
   const trip = useMyTrip();
@@ -465,7 +468,7 @@ function TripBlock({ ids }: { ids: string[] }) {
       {allIn ? (
         <p>
           {ui.addedAll}{' '}
-          <a href="/mon-voyage" className="underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal">
+          <a href={lp('/mon-voyage')} className="underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal">
             {ui.openTrip}
           </a>
         </p>

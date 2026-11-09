@@ -13,7 +13,7 @@ import PlaceRating from '@/components/PlaceRating';
 import SeasonStrip from '@/components/SeasonStrip';
 import TripButton from '@/components/TripButton';
 import type { Itinerary, Photo, Place } from '@/data/types';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { lockPageScroll } from '@/lib/scrollLock';
 import { useBackToClose } from '@/lib/useBackToClose';
@@ -109,6 +109,7 @@ function DrawerContent({
   onNavigate: (placeId: string) => void;
   month: number | null;
 }) {
+  const lp = useLocalePath();
   const { t, catalog, locale } = useLocale();
   const category = catalog.categoryById[place.category];
   const stopIndex = itinerary ? itinerary.stops.indexOf(place.id) : -1;
@@ -129,7 +130,7 @@ function DrawerContent({
         <div className="absolute right-4 top-4 flex gap-2">
           {!place.community && (
             <a
-              href={`/lieux/${place.id}`}
+              href={lp(`/lieux/${place.id}`)}
               aria-label={t.openFullPage}
               data-tip={t.openFullPage}
               data-tip-align="end"
@@ -288,13 +289,14 @@ function useRegionHasGuides(region: string): boolean {
 
 /** Points to the regional « Cahier pratique » on the Practical page. */
 function GuideLink({ placeId }: { placeId: string }) {
+  const lp = useLocalePath();
   const { t, locale } = useLocale();
   const id = guideFor(placeId);
   const guide = regionGuides(locale).find((g) => g.id === id);
   if (!guide) return null;
   return (
     <a
-      href={`/pratique#${guideAnchor(id)}`}
+      href={lp(`/pratique#${guideAnchor(id)}`)}
       className="group block border-l-2 border-sand-300 py-1 pl-5 transition hover:border-charcoal"
     >
       <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{t.regionGuide}</span>
