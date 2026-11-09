@@ -124,11 +124,12 @@ export function exploreData(places: Place[], itineraries: Itinerary[], photos: R
 }
 
 /** A place's own page: the attraction plus a breadcrumb back to the list of places. */
-export function placePageData(place: Place, photos: Photo[], lang: Locale) {
+export function placePageData(place: Place, photos: Photo[], lang: Locale, description?: string) {
   return [
     {
       '@context': 'https://schema.org',
       ...attraction(place, photos, lang),
+      ...(description && { description }),
       inLanguage: lang,
       dateModified: placeUpdated(place.id),
     },

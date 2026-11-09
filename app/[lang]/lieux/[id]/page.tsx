@@ -14,6 +14,7 @@ import PlaceReport from '@/components/PlaceReport';
 import SeasonStrip from '@/components/SeasonStrip';
 import SoundToggle from '@/components/SoundToggle';
 import TripButton from '@/components/TripButton';
+import { placeGuide } from '@/data/placeGuides';
 import { bestMonthsLabel } from '@/data/seasons';
 import type { Place } from '@/data/types';
 import { PLACES } from '@/data/tunisiaData';
@@ -104,11 +105,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { lang, id } = await params;
   const { locale, place } = await find(lang, id);
   if (!place) return {};
+  const guide = placeGuide(id, locale);
   return pageMetadata({
     lang: locale,
     path: placePath(id),
-    title: COPY[locale].metaTitle(place.name),
-    description: `${place.tagline}. ${place.description}`,
+    title: guide?.title ?? COPY[locale].metaTitle(place.name),
+    description: guide?.description ?? `${place.tagline}. ${place.description}`,
+    descriptionMax: guide ? 160 : undefined,
     image: { url: `/api/og/${id}?lang=${locale}`, alt: `${place.name}, ${place.region}` },
   });
 }
@@ -119,6 +122,7 @@ export default async function PlacePage({ params }: Params) {
   const lp = (path: string) => localePath(path, locale);
   if (!place) notFound();
   const c = COPY[locale];
+  const visitGuide = placeGuide(place.id, locale);
   const rating = (await loadRatingStats())[place.id];
 
   const photos = withOverridePhotos(await loadPhotos([place]), overrides, { [place.id]: place.name })[place.id] ?? [];
@@ -146,7 +150,7 @@ export default async function PlacePage({ params }: Params) {
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
-      <JsonLd data={placePageData(place, photos, locale)} />
+      <JsonLd data={placePageData(place, photos, locale, visitGuide?.description)} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />
@@ -248,6 +252,21 @@ export default async function PlacePage({ params }: Params) {
               </a>
             </div>
             <TripButton placeId={place.id} />
+
+            {visitGuide && (
+              <div className="mt-12 space-y-10">
+                {visitGuide.sections.map((section) => (
+                  <section key={section.heading}>
+                    <h2 className="font-serif text-2xl tracking-tight text-charcoal">{section.heading}</h2>
+                    {section.paragraphs.map((text) => (
+                      <p key={text.slice(0, 40)} className="mt-4 text-[17px] leading-relaxed text-charcoal-700">
+                        {text}
+                      </p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            )}
 
             <dl className="mt-10 divide-y divide-sand-200 border-y border-sand-200">
               {(['history', 'customs', 'food', 'bestTime'] as const).map((key) => (

@@ -6,6 +6,12 @@ import { CONTENT_UPDATED } from '@/lib/placePages';
  * Add or bump a line when a text is added or rewritten (YYYY-MM-DD).
  */
 const PLACE_UPDATED: Record<string, string> = {
+  'nabeul': '2026-11-09',
+  'kairouan': '2026-11-09',
+  'hammamet': '2026-11-09',
+  'el-jem': '2026-11-09',
+  'dougga': '2026-11-09',
+  'carthage': '2026-11-09',
   'ksar-ghilane': '2026-10-23',
   'djerba-velo': '2026-10-23',
   'utique': '2026-10-25',
