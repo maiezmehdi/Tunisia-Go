@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import BrandLogo from '@/components/BrandLogo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
@@ -14,10 +15,12 @@ import SeasonStrip from '@/components/SeasonStrip';
 import SoundToggle from '@/components/SoundToggle';
 import TripButton from '@/components/TripButton';
 import { bestMonthsLabel } from '@/data/seasons';
+import type { Place } from '@/data/types';
 import { PLACES } from '@/data/tunisiaData';
 import { guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
+import { haversineKm } from '@/lib/geo';
 import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { placeUpdated } from '@/data/contentDates';
@@ -52,7 +55,10 @@ const COPY = {
     wiki: 'Wikipédia',
     photosFrom: 'Photos : Wikimedia Commons',
     inTrips: 'Dans ces road trips',
-    nearby: (r: string) => `Autres lieux : ${r}`,
+    nearby: 'À voir aussi',
+    visit: (n: string) => `Visiter ${n}`,
+    home: 'Accueil',
+    places: 'Lieux',
     regionGuide: 'Cahier pratique',
     regionGuideHint: 'Usages, négociation et bonne saison, en quelques lignes.',
     unesco: 'Patrimoine mondial de l’UNESCO',
@@ -73,7 +79,10 @@ const COPY = {
     wiki: 'Wikipedia',
     photosFrom: 'Photos: Wikimedia Commons',
     inTrips: 'Part of these road trips',
-    nearby: (r: string) => `More places: ${r}`,
+    nearby: 'See also',
+    visit: (n: string) => `Visit ${n}`,
+    home: 'Home',
+    places: 'Places',
     regionGuide: 'Regional notes',
     regionGuideHint: 'Customs, bargaining and the right season, in a few lines.',
     unesco: 'UNESCO World Heritage',
@@ -115,7 +124,13 @@ export default async function PlacePage({ params }: Params) {
   const photos = withOverridePhotos(await loadPhotos([place]), overrides, { [place.id]: place.name })[place.id] ?? [];
   const photo = photos[0];
   const itineraries = catalog.itineraries.filter((it) => it.stops.includes(place.id));
-  const nearby = catalog.places.filter((p) => p.region === place.region && p.id !== place.id).slice(0, 6);
+  // « À voir aussi »: the region's other places, then the closest places of the same kind, 3 to 6 links.
+  const others = catalog.places.filter((p) => p.id !== place.id);
+  const byDistance = (a: Place, b: Place) => haversineKm(place.coords, a.coords) - haversineKm(place.coords, b.coords);
+  const sameRegion = others.filter((p) => p.region === place.region).sort(byDistance);
+  const sameKind = others.filter((p) => p.region !== place.region && p.category === place.category).sort(byDistance);
+  const closest = others.filter((p) => p.region !== place.region).sort(byDistance);
+  const nearby = [...new Map([...sameRegion, ...sameKind.slice(0, 3), ...closest].map((p) => [p.id, p])).values()].slice(0, 6);
   const guide = regionGuides(locale).find((g) => g.id === guideFor(place.id));
   const category = catalog.categoryById[place.category];
   const best = bestMonthsLabel(place.id, locale);
@@ -152,7 +167,15 @@ export default async function PlacePage({ params }: Params) {
       </header>
 
       <article className="mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
+        <Breadcrumbs
+          items={[
+            { name: c.home, href: lp('/') },
+            { name: c.places, href: lp('/lieux') },
+            ...(hasRegionPage(place.region) ? [{ name: place.region, href: lp(regionPath(place.region)) }] : []),
+            { name: place.name },
+          ]}
+        />
+        <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
           {category.label}
           {place.unesco && ` · ${c.unesco}`}
         </p>
@@ -306,9 +329,9 @@ export default async function PlacePage({ params }: Params) {
         </div>
 
         {nearby.length > 0 && (
-          <nav aria-label={c.nearby(place.region)} className="mt-16 border-t border-sand-200 pt-8">
+          <nav aria-label={c.nearby} className="mt-16 border-t border-sand-200 pt-8">
             <h2 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
-              {c.nearby(place.region)}
+              {c.nearby}
             </h2>
             <ul className="mt-4 flex flex-wrap gap-2">
               {nearby.map((p) => (
@@ -317,7 +340,7 @@ export default async function PlacePage({ params }: Params) {
                     href={lp(placePath(p.id))}
                     className="inline-block rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 hover:text-charcoal"
                   >
-                    {p.name}
+                    {c.visit(p.name)}
                   </a>
                 </li>
               ))}

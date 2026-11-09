@@ -181,7 +181,16 @@ export interface LandingCopy {
     cta: string;
     secondary: string;
   };
-  footer: { tagline: string; credits: string };
+  footer: {
+    tagline: string;
+    credits: string;
+    /** Links to the main sections, so every page can be reached from the home page. */
+    plan: string;
+    map: string;
+    places: string;
+    trips: string;
+    regions: string;
+  };
   /** Short photo credit, e.g. "Photo: author · licence" */
   photoCredit: (author: string, license: string) => string;
 }
@@ -238,6 +247,11 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
     footer: {
       tagline: 'Guide indépendant de la Tunisie',
       credits: 'Crédits photo · Wikimedia Commons',
+      plan: 'Préparer votre voyage',
+      map: 'Carte interactive de la Tunisie',
+      places: 'Tous les lieux à visiter',
+      trips: 'Road trips jour par jour',
+      regions: 'Que voir par région',
     },
     photoCredit: (author, license) => `Photo : ${author} · ${license}`,
   },
@@ -293,6 +307,11 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
     footer: {
       tagline: 'An independent guide to Tunisia',
       credits: 'Photo credits · Wikimedia Commons',
+      plan: 'Plan your trip',
+      map: 'Interactive map of Tunisia',
+      places: 'All places to visit',
+      trips: 'Day-by-day road trips',
+      regions: 'What to see by region',
     },
     photoCredit: (author, license) => `Photo: ${author} · ${license}`,
   },

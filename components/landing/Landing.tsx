@@ -24,6 +24,7 @@ import {
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { formatKm, summarizeRoute } from '@/lib/geo';
 import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
+import { PAGE_REGIONS, regionPath } from '@/lib/regionPages';
 
 /** Landing copy and catalog in the visitor's language. */
 function useLanding() {
@@ -563,8 +564,41 @@ function Finale() {
 
 function Footer({ photos }: { photos: Photo[] }) {
   const c = useLanding().copy.footer;
+  const lp = useLocalePath();
+  const link = 'text-cream/75 underline decoration-cream/20 underline-offset-4 transition hover:text-cream hover:decoration-cream';
+  const regions = [...PAGE_REGIONS].sort((a, b) => a.region.localeCompare(b.region, 'fr'));
   return (
     <footer className="bg-charcoal px-5 pb-10 text-cream/50 sm:px-10">
+      <nav aria-label={c.plan} className="mx-auto max-w-6xl border-t border-cream/10 py-10 text-sm">
+        <h2 className="text-[11px] font-medium uppercase tracking-[0.22em] text-cream/40">{c.plan}</h2>
+        <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2.5">
+          <li>
+            <a href={lp('/explore')} className={link}>
+              {c.map}
+            </a>
+          </li>
+          <li>
+            <a href={lp('/lieux')} className={link}>
+              {c.places}
+            </a>
+          </li>
+          <li>
+            <a href={lp('/road-trips')} className={link}>
+              {c.trips}
+            </a>
+          </li>
+        </ul>
+        <h3 className="mt-8 text-[11px] font-medium uppercase tracking-[0.22em] text-cream/40">{c.regions}</h3>
+        <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2.5">
+          {regions.map((r) => (
+            <li key={r.slug}>
+              <a href={lp(regionPath(r.region))} className={link}>
+                {r.region}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
       <div className="mx-auto flex max-w-6xl flex-col gap-6 border-t border-cream/10 pt-8 text-xs sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-4">
           <BrandLogo tone="light" size={32} tag={null} />

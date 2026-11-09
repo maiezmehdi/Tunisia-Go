@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import BrandLogo from '@/components/BrandLogo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
@@ -25,6 +26,7 @@ type Params = { params: Promise<{ lang: string; id: string }> };
 const COPY = {
   fr: {
     brandTag: 'Road trips',
+    home: 'Accueil',
     allTrips: 'Tous les road trips',
     openMap: 'Voir sur la carte',
     days: (n: number) => `${n} jours`,
@@ -33,6 +35,7 @@ const COPY = {
   },
   en: {
     brandTag: 'Road trips',
+    home: 'Home',
     allTrips: 'All road trips',
     openMap: 'See on the map',
     days: (n: number) => `${n} days`,
@@ -90,7 +93,8 @@ export default async function RoadTripPage({ params }: Params) {
       </header>
 
       <article className="mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
-        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.days(trip.days)}</p>
+        <Breadcrumbs items={[{ name: c.home, href: lp('/') }, { name: 'Road trips', href: lp('/road-trips') }, { name: trip.name }]} />
+        <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.days(trip.days)}</p>
         <h1 className="mt-2 max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">{trip.name}</h1>
         <p className="mt-5 max-w-2xl font-serif text-xl italic text-charcoal-700">{trip.tagline}</p>
         <p className="mt-6 max-w-2xl whitespace-pre-line text-[17px] leading-relaxed text-charcoal-700">

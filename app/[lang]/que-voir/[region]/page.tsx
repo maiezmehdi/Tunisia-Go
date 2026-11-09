@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import BrandLogo from '@/components/BrandLogo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
@@ -27,6 +28,8 @@ type Params = { params: Promise<{ lang: string; region: string }> };
 const COPY = {
   fr: {
     brandTag: 'Que voir',
+    home: 'Accueil',
+    places: 'Lieux',
     allPlaces: 'Tous les lieux',
     title: (r: string) => `Que voir à ${r} ?`,
     metaTitle: (r: string) => `Que voir à ${r} : lieux, durée de visite, quand y aller · Tunisia Go`,
@@ -45,6 +48,8 @@ const COPY = {
   },
   en: {
     brandTag: 'What to see',
+    home: 'Home',
+    places: 'Places',
     allPlaces: 'All places',
     title: (r: string) => `What to see in ${r}`,
     metaTitle: (r: string) => `What to see in ${r}: places, how long to stay, when to go · Tunisia Go`,
@@ -122,7 +127,10 @@ export default async function RegionPage({ params }: Params) {
       </header>
 
       <article className="mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
-        <h1 className="max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
+        <Breadcrumbs
+          items={[{ name: c.home, href: lp('/') }, { name: c.places, href: lp('/lieux') }, { name: entry.region }]}
+        />
+        <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
           {c.title(entry.region)}
         </h1>
         <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-charcoal-500">
