@@ -11,7 +11,7 @@ import type { Place } from '@/data/types';
 import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { placePath } from '@/lib/placePages';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 import { tripPageData } from '@/lib/structuredData';
 
 export const dynamicParams = false;
@@ -64,6 +64,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function RoadTripPage({ params }: Params) {
   const { lang, id } = await params;
   const { locale, trip, stops } = find(lang, id);
+  const lp = (path: string) => localePath(path, locale);
   if (!trip) notFound();
   const c = COPY[locale];
 
@@ -79,7 +80,7 @@ export default async function RoadTripPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/road-trips"
+              href={lp('/road-trips')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.allTrips}
@@ -96,7 +97,7 @@ export default async function RoadTripPage({ params }: Params) {
           {trip.description}
         </p>
         <a
-          href={`/explore?trip=${trip.id}`}
+          href={lp(`/explore?trip=${trip.id}`)}
           className="mt-6 inline-block rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
         >
           {c.openMap}
@@ -107,7 +108,7 @@ export default async function RoadTripPage({ params }: Params) {
           {stops.map((p, i) => (
             <li key={p.id}>
               <a
-                href={placePath(p.id)}
+                href={lp(placePath(p.id))}
                 className="group grid grid-cols-[2rem_1fr] gap-x-3 py-4 sm:grid-cols-[2rem_260px_1fr]"
               >
                 <span className="font-serif text-lg text-charcoal-300">{i + 1}</span>

@@ -20,10 +20,11 @@ import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
+import { placeUpdated } from '@/data/contentDates';
 import { formatUpdated, placePath } from '@/lib/placePages';
 import { hasRegionPage, regionPath } from '@/lib/regionPages';
 import { loadRatingStats } from '@/lib/ratings';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 import { placePageData } from '@/lib/structuredData';
 
 // Photos come from Wikimedia Commons and are refreshed once a day.
@@ -106,6 +107,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function PlacePage({ params }: Params) {
   const { lang, id } = await params;
   const { locale, catalog, place, overrides } = await find(lang, id);
+  const lp = (path: string) => localePath(path, locale);
   if (!place) notFound();
   const c = COPY[locale];
   const rating = (await loadRatingStats())[place.id];
@@ -139,7 +141,7 @@ export default async function PlacePage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/lieux"
+              href={lp('/lieux')}
               className="hidden text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline sm:inline"
             >
               {c.allPlaces}
@@ -165,7 +167,7 @@ export default async function PlacePage({ params }: Params) {
         <p className="mt-1 text-sm text-charcoal-500">
           {hasRegionPage(place.region) ? (
             <a
-              href={regionPath(place.region)}
+              href={lp(regionPath(place.region))}
               className="underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
             >
               {place.region}
@@ -208,7 +210,7 @@ export default async function PlacePage({ params }: Params) {
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
               <a
-                href={`/explore?place=${place.id}`}
+                href={lp(`/explore?place=${place.id}`)}
                 className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
               >
                 {c.openMap}
@@ -269,7 +271,7 @@ export default async function PlacePage({ params }: Params) {
 
             {guide && (
               <a
-                href={`/pratique#${guideAnchor(guide.id)}`}
+                href={lp(`/pratique#${guideAnchor(guide.id)}`)}
                 className="group block border-l-2 border-sand-300 py-1 pl-5 transition hover:border-charcoal"
               >
                 <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
@@ -289,7 +291,7 @@ export default async function PlacePage({ params }: Params) {
                   {itineraries.map((it) => (
                     <li key={it.id}>
                       <a
-                        href={`/road-trips/${it.id}`}
+                        href={lp(`/road-trips/${it.id}`)}
                         className="text-sm text-charcoal underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal"
                       >
                         {it.name}
@@ -312,7 +314,7 @@ export default async function PlacePage({ params }: Params) {
               {nearby.map((p) => (
                 <li key={p.id}>
                   <a
-                    href={placePath(p.id)}
+                    href={lp(placePath(p.id))}
                     className="inline-block rounded-pill border border-sand-200 px-4 py-1.5 text-sm text-charcoal-700 transition hover:border-charcoal-300 hover:text-charcoal"
                   >
                     {p.name}
@@ -325,7 +327,7 @@ export default async function PlacePage({ params }: Params) {
 
         <footer className="mt-16 space-y-4 border-t border-sand-200 pt-6 text-sm text-charcoal-500">
           <p>
-            {c.updated(formatUpdated(locale))}
+            {c.updated(formatUpdated(locale, placeUpdated(place.id)))}
             {wikiLink && (
               <>
                 {' '}

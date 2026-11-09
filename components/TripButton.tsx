@@ -1,12 +1,13 @@
 'use client';
 
 import { track } from '@/lib/analytics';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { useFavorites } from '@/lib/favorites';
 import { useMyTrip } from '@/lib/myTrip';
 
 /** "Add to my road trip": the place joins the visitor's own trip (see /mon-voyage). */
 export default function TripButton({ placeId }: { placeId: string }) {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const trip = useMyTrip();
   const favorites = useFavorites();
@@ -63,7 +64,7 @@ export default function TripButton({ placeId }: { placeId: string }) {
       </button>
       {inTrip && (
         <a
-          href="/mon-voyage"
+          href={lp('/mon-voyage')}
           className="text-sm text-charcoal-500 underline underline-offset-4 transition hover:text-charcoal"
         >
           {t.viewMyTrip} · {trip.ids.length}

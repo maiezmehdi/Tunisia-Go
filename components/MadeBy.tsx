@@ -2,10 +2,11 @@
 
 import { LinkedInIcon, TikTokIcon } from '@/components/ProIcons';
 import { openConsent } from '@/lib/consent';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 
 /** "Created with love by Mehdi Maiez", then the site's small links in a wrapping row. */
 export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark' | 'light'; className?: string }) {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const text = tone === 'light' ? 'text-cream/50' : 'text-charcoal-300';
   const link =
@@ -24,32 +25,32 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
       </p>
       <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2.5 pb-16 sm:pb-0">
         <li>
-          <a href="/lieux" className={anchor}>
+          <a href={lp('/lieux')} className={anchor}>
             {t.allPlaces}
           </a>
         </li>
         <li>
-          <a href="/road-trips" className={anchor}>
+          <a href={lp('/road-trips')} className={anchor}>
             {t.allRoadTrips}
           </a>
         </li>
         <li>
-          <a href="/evenements" className={anchor}>
+          <a href={lp('/evenements')} className={anchor}>
             {t.events}
           </a>
         </li>
         <li>
-          <a href="/guides" className={anchor}>
+          <a href={lp('/guides')} className={anchor}>
             {t.guides}
           </a>
         </li>
         <li>
-          <a href="/confidentialite" className={anchor}>
+          <a href={lp('/confidentialite')} className={anchor}>
             {t.privacy}
           </a>
         </li>
         <li>
-          <a href="/mentions-legales" className={anchor}>
+          <a href={lp('/mentions-legales')} className={anchor}>
             {t.legal}
           </a>
         </li>

@@ -13,7 +13,7 @@ import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { placePath } from '@/lib/placePages';
 import { PAGE_REGIONS, regionPath } from '@/lib/regionPages';
-import { pageMetadata, trimDescription } from '@/lib/seo';
+import { pageMetadata, trimDescription, localePath } from '@/lib/seo';
 import { regionPageData } from '@/lib/structuredData';
 
 export const dynamicParams = false;
@@ -95,6 +95,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function RegionPage({ params }: Params) {
   const { lang, region: slug } = await params;
   const { locale, entry, places, trips } = find(lang, slug);
+  const lp = (path: string) => localePath(path, locale);
   if (!entry) notFound();
   const c = COPY[locale];
   const guide = regionGuides(locale).find((g) => g.id === guideFor(places[0].id));
@@ -111,7 +112,7 @@ export default async function RegionPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/lieux"
+              href={lp('/lieux')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.allPlaces}
@@ -132,7 +133,7 @@ export default async function RegionPage({ params }: Params) {
           {places.map((p, i) => (
             <li key={p.id} className="py-6">
               <h2 className="font-serif text-2xl">
-                <a href={placePath(p.id)} className="hover:text-terracotta-700">
+                <a href={lp(placePath(p.id))} className="hover:text-terracotta-700">
                   <span className="mr-2 text-charcoal-300">{i + 1}.</span>
                   {p.name}
                 </a>
@@ -157,7 +158,7 @@ export default async function RegionPage({ params }: Params) {
               {trips.map((it) => (
                 <li key={it.id}>
                   <a
-                    href={`/road-trips/${it.id}`}
+                    href={lp(`/road-trips/${it.id}`)}
                     className="text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
                   >
                     {it.name}
@@ -174,7 +175,7 @@ export default async function RegionPage({ params }: Params) {
             <h2 className="font-serif text-xl">{c.practical}</h2>
             <p className="mt-2 text-sm leading-relaxed text-charcoal-500">{c.practicalText}</p>
             <a
-              href={`/pratique#${guideAnchor(guide.id)}`}
+              href={lp(`/pratique#${guideAnchor(guide.id)}`)}
               className="mt-3 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
             >
               {c.practicalLink}

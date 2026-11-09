@@ -52,6 +52,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function PlacesIndex({ params }: Params) {
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : 'fr';
+  const lp = (path: string) => localePath(path, locale);
   const c = COPY[locale];
   const base = getCatalog(locale);
   const catalog = { ...base, places: applyOverrides(base.places, await loadPlaceOverrides(), locale) };
@@ -85,7 +86,7 @@ export default async function PlacesIndex({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.openMap}
@@ -108,7 +109,7 @@ export default async function PlacesIndex({ params }: Params) {
                 {region}
                 {hasRegionPage(region) && (
                   <a
-                    href={regionPath(region)}
+                    href={lp(regionPath(region))}
                     className="font-sans text-sm text-charcoal-500 underline-offset-4 hover:text-charcoal hover:underline"
                   >
                     {c.seeRegion}
@@ -118,7 +119,7 @@ export default async function PlacesIndex({ params }: Params) {
               <ul className="mt-2 divide-y divide-sand-200">
                 {places.map((p) => (
                   <li key={p.id}>
-                    <a href={placePath(p.id)} className="group grid gap-1 py-3.5 sm:grid-cols-[260px_1fr] sm:gap-6">
+                    <a href={lp(placePath(p.id))} className="group grid gap-1 py-3.5 sm:grid-cols-[260px_1fr] sm:gap-6">
                       <span className="font-medium text-charcoal group-hover:text-terracotta-700">{p.name}</span>
                       <span className="text-sm text-charcoal-500">{p.tagline}</span>
                     </a>

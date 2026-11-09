@@ -17,7 +17,7 @@ import TripPrintSheet from '@/components/trip/TripPrintSheet';
 import { GENERAL_GUIDE, guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { bestMonthsLabel } from '@/data/seasons';
 import { applyOverrides, type PlaceOverride } from '@/lib/placeOverrides';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { googleMapsRouteUrl } from '@/lib/links';
 import { SHARE_PARAM, parseShared, shareUrl, useMyTrip } from '@/lib/myTrip';
 
@@ -37,6 +37,7 @@ export interface MyTripViewProps {
 }
 
 export default function MyTripView({ photos, community = NO_PLACES, overrides = NO_OVERRIDES }: MyTripViewProps) {
+  const lp = useLocalePath();
   const { t, locale, catalog } = useLocale();
   const trip = useMyTrip();
   const byId = useMemo(() => {
@@ -96,7 +97,7 @@ export default function MyTripView({ photos, community = NO_PLACES, overrides = 
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               <span className="hidden sm:inline">{t.backToMap}</span>
@@ -195,7 +196,7 @@ export default function MyTripView({ photos, community = NO_PLACES, overrides = 
                         </span>
                         <div className="min-w-0 flex-1">
                           <a
-                            href={`/explore?place=${encodeURIComponent(stop.id)}`}
+                            href={lp(`/explore?place=${encodeURIComponent(stop.id)}`)}
                             className="block truncate font-serif text-xl leading-tight text-charcoal transition hover:text-terracotta-700"
                           >
                             {stop.name}
@@ -309,6 +310,7 @@ function NearbyStops({
   all: Map<string, Place>;
   photos: Record<string, Photo[]>;
 }) {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const trip = useMyTrip();
   const last = stops[stops.length - 1];
@@ -331,7 +333,7 @@ function NearbyStops({
             <Thumb src={photos[place.id]?.[0]?.src} name={place.name} small />
             <div className="min-w-0 flex-1">
               <a
-                href={`/explore?place=${encodeURIComponent(place.id)}`}
+                href={lp(`/explore?place=${encodeURIComponent(place.id)}`)}
                 className="block truncate font-serif text-lg leading-tight text-charcoal hover:text-terracotta-700"
               >
                 {place.name}
@@ -354,6 +356,7 @@ function NearbyStops({
 
 /** The regional notes that apply to this trip's stops. */
 function TripGuides({ stops }: { stops: Place[] }) {
+  const lp = useLocalePath();
   const { t, locale } = useLocale();
   const guides = useMemo(() => {
     const wanted = new Set(stops.map((s) => guideFor(s.id)));
@@ -367,7 +370,7 @@ function TripGuides({ stops }: { stops: Place[] }) {
         {guides.map((g) => (
           <li key={g.id}>
             <a
-              href={`/pratique#${guideAnchor(g.id)}`}
+              href={lp(`/pratique#${guideAnchor(g.id)}`)}
               className="group block h-full rounded-2xl border border-sand-200 p-4 transition hover:border-charcoal-300"
             >
               <span className="block font-serif text-lg leading-snug text-charcoal group-hover:text-terracotta-700">
@@ -388,13 +391,14 @@ function TripGuides({ stops }: { stops: Place[] }) {
 }
 
 function EmptyState() {
+  const lp = useLocalePath();
   const { t } = useLocale();
   return (
     <div className="mt-12 max-w-xl border-t border-sand-200 pt-10">
       <h2 className="font-serif text-3xl leading-tight">{t.myTripEmptyTitle}</h2>
       <p className="mt-3 text-[15px] leading-relaxed text-charcoal-500">{t.myTripEmptyText}</p>
       <a
-        href="/explore"
+        href={lp('/explore')}
         className="mt-6 inline-flex rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
       >
         {t.openTheMap}

@@ -5,7 +5,7 @@ import LanguageSwitch from '@/components/LanguageSwitch';
 import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 
 type Section = { title: string; body: string[] };
 
@@ -172,7 +172,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function PrivacyPage({ params }: Params) {
-  const c = COPY[await localeOf(params)];
+  const locale = await localeOf(params);
+  const c = COPY[locale];
+  const lp = (path: string) => localePath(path, locale);
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
       <header className="border-b border-sand-200">
@@ -184,7 +186,7 @@ export default async function PrivacyPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.backToMap}

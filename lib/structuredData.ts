@@ -1,6 +1,7 @@
 import type { Itinerary, Photo, Place } from '@/data/types';
 import type { Locale } from '@/lib/i18n/config';
-import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
+import { placeUpdated } from '@/data/contentDates';
+import { placePath } from '@/lib/placePages';
 import { regionSlug } from '@/lib/regionPages';
 import { LEGAL } from '@/lib/legal';
 import { SITE_NAME, SITE_URL, localePath } from '@/lib/seo';
@@ -129,7 +130,7 @@ export function placePageData(place: Place, photos: Photo[], lang: Locale) {
       '@context': 'https://schema.org',
       ...attraction(place, photos, lang),
       inLanguage: lang,
-      dateModified: CONTENT_UPDATED,
+      dateModified: placeUpdated(place.id),
     },
     {
       '@context': 'https://schema.org',

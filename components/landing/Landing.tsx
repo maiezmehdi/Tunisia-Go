@@ -23,7 +23,7 @@ import {
 } from '@/components/landing/content';
 import type { Itinerary, Photo, Place } from '@/data/types';
 import { formatKm, summarizeRoute } from '@/lib/geo';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 
 /** Landing copy and catalog in the visitor's language. */
 function useLanding() {
@@ -94,6 +94,7 @@ export default function Landing({ photos }: LandingProps) {
 const SLIDE_MS = 6500;
 
 function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
+  const lp = useLocalePath();
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -156,7 +157,7 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
           </div>
           <LanguageSwitch tone="light" className="hidden sm:flex" />
           <a
-            href="/evenements"
+            href={lp('/evenements')}
             className="hidden whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline sm:inline"
           >
             {copy.nav.events}
@@ -164,7 +165,7 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
           <ProAuthButton className="hidden whitespace-nowrap text-sm text-cream/85 underline-offset-4 transition hover:text-cream hover:underline sm:block" />
           <AddSpotLink from="landing-nav" variant="pill-light" className="hidden sm:inline-flex" />
           <a
-            href="/explore"
+            href={lp('/explore')}
             className="hidden whitespace-nowrap rounded-pill border border-cream/40 px-4 py-1.5 sm:inline-block text-sm transition hover:border-cream hover:bg-cream hover:text-charcoal"
           >
             {copy.nav.openMap}
@@ -209,7 +210,7 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
           className="mt-9 flex flex-wrap items-center gap-6"
         >
           <a
-            href="/explore"
+            href={lp('/explore')}
             className="group inline-flex items-center gap-3 rounded-pill bg-cream px-6 py-3 text-sm font-medium text-charcoal transition hover:bg-terracotta hover:text-cream"
           >
             {c.cta}
@@ -337,6 +338,7 @@ function Escapes({ trips }: { trips: TripCard[] }) {
 }
 
 function TripCardView({ trip, index }: { trip: TripCard; index: number }) {
+  const lp = useLocalePath();
   const { story, itinerary, photo } = trip;
   const { catalog, copy } = useLanding();
   const c = copy.escapes;
@@ -345,7 +347,7 @@ function TripCardView({ trip, index }: { trip: TripCard; index: number }) {
 
   return (
     <a
-      href={`/explore?trip=${itinerary.id}`}
+      href={lp(`/explore?trip=${itinerary.id}`)}
       className="group relative isolate flex aspect-[4/5] w-[78vw] max-w-[400px] shrink-0 transform-gpu snap-start flex-col justify-end overflow-hidden rounded-3xl bg-charcoal p-5 text-cream sm:aspect-[3/4] sm:w-[360px] sm:p-6 lg:w-[400px]"
     >
       {photo ? (
@@ -436,10 +438,11 @@ function Atlas({ vignettes }: { vignettes: VignetteCard[] }) {
 }
 
 function VignetteView({ vignette, tabbable }: { vignette: VignetteCard; tabbable: boolean }) {
+  const lp = useLocalePath();
   const { place, photo, caption } = vignette;
   return (
     <a
-      href={`/explore?place=${place.id}`}
+      href={lp(`/explore?place=${place.id}`)}
       tabIndex={tabbable ? undefined : -1}
       className="group block w-[260px] sm:w-[320px]"
     >
@@ -509,6 +512,7 @@ function ProSection() {
 /* ------------------------------------------------------------------ */
 
 function Finale() {
+  const lp = useLocalePath();
   const c = useLanding().copy.finale;
   const { t } = useLocale();
   return (
@@ -533,14 +537,14 @@ function Finale() {
         <p className="mt-8 max-w-lg text-base leading-relaxed text-cream/70">{c.body}</p>
         <div className="mt-12 flex flex-wrap items-center gap-6">
           <a
-            href="/explore"
+            href={lp('/explore')}
             className="group inline-flex items-center gap-3 rounded-pill bg-terracotta px-7 py-3.5 text-sm font-medium text-cream transition hover:bg-cream hover:text-charcoal"
           >
             {c.cta}
             <Arrow className="transition-transform group-hover:translate-x-1" />
           </a>
           <a
-            href="/explore?trip=star-wars"
+            href={lp('/explore?trip=star-wars')}
             className="text-sm text-cream/70 underline-offset-4 transition hover:text-cream hover:underline"
           >
             {c.secondary}

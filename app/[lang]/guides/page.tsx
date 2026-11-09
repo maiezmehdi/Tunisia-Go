@@ -12,7 +12,7 @@ import { getCatalog } from '@/lib/i18n/catalog';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { proWhatsAppUrl } from '@/lib/links';
 import { loadPublishedPros, PRO_ACTIVITIES, PRO_LANGUAGES, socialsHref } from '@/lib/pros';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 import { sectionBreadcrumb } from '@/lib/structuredData';
 
 export const revalidate = 3600;
@@ -87,6 +87,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function GuidesPage({ params }: Params) {
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : 'fr';
+  const lp = (path: string) => localePath(path, locale);
   const c = COPY[locale];
   const pros = await loadPublishedPros();
   const catalog = getCatalog(locale);
@@ -151,7 +152,7 @@ export default async function GuidesPage({ params }: Params) {
             <LanguageSwitch />
             <ProAuthButton className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline" />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="hidden whitespace-nowrap text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline sm:block"
             >
               {c.openMap}
