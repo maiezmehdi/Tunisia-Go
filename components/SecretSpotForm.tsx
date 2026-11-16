@@ -5,7 +5,7 @@ import RewriteButton from '@/components/RewriteButton';
 
 import BrandIcon from '@/components/BrandIcon';
 import type { Locale } from '@/lib/i18n/config';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { track } from '@/lib/analytics';
 import { secretSpotWhatsAppUrl } from '@/lib/links';
 import { resizeImage } from '@/lib/resizeImage';
@@ -202,6 +202,7 @@ const input =
   'w-full rounded-2xl border border-sand-200 bg-transparent px-4 py-3 text-[15px] text-charcoal placeholder:text-charcoal-300 transition focus:border-charcoal focus:outline-none';
 
 export default function SecretSpotForm() {
+  const lp = useLocalePath();
   const { locale } = useLocale();
   const c = COPY[locale];
   const [spot, setSpot] = useState<SecretSpot>(EMPTY_SPOT);
@@ -334,7 +335,7 @@ export default function SecretSpotForm() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <a
-            href="/explore"
+            href={lp('/explore')}
             className="rounded-pill bg-charcoal px-5 py-2.5 text-sm text-cream transition hover:bg-charcoal-700"
           >
             {c.backToMap}

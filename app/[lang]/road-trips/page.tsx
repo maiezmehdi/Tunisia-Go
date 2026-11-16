@@ -53,6 +53,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function RoadTripsIndex({ params }: Params) {
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : 'fr';
+  const lp = (path: string) => localePath(path, locale);
   const c = COPY[locale];
   const { itineraries } = getCatalog(locale);
 
@@ -84,7 +85,7 @@ export default async function RoadTripsIndex({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.openMap}
@@ -103,7 +104,7 @@ export default async function RoadTripsIndex({ params }: Params) {
         <ul className="mt-12 divide-y divide-sand-200 border-y border-sand-200">
           {itineraries.map((it) => (
             <li key={it.id}>
-              <a href={`/road-trips/${it.id}`} className="group grid gap-1 py-5 sm:grid-cols-[320px_1fr] sm:gap-8">
+              <a href={lp(`/road-trips/${it.id}`)} className="group grid gap-1 py-5 sm:grid-cols-[320px_1fr] sm:gap-8">
                 <span>
                   <span className="font-serif text-xl text-charcoal group-hover:text-terracotta-700">{it.name}</span>
                   <span className="mt-1 block text-xs text-charcoal-300">

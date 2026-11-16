@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 import OfflineTripButton from '@/components/OfflineTripButton';
 import { seasonFor } from '@/data/seasons';
 import type { Itinerary, Photo, Place } from '@/data/types';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { lockPageScroll } from '@/lib/scrollLock';
 import { formatDuration, formatKm, summarizeRoute } from '@/lib/geo';
 import { googleMapsRouteUrl } from '@/lib/links';
@@ -352,6 +352,7 @@ function TripsHint() {
 
 /** Copies every stop of a suggested road trip into the visitor's own trip. */
 function AddStopsButton({ stopIds }: { stopIds: string[] }) {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const trip = useMyTrip();
   const missing = stopIds.filter((id) => !trip.has(id));
@@ -359,7 +360,7 @@ function AddStopsButton({ stopIds }: { stopIds: string[] }) {
     return (
       <p className="mt-2 flex items-center justify-center gap-2 py-2 text-sm text-charcoal-500">
         {t.allStopsInTrip} ·{' '}
-        <a href="/mon-voyage" className="underline underline-offset-4 hover:text-charcoal">
+        <a href={lp('/mon-voyage')} className="underline underline-offset-4 hover:text-charcoal">
           {t.viewMyTrip}
         </a>
       </p>

@@ -6,7 +6,7 @@ import SoundToggle from '@/components/SoundToggle';
 import MadeBy from '@/components/MadeBy';
 import { LEGAL } from '@/lib/legal';
 import { isLocale, type Locale } from '@/lib/i18n/config';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 
 type Section = { title: string; body: string[] };
 
@@ -222,6 +222,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function LegalPage({ params }: Params) {
   const lang = await localeOf(params);
   const c = COPY[lang];
+  const lp = (path: string) => localePath(path, lang);
   const fr = lang === 'fr';
   // Only what has been filled in lib/legal.ts is shown.
   const details: [string, string][] = [];
@@ -239,7 +240,7 @@ export default async function LegalPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.backToMap}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useLocalePath } from '@/lib/i18n/LocaleProvider';
 import { useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
@@ -84,10 +85,11 @@ export default function BrandLogo({
   markOnlyOnPhone?: boolean;
   className?: string;
 }) {
+  const lp = useLocalePath();
   const name = tone === 'light' ? 'text-cream' : 'text-charcoal';
   const sub = tone === 'light' ? 'text-cream/70' : 'text-charcoal-500';
   return (
-    <a href="/" aria-label="Tunisia Go" className={`inline-flex shrink-0 items-center gap-3 leading-none ${className}`}>
+    <a href={lp('/')} aria-label="Tunisia Go" className={`inline-flex shrink-0 items-center gap-3 leading-none ${className}`}>
       <BrandMark size={size} />
       <span className={markOnlyOnPhone ? 'hidden flex-col sm:flex' : 'flex flex-col'}>
         <span

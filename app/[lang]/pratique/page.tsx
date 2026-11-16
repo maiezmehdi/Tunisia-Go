@@ -10,7 +10,7 @@ import MadeBy from '@/components/MadeBy';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 
 import { PRATIQUE_COPY } from './copy';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 import { sectionBreadcrumb } from '@/lib/structuredData';
 import { loadLexicon } from '@/lib/lexiconExtra';
 
@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function PratiquePage({ params }: Params) {
   const locale = await localeOf(params);
+  const lp = (path: string) => localePath(path, locale);
   const c = PRATIQUE_COPY[locale];
   const lexicon = await loadLexicon();
   return (
@@ -46,7 +47,7 @@ export default async function PratiquePage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.backToMap}
@@ -124,7 +125,7 @@ export default async function PratiquePage({ params }: Params) {
                 {c.seasonNote}
               </p>
               <a
-                href="/explore"
+                href={lp('/explore')}
                 className="mt-3 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal"
               >
                 {c.openMap}

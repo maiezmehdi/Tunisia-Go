@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import BrandLogo from '@/components/BrandLogo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MadeBy from '@/components/MadeBy';
@@ -13,7 +14,7 @@ import { LOCALES, isLocale, type Locale } from '@/lib/i18n/config';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { placePath } from '@/lib/placePages';
 import { PAGE_REGIONS, regionPath } from '@/lib/regionPages';
-import { pageMetadata, trimDescription } from '@/lib/seo';
+import { pageMetadata, trimDescription, localePath } from '@/lib/seo';
 import { regionPageData } from '@/lib/structuredData';
 
 export const dynamicParams = false;
@@ -27,6 +28,8 @@ type Params = { params: Promise<{ lang: string; region: string }> };
 const COPY = {
   fr: {
     brandTag: 'Que voir',
+    home: 'Accueil',
+    places: 'Lieux',
     allPlaces: 'Tous les lieux',
     title: (r: string) => `Que voir à ${r} ?`,
     metaTitle: (r: string) => `Que voir à ${r} : lieux, durée de visite, quand y aller · Tunisia Go`,
@@ -45,6 +48,8 @@ const COPY = {
   },
   en: {
     brandTag: 'What to see',
+    home: 'Home',
+    places: 'Places',
     allPlaces: 'All places',
     title: (r: string) => `What to see in ${r}`,
     metaTitle: (r: string) => `What to see in ${r}: places, how long to stay, when to go · Tunisia Go`,
@@ -95,6 +100,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function RegionPage({ params }: Params) {
   const { lang, region: slug } = await params;
   const { locale, entry, places, trips } = find(lang, slug);
+  const lp = (path: string) => localePath(path, locale);
   if (!entry) notFound();
   const c = COPY[locale];
   const guide = regionGuides(locale).find((g) => g.id === guideFor(places[0].id));
@@ -111,7 +117,7 @@ export default async function RegionPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/lieux"
+              href={lp('/lieux')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.allPlaces}
@@ -121,7 +127,10 @@ export default async function RegionPage({ params }: Params) {
       </header>
 
       <article className="mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
-        <h1 className="max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
+        <Breadcrumbs
+          items={[{ name: c.home, href: lp('/') }, { name: c.places, href: lp('/lieux') }, { name: entry.region }]}
+        />
+        <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
           {c.title(entry.region)}
         </h1>
         <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-charcoal-500">
@@ -132,7 +141,7 @@ export default async function RegionPage({ params }: Params) {
           {places.map((p, i) => (
             <li key={p.id} className="py-6">
               <h2 className="font-serif text-2xl">
-                <a href={placePath(p.id)} className="hover:text-terracotta-700">
+                <a href={lp(placePath(p.id))} className="hover:text-terracotta-700">
                   <span className="mr-2 text-charcoal-300">{i + 1}.</span>
                   {p.name}
                 </a>
@@ -157,7 +166,7 @@ export default async function RegionPage({ params }: Params) {
               {trips.map((it) => (
                 <li key={it.id}>
                   <a
-                    href={`/road-trips/${it.id}`}
+                    href={lp(`/road-trips/${it.id}`)}
                     className="text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
                   >
                     {it.name}
@@ -174,7 +183,7 @@ export default async function RegionPage({ params }: Params) {
             <h2 className="font-serif text-xl">{c.practical}</h2>
             <p className="mt-2 text-sm leading-relaxed text-charcoal-500">{c.practicalText}</p>
             <a
-              href={`/pratique#${guideAnchor(guide.id)}`}
+              href={lp(`/pratique#${guideAnchor(guide.id)}`)}
               className="mt-3 inline-block text-sm text-charcoal underline decoration-sand-300 underline-offset-4 hover:decoration-charcoal"
             >
               {c.practicalLink}

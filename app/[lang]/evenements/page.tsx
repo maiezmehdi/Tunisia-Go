@@ -74,6 +74,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function EventsPage({ params }: Params) {
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : 'fr';
+  const lp = (path: string) => localePath(path, locale);
   const c = COPY[locale];
   const catalog = getCatalog(locale);
   const places = new Map(catalog.places.map((p) => [p.id, p]));
@@ -129,7 +130,7 @@ export default async function EventsPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.openMap}
@@ -187,14 +188,14 @@ export default async function EventsPage({ params }: Params) {
                           {place && (
                             <p className="mt-0.5 text-sm text-charcoal-500">
                               <a
-                                href={placePath(place.id)}
+                                href={lp(placePath(place.id))}
                                 className="underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
                               >
                                 {place.name}
                               </a>
                               {' · '}
                               <a
-                                href={`/explore?place=${place.id}`}
+                                href={lp(`/explore?place=${place.id}`)}
                                 className="underline decoration-sand-300 underline-offset-4 hover:text-charcoal"
                               >
                                 {c.seeOnMap}

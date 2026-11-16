@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { startAnalytics, stopAnalytics } from '@/lib/analytics';
 import { CONSENT_OPEN, readConsent, writeConsent, type Consent } from '@/lib/consent';
 import type { Locale } from '@/lib/i18n/config';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 
 const COPY: Record<Locale, { title: string; body: string; more: string; refuse: string; accept: string }> = {
   fr: {
@@ -26,6 +26,7 @@ const COPY: Record<Locale, { title: string; body: string; more: string; refuse: 
 
 /** Cookie banner: statistics start only after "Accept", and "Decline" is just as easy. */
 export default function CookieConsent() {
+  const lp = useLocalePath();
   const { locale } = useLocale();
   const c = COPY[locale];
   const [open, setOpen] = useState(false);
@@ -56,7 +57,7 @@ export default function CookieConsent() {
       <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">{c.title}</p>
       <p className="mt-2 text-sm leading-relaxed text-charcoal-700">
         {c.body}{' '}
-        <a href="/confidentialite" className="underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal">
+        <a href={lp('/confidentialite')} className="underline decoration-sand-300 underline-offset-4 transition hover:decoration-charcoal">
           {c.more}
         </a>
       </p>

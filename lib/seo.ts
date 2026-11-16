@@ -50,6 +50,7 @@ export function pageMetadata({
   description,
   index = true,
   image: cardImage,
+  descriptionMax = 155,
 }: {
   lang: Locale;
   path: string;
@@ -58,8 +59,10 @@ export function pageMetadata({
   index?: boolean;
   /** Share card for this page, instead of the site-wide one. */
   image?: { url: string; alt: string };
+  /** Hand-written descriptions can use up to 160 characters. */
+  descriptionMax?: number;
 }): Metadata {
-  description = trimDescription(description);
+  description = trimDescription(description, descriptionMax);
   const image = { url: cardImage?.url ?? '/og.png', width: 1200, height: 630, alt: cardImage?.alt ?? SITE_NAME };
   return {
     title,

@@ -6,10 +6,11 @@ import AddSpotLink from '@/components/AddSpotLink';
 import LanguageSwitch from '@/components/LanguageSwitch';
 import MyTripLink from '@/components/MyTripLink';
 import ProAuthButton from '@/components/ProAuthButton';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 
 /** Below desktop width: a quiet "Menu" button that opens the secondary links and the language switch. */
 export default function MobileMenu({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
+  const lp = useLocalePath();
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -58,13 +59,13 @@ export default function MobileMenu({ tone = 'dark' }: { tone?: 'dark' | 'light' 
           >
             <AddSpotLink from="mobile-menu" variant="primary" className="mb-2 mt-2 w-full justify-center" />
             <MyTripLink className={`${link} border-t border-sand-200`} />
-            <a href="/evenements" className={`${link} border-t border-sand-200`}>
+            <a href={lp('/evenements')} className={`${link} border-t border-sand-200`}>
               {t.events}
             </a>
-            <a href="/guides" className={`${link} border-t border-sand-200`}>
+            <a href={lp('/guides')} className={`${link} border-t border-sand-200`}>
               {t.guides}
             </a>
-            <a href="/pratique" className={`${link} border-t border-sand-200`}>
+            <a href={lp('/pratique')} className={`${link} border-t border-sand-200`}>
               {t.practical}
             </a>
             <ProAuthButton className={`${link} w-full border-t border-sand-200 text-left`} />

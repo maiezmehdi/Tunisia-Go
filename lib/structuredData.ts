@@ -1,7 +1,8 @@
 import type { Itinerary, Photo, Place } from '@/data/types';
 import type { Locale } from '@/lib/i18n/config';
-import { CONTENT_UPDATED, placePath } from '@/lib/placePages';
-import { regionSlug } from '@/lib/regionPages';
+import { placeUpdated } from '@/data/contentDates';
+import { placePath } from '@/lib/placePages';
+import { hasRegionPage, regionPath, regionSlug } from '@/lib/regionPages';
 import { LEGAL } from '@/lib/legal';
 import { SITE_NAME, SITE_URL, localePath } from '@/lib/seo';
 
@@ -123,13 +124,14 @@ export function exploreData(places: Place[], itineraries: Itinerary[], photos: R
 }
 
 /** A place's own page: the attraction plus a breadcrumb back to the list of places. */
-export function placePageData(place: Place, photos: Photo[], lang: Locale) {
+export function placePageData(place: Place, photos: Photo[], lang: Locale, description?: string) {
   return [
     {
       '@context': 'https://schema.org',
       ...attraction(place, photos, lang),
+      ...(description && { description }),
       inLanguage: lang,
-      dateModified: CONTENT_UPDATED,
+      dateModified: placeUpdated(place.id),
     },
     {
       '@context': 'https://schema.org',
@@ -147,13 +149,11 @@ export function placePageData(place: Place, photos: Photo[], lang: Locale) {
           name: lang === 'en' ? 'Places' : 'Lieux',
           item: abs(localePath('/lieux', lang)),
         },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: place.name,
-          item: abs(localePath(placePath(place.id), lang)),
-        },
-      ],
+        ...(hasRegionPage(place.region)
+          ? [{ name: place.region, item: abs(localePath(regionPath(place.region), lang)) }]
+          : []),
+        { name: place.name, item: abs(localePath(placePath(place.id), lang)) },
+      ].map((entry, i) => ('@type' in entry ? entry : { '@type': 'ListItem', position: i + 1, ...entry })),
     },
   ];
 }

@@ -9,8 +9,8 @@ export const placePath = (id: string) => `/lieux/${id}`;
  */
 export const CONTENT_UPDATED = '2026-10-21';
 
-export function formatUpdated(locale: Locale): string {
+export function formatUpdated(locale: Locale, date: string = CONTENT_UPDATED): string {
   return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'fr-FR', { month: 'long', year: 'numeric' }).format(
-    new Date(`${CONTENT_UPDATED}T12:00:00Z`),
+    new Date(`${date}T12:00:00Z`),
   );
 }

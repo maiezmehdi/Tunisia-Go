@@ -8,7 +8,7 @@ import SuggestTabs from '@/components/SuggestTabs';
 import { loadCommunityPlaces } from '@/lib/community';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { isLocale, type Locale } from '@/lib/i18n/config';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, localePath } from '@/lib/seo';
 
 const COPY: Record<
   Locale,
@@ -61,6 +61,7 @@ export const revalidate = 3600;
 
 export default async function SpotSecretPage({ params }: Params) {
   const locale = await localeOf(params);
+  const lp = (path: string) => localePath(path, locale);
   const c = COPY[locale];
   const community = await loadCommunityPlaces(locale);
   const places = [...getCatalog(locale).places, ...community.places].map((p) => ({
@@ -79,7 +80,7 @@ export default async function SpotSecretPage({ params }: Params) {
             </span>
             <LanguageSwitch />
             <a
-              href="/explore"
+              href={lp('/explore')}
               className="text-sm text-charcoal-500 underline-offset-4 transition hover:text-charcoal hover:underline"
             >
               {c.backToMap}

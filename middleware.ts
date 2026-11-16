@@ -10,6 +10,9 @@ import { isAdminPath, siteMode } from '@/lib/siteMode';
  * - /fr/...: redirects to the unprefixed address and remembers French.
  * - anything else: rewritten from the saved choice, or the browser language on a first visit.
  */
+/** Search engine and link preview robots (Googlebot, Bingbot, social networks…). */
+const CRAWLER = /bot|crawler|spider|slurp|facebookexternalhit/i;
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const [, first] = pathname.split('/');
@@ -41,6 +44,14 @@ export function middleware(request: NextRequest) {
     const res = NextResponse.redirect(url);
     res.cookies.set(LOCALE_COOKIE, first, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
     return res;
+  }
+
+  // Search engines always get French here: an address without /en must always show the same
+  // language, or Google sees two versions of one page. English has its own /en/... addresses.
+  if (CRAWLER.test(request.headers.get('user-agent') ?? '')) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/fr${pathname === '/' ? '' : pathname}`;
+    return NextResponse.rewrite(url);
   }
 
   const saved = request.cookies.get(LOCALE_COOKIE)?.value;
