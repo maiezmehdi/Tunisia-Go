@@ -16,7 +16,7 @@ type Entry = {
   path: string;
   priority: number;
   changeFrequency: 'weekly' | 'monthly' | 'yearly';
-  /** YYYY-MM-DD, or null for pages filled from the database (events, guides). */
+  /** YYYY-MM-DD, or null for pages filled from the database (events, guides): no lastmod then. */
   updated: string | null;
 };
 
@@ -42,7 +42,6 @@ const PAGES: Entry[] = [
 const EXCLUDED = /(^|\/)(admin|modifier|edit|compte|mon-voyage)(\/|$)|[?#]/;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   const entries: Entry[] = [
     ...PAGES,
     ...PLACES.map((place) => ({
@@ -72,7 +71,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const en = `${SITE_URL}${localePath(path, 'en')}`;
       return (['fr', 'en'] as const).map((lang) => ({
         url: lang === 'fr' ? fr : en,
-        lastModified: updated ? new Date(`${updated}T12:00:00Z`) : now,
+        // No date rather than today's: pages filled from the database have no known change date.
+        ...(updated && { lastModified: new Date(`${updated}T12:00:00Z`) }),
         changeFrequency,
         priority: lang === 'fr' ? priority : Math.round(priority * 90) / 100,
         // Same alternates as the <link rel="alternate" hreflang> tags in each page's <head>.

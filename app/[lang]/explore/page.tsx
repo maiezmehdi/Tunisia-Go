@@ -51,6 +51,8 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
   return (
     <>
       <JsonLd data={exploreData(places, catalog.itineraries, photos, locale)} />
+      {/* The page's heading for search engines and screen readers; the map has no visible title. */}
+      <h1 className="sr-only">{locale === 'en' ? 'Interactive map of Tunisia' : 'Carte interactive de la Tunisie'}</h1>
       <Explorer
         photos={{ ...photos, ...community.photos }}
         community={community.places}

@@ -8,14 +8,20 @@ import { SITE_NAME, SITE_URL, localePath } from '@/lib/seo';
 
 const abs = (path: string) => `${SITE_URL}${path}`;
 
+/** Stable identifiers, so every page points to the same site and publisher. */
+export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
+const websiteId = (lang: Locale) => `${abs(localePath('/', lang))}#website`;
+
 export function siteData(lang: Locale) {
   return [
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
+      '@id': websiteId(lang),
       name: SITE_NAME,
       url: abs(localePath('/', lang)),
       inLanguage: lang === 'en' ? 'en' : 'fr',
+      publisher: { '@id': ORGANIZATION_ID },
       description:
         lang === 'en'
           ? 'Interactive map, road trips and local know-how for Tunisia.'
@@ -24,6 +30,7 @@ export function siteData(lang: Locale) {
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
+      '@id': ORGANIZATION_ID,
       name: SITE_NAME,
       url: SITE_URL,
       logo: abs('/icons/icon-512.png'),
