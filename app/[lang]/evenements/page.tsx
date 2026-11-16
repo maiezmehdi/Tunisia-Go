@@ -84,10 +84,11 @@ export default async function EventsPage({ params }: Params) {
     [...new Set(events.map((e) => e.placeId))].map((id) => raw.get(id)).filter((p): p is NonNullable<typeof p> => !!p),
   );
 
+  // Only confirmed events with a known place: an Event without a location is not valid markup.
   const jsonLd = events
-    .filter((e) => e.confirmed && e.start)
+    .filter((e) => e.confirmed && e.start && places.has(e.placeId))
     .map((e) => {
-      const place = places.get(e.placeId);
+      const place = places.get(e.placeId)!;
       return {
         '@context': 'https://schema.org',
         '@type': 'Event',
@@ -96,14 +97,12 @@ export default async function EventsPage({ params }: Params) {
         startDate: e.start,
         endDate: e.end,
         eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-        location: place
-          ? {
-              '@type': 'Place',
-              name: place.name,
-              address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
-              geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
-            }
-          : undefined,
+        location: {
+          '@type': 'Place',
+          name: place.name,
+          address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
+          geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
+        },
         url: `${SITE_URL}${localePath('/evenements', locale)}#${e.id}`,
       };
     });

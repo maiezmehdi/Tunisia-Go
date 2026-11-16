@@ -10,8 +10,13 @@ import { isAdminPath, siteMode } from '@/lib/siteMode';
  * - /fr/...: redirects to the unprefixed address and remembers French.
  * - anything else: rewritten from the saved choice, or the browser language on a first visit.
  */
-/** Search engine and link preview robots (Googlebot, Bingbot, social networks…). */
-const CRAWLER = /bot|crawler|spider|slurp|facebookexternalhit/i;
+/**
+ * Search engine, AI search and link preview robots (Googlebot, Bingbot, OAI-SearchBot,
+ * PerplexityBot, social networks…), plus fetchers whose name has no "bot": Search Console's
+ * URL inspection, and the agents that read a page for a ChatGPT, Perplexity or Claude user.
+ */
+const CRAWLER =
+  /bot|crawler|spider|slurp|facebookexternalhit|google-inspectiontool|chatgpt-user|perplexity-user|claude-user/i;
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
