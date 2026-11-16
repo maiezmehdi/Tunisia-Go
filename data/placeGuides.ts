@@ -107,7 +107,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
   dougga: {
     fr: guide(
       'fr',
-      'Visiter Dougga : la cité romaine la mieux conservée',
+      'Visiter Dougga : cité romaine, Capitole et théâtre près de Teboursouk',
       'Dougga, cité romaine classée UNESCO près de Teboursouk : Capitole, théâtre, temples et mausolée libyco-punique. Histoire, saison idéale, accès et conseil local.',
       {
         intro: [
@@ -116,7 +116,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
           'La ville connaît son apogée aux IIe et IIIe siècles, quand ses notables financent temples, thermes et théâtre : leurs dédicaces gravées se lisent encore sur de nombreux monuments. Plus tard, un village s’installe au milieu des ruines ; ses habitants sont relogés au XXe siècle dans un nouveau village, au pied du site.',
         ],
         see: [
-          'Le Capitole, avec ses colonnes et son fronton encore debout, domine le forum et la place de la Rose des vents, où une rose des vents est gravée dans le dallage. Juste à côté, le théâtre peut accueillir environ 3 500 spectateurs et s’ouvre sur la vallée : c’est le meilleur point de vue du site.',
+          'Le Capitole, avec ses colonnes et son fronton encore debout, domine le forum et la place de la Rose des vents, où une rose des vents est gravée dans le dallage. Juste à côté, le théâtre s’ouvre sur la vallée : c’est le meilleur point de vue du site.',
           'Plus bas, le mausolée libyco-punique, haute tour funéraire du IIe siècle av. J.-C., est l’un des rares monuments royaux numides conservés. Son inscription bilingue, en punique et en libyque, a aidé à déchiffrer l’écriture libyque ; l’original est aujourd’hui au British Museum. Ne manquez pas non plus le temple de Junon Caelestis, les thermes liciniens et leurs couloirs de service, et les maisons à mosaïques. Le site est vaste et vallonné : comptez une demi-journée.',
         ],
         when: [
@@ -136,7 +136,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
     ),
     en: guide(
       'en',
-      'Visiting Dougga: the best-preserved Roman town in Tunisia',
+      'Visiting Dougga: Roman town, Capitol and theatre near Teboursouk',
       'Dougga, a UNESCO-listed Roman town near Teboursouk: the Capitol, theatre, temples and a Libyco-Punic mausoleum. History, best season, getting there, local tips.',
       {
         intro: [
@@ -145,7 +145,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
           'The town peaked in the 2nd and 3rd centuries AD, when its leading citizens paid for temples, baths and the theatre: their carved dedications can still be read on many buildings. Later a village grew up among the ruins; its families were rehoused in a new village below the site in the 20th century.',
         ],
         see: [
-          'The Capitol, with its columns and pediment still standing, towers over the forum and the Square of the Winds, where a wind rose is carved into the paving. Next door, the theatre seats about 3,500 people and opens onto the valley: it is the best viewpoint on the site.',
+          'The Capitol, with its columns and pediment still standing, towers over the forum and the Square of the Winds, where a wind rose is carved into the paving. Next door, the theatre opens onto the valley: it is the best viewpoint on the site.',
           'Further down, the Libyco-Punic mausoleum, a tall funerary tower from the 2nd century BC, is one of the few surviving royal Numidian monuments. Its bilingual inscription, in Punic and Libyan, helped scholars decipher the Libyan script; the original stone is now in the British Museum. Do not miss the Temple of Juno Caelestis, the Licinian Baths with their service corridors, and the houses with mosaics. The site is large and hilly, so allow half a day.',
         ],
         when: [

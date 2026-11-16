@@ -7,7 +7,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     description:
       'Fondée par des colons phéniciens venus de Tyr, Carthage devint la capitale d’un empire marchand méditerranéen avant que Rome ne la rase en 146 av. J.-C., puis ne la rebâtisse comme capitale de l’Afrique proconsulaire. Ses vestiges sont aujourd’hui disséminés dans une banlieue balnéaire verdoyante : thermes d’Antonin, ports puniques, Tophet et colline de Byrsa.',
     didYouKnow:
-      'Les thermes d’Antonin comptaient parmi les plus vastes jamais construits hors de Rome. Ce que l’on parcourt aujourd’hui correspond surtout au niveau inférieur, où les esclaves alimentaient les fourneaux.',
+      'Les thermes d’Antonin étaient les plus grands thermes romains d’Afrique. On parcourt aujourd’hui leur niveau inférieur : les salles de service, où le combustible des chaufferies arrivait depuis la mer.',
     insights: {
       history:
         'Selon la légende, la reine Elyssa (Didon) fonda la cité vers 814 av. J.-C. Au terme des trois guerres puniques, Rome la détruisit, avant d’en faire l’une des plus grandes villes de l’Empire.',
@@ -58,7 +58,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     name: 'Musée national du Bardo',
     tagline: 'La plus grande collection de mosaïques au monde',
     description:
-      'Installé dans un palais hafside du XVe siècle, le Bardo abrite l’une des plus vastes collections de mosaïques romaines qui soient, dont le célèbre portrait de Virgile entouré de deux Muses.',
+      'Installé dans un palais beylical du XIXe siècle, le Bardo abrite l’une des plus vastes collections de mosaïques romaines qui soient, dont le célèbre portrait de Virgile entouré de deux Muses.',
     didYouKnow:
       'La mosaïque de Virgile, découverte à Sousse, l’antique Hadrumète, date du IIIe siècle apr. J.-C. : elle montre le poète tenant un rouleau de l’Énéide entre deux Muses, Clio et Melpomène.',
     insights: {
@@ -89,9 +89,9 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
 
   // ── Nord-Ouest ─────────────────────────────────────────────────────
   dougga: {
-    tagline: 'La ville romaine la mieux conservée d’Afrique du Nord',
+    tagline: 'Considérée comme la ville africo-romaine la mieux conservée d’Afrique du Nord',
     description:
-      'Une ville romaine complète, accrochée à une colline au milieu des oliveraies : un théâtre de 3 500 places, le Capitole, des thermes, des temples et un mausolée libyco-punique, le tout presque sans personne alentour.',
+      'Une ville romaine complète, accrochée à une colline au milieu des oliveraies : un théâtre, le Capitole, des thermes, des temples et un mausolée libyco-punique, le tout presque sans personne alentour.',
     didYouKnow:
       'L’inscription bilingue du mausolée de Dougga, en punique et en libyque, a permis aux chercheurs de déchiffrer l’écriture libyque antique. La pierre originale se trouve aujourd’hui au British Museum.',
     insights: {
@@ -191,7 +191,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     description:
       'De puissants remparts enserrent le Ribat, la Grande Mosquée et un souk animé. Le musée de la Kasbah renferme des mosaïques exceptionnelles.',
     didYouKnow:
-      'Le Ribat de Sousse était un monastère-forteresse où les guerriers vivaient aussi en lettrés. Sa tour de guet communiquait autrefois par des feux avec le ribat suivant sur la côte.',
+      'Le Ribat de Sousse était un monastère-forteresse où les guerriers vivaient aussi en lettrés. Sa tour ronde a été ajoutée en 821 par l’émir aghlabide Ziyadat Allah Ier : on la décrit comme une tour de guet, mais elle servait aussi de minaret à la mosquée voisine.',
     insights: {
       history: 'L’antique Hadrumète, reconstruite par les Aghlabides au IXe siècle pour en faire leur principale base navale.',
       customs: 'Montez à la tour de guet du Ribat pour la plus belle vue sur la médina.',
