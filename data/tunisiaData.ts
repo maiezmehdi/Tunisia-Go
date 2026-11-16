@@ -47,7 +47,7 @@ export const PLACES: Place[] = [
     description:
       'Founded by Phoenician settlers from Tyre, Carthage became the capital of a Mediterranean trading empire before Rome razed it in 146 BC and rebuilt it as the capital of Africa Proconsularis. Today its ruins are scattered across a leafy seaside suburb: the Antonine Baths, the Punic ports, the Tophet and Byrsa Hill.',
     didYouKnow:
-      'The Antonine Baths were among the largest Roman baths ever built outside Rome itself. What you walk through today is mostly the basement level, where slaves stoked the furnaces.',
+      'The Antonine Baths were the largest Roman baths in Africa. What you walk through today is their lower level: the service rooms, where fuel for the boiler rooms arrived from the sea.',
     insights: {
       history:
         'Legend says Queen Elyssa (Dido) founded the city around 814 BC. After three Punic Wars, Rome destroyed it and later rebuilt it as one of the largest cities of the empire.',
@@ -123,7 +123,7 @@ export const PLACES: Place[] = [
     coords: [36.8094, 10.1342],
     tagline: "The world's great mosaic collection",
     description:
-      'Housed in a 15th-century Hafsid palace, the Bardo holds one of the largest collections of Roman mosaics anywhere, including the famous portrait of Virgil flanked by two Muses.',
+      'Housed in a 19th-century beylical palace, the Bardo holds one of the largest collections of Roman mosaics anywhere, including the famous portrait of Virgil flanked by two Muses.',
     didYouKnow:
       'The Virgil mosaic, found in Sousse, ancient Hadrumetum, dates from the 3rd century AD: it shows the poet holding a scroll of the Aeneid between two Muses, Clio and Melpomene.',
     insights: {
@@ -176,9 +176,9 @@ export const PLACES: Place[] = [
     category: 'heritage',
     coords: [36.4231, 9.2199],
     unesco: true,
-    tagline: 'The best-preserved Roman town in North Africa',
+    tagline: "Considered North Africa's best-preserved Africo-Roman town",
     description:
-      'A complete Roman town on a hillside among olive groves: a 3,500-seat theatre, the Capitol, baths, temples and a Libyco-Punic mausoleum, all with almost nobody around.',
+      'A complete Roman town on a hillside among olive groves: a theatre, the Capitol, baths, temples and a Libyco-Punic mausoleum, all with almost nobody around.',
     didYouKnow:
       "The bilingual inscription from Dougga's mausoleum, in Punic and Libyan, helped scholars decipher the ancient Libyan script. The original stone is now in the British Museum.",
     insights: {
@@ -337,7 +337,7 @@ export const PLACES: Place[] = [
     description:
       'Massive walls enclose the Ribat, the Great Mosque and a lively souk. The Kasbah museum holds outstanding mosaics.',
     didYouKnow:
-      'The Ribat of Sousse was a fortress-monastery where warriors also lived as scholars. Its watchtower once signalled by fire to the next ribat along the coast.',
+      'The Ribat of Sousse was a fortress-monastery where warriors also lived as scholars. Its round tower was added in 821 by the Aghlabid emir Ziyadat Allah I: it is described as a watchtower, but it also served as the minaret of the neighbouring mosque.',
     insights: {
       history: 'Ancient Hadrumetum, rebuilt by the Aghlabids in the 9th century as their main naval base.',
       customs: "Climb the Ribat's watchtower for the best view over the medina.",
@@ -1204,7 +1204,7 @@ export const PLACES: Place[] = [
     coords: [36.4056, 10.1431],
     tagline: 'The spring that watered Carthage',
     description:
-      'Zaghouan stands at the foot of Djebel Zaghouan, about 60 km south of Tunis. Above the town, a Roman water temple marks the spring from which an aqueduct, more than 100 km long, once carried water to Carthage. The town is also known for its roses, and for a cooler, milder climate than the plains.',
+      'Zaghouan stands at the foot of Djebel Zaghouan, about 60 km south of Tunis. Above the town, a Roman water temple marks the spring from which an aqueduct about 132 km long once carried water to Carthage. The town is also known for its roses, and for a cooler, milder climate than the plains.',
     didYouKnow:
       'Roman engineers built the aqueduct in the 2nd century AD, and stretches of it still stand in the countryside between Zaghouan and Tunis.',
     insights: {
@@ -1228,11 +1228,11 @@ export const PLACES: Place[] = [
     coords: [36.4, 9.9042],
     tagline: 'A Roman town in open countryside',
     description:
-      'About 60 km south-west of Carthage, in Zaghouan governorate, Thuburbo Majus was a Punic town that became a Roman colony under Augustus in 27 BC. Most of what stands today dates from the 2nd and 3rd centuries AD: the forum, the Capitolium (dedicated in AD 168), baths, temples and the House of Bacchus and Ariadne. It is ruins in fields, with no village around and few visitors.',
+      'About 60 km south-west of Carthage, in Zaghouan governorate, Thuburbo Majus is a town whose oldest remains go back to the Punic period. Most of what stands today dates from the 2nd and 3rd centuries AD: the forum, the Capitolium, baths, temples and the House of Bacchus and Ariadne. It is ruins in fields, with no village around and few visitors.',
     didYouKnow: 'The city lived off grain, olives and fruit, and sat on a main route from Carthage towards the south.',
     insights: {
       history:
-        'Hadrian made it a municipium and Commodus a colony. It was restored in the 4th century after the troubles of the 3rd.',
+        'Hadrian made it a municipium and Commodus an honorary colony. The town was restored in the 4th century.',
       customs: 'There is little shade on the site: bring water and a hat.',
       food: 'Pack a picnic, or have lunch in Zaghouan.',
       bestTime: 'March to May and October to November.',
@@ -1452,7 +1452,7 @@ export const PLACES: Place[] = [
     description:
       'At the tip of Cap Bon, Kerkouane is the one Punic town that Rome never rebuilt. Its grid of streets, house walls, courtyards and private bathtubs still run down to the sea, giving a rare picture of daily life in the Carthaginian world.',
     didYouKnow:
-      'Heaps of murex shells were found on the site: the town made the purple dye that Phoenicians were famous for.',
+      'The site was only discovered in 1952. In 2022 and 2023, a Tunisian-Italian archaeological mission (Tunisia’s National Heritage Institute and the University of Sassari) carried out new excavations there.',
     insights: {
       history:
         'Inhabited for nearly four centuries, the town was abandoned around the middle of the 3rd century BC, during the First Punic War, and never reoccupied. UNESCO listed it in 1985.',
@@ -1776,8 +1776,8 @@ export const PLACES: Place[] = [
     coords: [34.335, 8.31],
     tagline: 'The Bey’s train through a canyon',
     description:
-      'From Metlaoui, an old train built for the Bey of Tunis runs into the Selja Gorges, a canyon otherwise almost impossible to reach. The round trip takes under two hours, with stops for photos above the wadi.',
-    didYouKnow: 'The carriages were built in 1910 and reserved for the Bey and his court, with a restaurant car.',
+      'From Metlaoui, when it is running, an old train presented as the Bey of Tunis’s train heads into the Selja Gorges, a canyon otherwise almost impossible to reach. The round trip takes under two hours, with stops for photos above the wadi.',
+    didYouKnow: 'According to Tunisian and Italian press reports, the carriages date from 1910 and belonged to the Bey of Tunis and his court.',
     insights: {
       history:
         'The line was laid for the phosphate trains, which still use it. The tourist service has been suspended several times.',
@@ -1971,9 +1971,9 @@ export const PLACES: Place[] = [
     stayQuery: 'Tataouine, Tunisia',
     category: 'culture',
     coords: [33.1003, 10.3141],
-    tagline: 'Granaries that became Mos Espa',
+    tagline: 'A ksar of ghorfas near Ghomrassen',
     description:
-      'Near Ghomrassen, north of Tataouine, Ksar Hadada is a fortified granary of vaulted rooms, the "ghorfas", stacked around courtyards. Part of it was used as the slave quarters of Mos Espa in "The Phantom Menace".',
+      'Near Ghomrassen, north of Tataouine, Ksar Hadada is a fortified granary of vaulted rooms, the "ghorfas", stacked around courtyards. According to fans who have studied the shoot, part of it was used for the Mos Espa slave quarters in "The Phantom Menace".',
     didYouKnow: 'Each ghorfa belonged to one family and held its grain, oil and dates, sometimes for years.',
     insights: {
       history: 'Ksour were built by Berber communities to store harvests safely. Hadada later served as a hotel.',
@@ -2362,7 +2362,7 @@ export const PLACES: Place[] = [
     tagline: 'The highest summit of eastern Tunisia',
     description:
       'At 1,295 m, Djebel Zaghouan is the highest summit of eastern Tunisia. The trail starts above the Temple of the Waters, the Roman monument where the aqueduct to Carthage began, and climbs through rock and scrub to a view over the plains to the sea.',
-    didYouKnow: 'The springs of this mountain fed Carthage through an aqueduct of about 130 km, one of the longest of the Roman world.',
+    didYouKnow: 'The springs of this mountain fed Carthage through an aqueduct of about 132 km.',
     insights: {
       history: 'The Roman aqueduct carried the water of Zaghouan to Carthage from the 2nd century AD.',
       customs: 'Start early, bring water and sturdy shoes: there is little shade. Check the weather, as the summit can be windy.',

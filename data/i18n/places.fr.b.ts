@@ -441,7 +441,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
   zaghouan: {
     tagline: 'La source qui alimentait Carthage',
     description:
-      'Zaghouan s’adosse au djebel Zaghouan, à environ 60 km au sud de Tunis. Au-dessus de la ville, un temple romain des Eaux marque la source d’où un aqueduc de plus de 100 km acheminait l’eau jusqu’à Carthage. La ville est aussi connue pour ses roses et pour un climat plus doux et plus frais que celui de la plaine.',
+      'Zaghouan s’adosse au djebel Zaghouan, à environ 60 km au sud de Tunis. Au-dessus de la ville, un temple romain des Eaux marque la source d’où un aqueduc d’environ 132 km acheminait l’eau jusqu’à Carthage. La ville est aussi connue pour ses roses et pour un climat plus doux et plus frais que celui de la plaine.',
     didYouKnow:
       'Les ingénieurs romains ont bâti l’aqueduc au IIe siècle de notre ère, et des tronçons se dressent encore dans la campagne entre Zaghouan et Tunis.',
     insights: {
@@ -457,12 +457,12 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
   'thuburbo-majus': {
     tagline: 'Une ville romaine en pleine campagne',
     description:
-      'À environ 60 km au sud-ouest de Carthage, dans le gouvernorat de Zaghouan, Thuburbo Majus était une ville punique devenue colonie romaine sous Auguste, en 27 av. J.-C. L’essentiel de ce qu’on voit date des IIe et IIIe siècles : le forum, le Capitole (dédié en 168), des thermes, des temples et la maison de Bacchus et Ariane. Ce sont des ruines dans les champs, sans village alentour et avec peu de visiteurs.',
+      'À environ 60 km au sud-ouest de Carthage, dans le gouvernorat de Zaghouan, Thuburbo Majus est une ville dont les plus anciens vestiges remontent à l’époque punique. L’essentiel de ce qu’on voit date des IIe et IIIe siècles : le forum, le Capitole, des thermes, des temples et la maison de Bacchus et Ariane. Ce sont des ruines dans les champs, sans village alentour et avec peu de visiteurs.',
     didYouKnow:
       'La ville vivait de blé, d’olives et de fruits, et se trouvait sur un grand axe qui menait de Carthage vers le sud.',
     insights: {
       history:
-        'Hadrien en fit un municipe et Commode une colonie. Elle fut restaurée au IVe siècle après les troubles du IIIe.',
+        'Hadrien en fit un municipe et Commode une colonie honoraire. La ville fut restaurée au IVe siècle.',
       customs: 'L’ombre est rare sur le site : emportez de l’eau et un chapeau.',
       food: 'Prévoyez un pique-nique, ou déjeunez à Zaghouan.',
       bestTime: 'De mars à mai et d’octobre à novembre.',
@@ -601,7 +601,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'À la pointe du cap Bon, Kerkouane est la seule ville punique que Rome n’a jamais rebâtie. Ses rues en damier, ses murs de maisons, ses cours et ses baignoires privées descendent encore vers la mer : un témoignage rare de la vie quotidienne du monde carthaginois.',
     didYouKnow:
-      'On a retrouvé sur le site des amas de coquillages de murex : la ville fabriquait la teinture pourpre qui fit la renommée des Phéniciens.',
+      'Le site n’a été découvert qu’en 1952. En 2022 et 2023, une mission archéologique tuniso-italienne (Institut national du patrimoine et université de Sassari) y a mené de nouvelles fouilles.',
     insights: {
       history:
         'Habitée près de quatre siècles, la ville fut abandonnée vers le milieu du IIIe siècle av. J.-C., pendant la première guerre punique, et jamais réoccupée. Inscrite au patrimoine mondial de l’UNESCO en 1985.',
@@ -804,9 +804,9 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     name: 'Lézard Rouge et gorges de Selja',
     tagline: 'Le train du bey dans un canyon',
     description:
-      'Depuis Metlaoui, un ancien train construit pour le bey de Tunis s’enfonce dans les gorges de Selja, un canyon presque inaccessible autrement. L’aller-retour dure moins de deux heures, avec des arrêts photo au-dessus de l’oued.',
+      'Depuis Metlaoui, quand il circule, un ancien train présenté comme celui du bey de Tunis s’enfonce dans les gorges de Selja, un canyon presque inaccessible autrement. L’aller-retour dure moins de deux heures, avec des arrêts photo au-dessus de l’oued.',
     didYouKnow:
-      'Les voitures ont été construites en 1910 et réservées au bey et à sa cour, avec une voiture-restaurant.',
+      'Selon la presse tunisienne et italienne, les voitures datent de 1910 et étaient celles du bey de Tunis et de sa cour.',
     insights: {
       history:
         'La ligne a été posée pour les trains de phosphate, qui l’empruntent toujours. Le service touristique a été suspendu à plusieurs reprises.',
@@ -931,9 +931,9 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     captions: ['Le village de part et d’autre de la vallée', 'Maisons de pierre sur la pente', 'La route de montagne'],
   },
   'ksar-hadada': {
-    tagline: 'Des greniers devenus Mos Espa',
+    tagline: 'Un ksar de ghorfas près de Ghomrassen',
     description:
-      'Près de Ghomrassen, au nord de Tataouine, Ksar Hadada est un grenier fortifié fait de pièces voûtées, les « ghorfas », empilées autour de cours. Une partie a servi de quartier des esclaves de Mos Espa dans « La Menace fantôme ».',
+      'Près de Ghomrassen, au nord de Tataouine, Ksar Hadada est un grenier fortifié fait de pièces voûtées, les « ghorfas », empilées autour de cours. Selon les passionnés qui ont étudié le tournage, une partie a servi au quartier des esclaves de Mos Espa dans « La Menace fantôme ».',
     didYouKnow:
       'Chaque ghorfa appartenait à une famille et gardait ses grains, son huile et ses dattes, parfois pendant des années.',
     insights: {
@@ -1179,7 +1179,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     tagline: 'Le plus haut sommet de l’est tunisien',
     description:
       'Le djebel Zaghouan culmine à 1 295 m, au-dessus de la ville. Le sentier part au-dessus du temple des Eaux et monte vers la crête, avec une vue sur la plaine et, par temps clair, sur la mer.',
-    didYouKnow: 'L’eau de la montagne alimentait Carthage par un aqueduc de plus de 130 km.',
+    didYouKnow: 'L’eau de la montagne alimentait Carthage par un aqueduc d’environ 132 km.',
     insights: {
       history: 'Les Romains captaient les sources du djebel pour approvisionner Carthage.',
       customs: 'Partez tôt, emportez de l’eau et de bonnes chaussures. Demandez le sentier aux habitants.',
