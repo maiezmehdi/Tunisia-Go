@@ -68,11 +68,12 @@ export const PLACES: Place[] = [
     stayQuery: 'Sidi Bou Said, Tunisia',
     category: 'culture',
     coords: [36.8708, 10.3417],
+    unesco: true,
     tagline: 'Blue doors above the Gulf of Tunis',
     description:
       'A clifftop village of whitewashed houses, studded blue doors and bougainvillea, long loved by painters such as Paul Klee and August Macke. Wander the cobbled lanes, then watch the sun set over the bay.',
     didYouKnow:
-      "The blue and white look is protected. Baron Rodolphe d'Erlanger pushed for the rule in 1915, and the village became one of the first protected sites in the world.",
+      "In July 2026, UNESCO inscribed the Village of Sidi Bou Saïd on the World Heritage List. Its protection is much older: a beylical decree of 1915 helped preserve the village's historic urban fabric.",
     insights: {
       history:
         'The village is named after Abu Said al-Baji, a 13th-century Sufi saint whose shrine still stands at the top of the hill.',
@@ -124,7 +125,7 @@ export const PLACES: Place[] = [
     description:
       'Housed in a 15th-century Hafsid palace, the Bardo holds one of the largest collections of Roman mosaics anywhere, including the famous portrait of Virgil flanked by two Muses.',
     didYouKnow:
-      'The Virgil mosaic, found in Sousse, is one of the only known portraits of the poet made close to his lifetime.',
+      'The Virgil mosaic, found in Sousse, ancient Hadrumetum, dates from the 3rd century AD: it shows the poet holding a scroll of the Aeneid between two Muses, Clio and Melpomene.',
     insights: {
       history:
         'The museum opened in 1888 inside the former beylical palace, and its galleries still show the original painted ceilings.',
@@ -308,9 +309,9 @@ export const PLACES: Place[] = [
     unesco: true,
     tagline: 'A colosseum rising from the olive groves',
     description:
-      "Built around 238 AD for 35,000 spectators, Thysdrus's amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.",
+      "Construction began around AD 238. Built for an estimated 27,000 to 35,000 spectators, Thysdrus's amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.",
     didYouKnow:
-      'El Jem is the third-largest Roman amphitheatre ever built. Its arena appeared in the film "Gladiator", and it now hosts a summer symphony festival.',
+      'El Jem ranks among the three or four largest amphitheatres of the Roman world, and it now hosts a summer symphony festival.',
     insights: {
       history:
         'Thysdrus grew rich on olive oil. In 238 AD a revolt that started here briefly made the local proconsul Gordian emperor of Rome.',
@@ -676,7 +677,7 @@ export const PLACES: Place[] = [
     description:
       'A fortified granary of vaulted "ghorfas" stacked up to four storeys high around two courtyards, still used for celebrations today.',
     didYouKnow:
-      'The ksar\'s courtyards were used as the slave quarters of Mos Espa in "Star Wars: The Phantom Menace".',
+      'The ksar is often called a Star Wars set. According to fans who have studied the shoot, it was probably only scouted: the Mos Espa slave quarters of "The Phantom Menace" were filmed at other ksour in the area.',
     insights: {
       history: 'Built from the 15th century by Berber tribes to store grain and olive oil safe from raids.',
       customs: 'The Ksour Festival in Tataouine each spring brings music and Berber poetry.',
@@ -2334,12 +2335,12 @@ export const PLACES: Place[] = [
     stayQuery: 'Sousse, Tunisia',
     category: 'sahara',
     coords: [35.8428, 10.2717],
-    tagline: 'The country’s second wetland',
+    tagline: 'A great salt lake between Sousse and Kairouan',
     description:
-      'After Lake Ichkeul, Sebkhet Kelbia is Tunisia’s second wetland and has been a Ramsar site since 2007. This vast salt lake in the Sahel plain draws waterbirds, and its water level follows the seasons and the rains.',
-    didYouKnow: 'A Ramsar site is a wetland recognised as important at international level under a treaty signed in 1971.',
+      'In Sousse governorate, about 25 km north-west of Sousse, Sebkhet Kelbia is a vast, shallow salt lake and a place to watch waterbirds. With Lake Ichkeul, it is one of the two great inland wetlands of Tunisia.',
+    didYouKnow: 'The site covers about 8,700 hectares, and the historic city of Kairouan lies about 25 km away, in the same plain.',
     insights: {
-      history: 'The lake has been an important stop for migrating birds between Europe and Africa.',
+      history: 'It has been listed as a wetland of international importance under the Ramsar Convention since 7 November 2007.',
       customs: 'Bring binoculars and keep a distance from the birds. Tracks around the lake can be flooded after rain.',
       food: 'Eat in Enfidha or Sousse, which are not far.',
       bestTime: 'November to March for the birds.',
@@ -2415,7 +2416,7 @@ export const ITINERARIES: Itinerary[] = [
     name: 'Star Wars Desert Route',
     tagline: 'Tatooine was here all along',
     description:
-      "Follow the film crews across the Jerid and the Dahar: the Mos Espa set, Luke's homestead on the salt lake, the Lars family home in Matmata and the slave quarters at Ksar Ouled Soltane.",
+      "Follow the film crews across the Jerid and the Dahar: the Mos Espa set, Luke's homestead on the salt lake, the Lars family home in Matmata, then the granaries of Ksar Ouled Soltane, often linked to the films.",
     days: 3,
     stops: ['tozeur', 'mos-espa', 'chott-el-jerid', 'matmata', 'ksar-ouled-soltane'],
   },
@@ -2566,7 +2567,7 @@ export const ITINERARIES: Itinerary[] = [
   {
     id: 'gafsa-savanna',
     name: 'Gafsa and the Savanna',
-    tagline: 'A region with no road trip until now',
+    tagline: 'Roman pools, the Selja gorges and Bou Hedma',
     description:
       'The Roman pools of Gafsa, the Red Lizard train in the Selja Gorges, then Bou Hedma National Park and its oryx.',
     days: 2,
@@ -2575,7 +2576,7 @@ export const ITINERARIES: Itinerary[] = [
   {
     id: 'grand-tour',
     name: 'The Grand Tour of Tunisia',
-    tagline: 'The classic north-to-south loop in one trip',
+    tagline: 'The classic north-to-south route in one trip',
     description:
       'Carthage and Sidi Bou Saïd, Roman Dougga, holy Kairouan, the arena of El Jem, then Tozeur, Douz and Matmata in the south, and Djerba at the end.',
     days: 10,

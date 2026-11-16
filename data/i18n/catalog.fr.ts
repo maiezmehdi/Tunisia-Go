@@ -22,7 +22,7 @@ export const ITINERARIES_FR: Record<string, Pick<Itinerary, 'name' | 'tagline' |
     name: 'La route Star Wars',
     tagline: 'Tatooine était là depuis toujours',
     description:
-      'Sur les pas des équipes de tournage, à travers le Jérid et le Dahar : le décor de Mos Espa, la ferme de Luke sur le lac salé, la maison des Lars à Matmata et les quartiers d’esclaves de Ksar Ouled Soltane.',
+      'Sur les pas des équipes de tournage, à travers le Jérid et le Dahar : le décor de Mos Espa, la ferme de Luke sur le lac salé, la maison des Lars à Matmata, puis les greniers de Ksar Ouled Soltane, souvent associés aux films.',
   },
   'cap-bon': {
     name: 'Échappées au Cap Bon',
@@ -122,13 +122,13 @@ export const ITINERARIES_FR: Record<string, Pick<Itinerary, 'name' | 'tagline' |
   },
   'gafsa-savanna': {
     name: 'Gafsa et la savane',
-    tagline: 'Une région sans circuit aujourd’hui',
+    tagline: 'Piscines romaines, gorges de Selja et Bou Hedma',
     description:
       'Les piscines romaines de Gafsa, le train du bey au Lézard Rouge et les oryx du parc de Bou Hedma.',
   },
   'grand-tour': {
     name: 'Le grand tour de Tunisie',
-    tagline: 'Le circuit nord-sud classique, en une boucle',
+    tagline: 'Le circuit classique du nord au sud, en un seul voyage',
     description:
       'De Carthage à Djerba, par Sidi Bou Saïd, Dougga, Kairouan, El Jem, Tozeur, Douz et Matmata : le circuit des agences, en dix jours.',
   },
