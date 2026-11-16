@@ -24,7 +24,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     description:
       'Un village perché sur la falaise, avec ses maisons chaulées, ses portes bleues cloutées et ses bougainvilliers, adoré de longue date par des peintres comme Paul Klee et August Macke. Flânez dans les ruelles pavées, puis regardez le soleil se coucher sur la baie.',
     didYouKnow:
-      'Le blanc et le bleu sont protégés. Le baron Rodolphe d’Erlanger milita pour cette règle en 1915, et le village devint l’un des tout premiers sites protégés au monde.',
+      'En juillet 2026, l’UNESCO a inscrit le Village de Sidi Bou Saïd sur la Liste du patrimoine mondial. Sa protection est bien plus ancienne : dès 1915, à l’initiative du baron Rodolphe d’Erlanger, un décret encadre les constructions et les façades du village.',
     insights: {
       history:
         'Le village doit son nom à Abou Saïd al-Baji, saint soufi du XIIIe siècle dont le mausolée se dresse toujours au sommet de la colline.',
@@ -60,7 +60,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     description:
       'Installé dans un palais hafside du XVe siècle, le Bardo abrite l’une des plus vastes collections de mosaïques romaines qui soient, dont le célèbre portrait de Virgile entouré de deux Muses.',
     didYouKnow:
-      'La mosaïque de Virgile, découverte à Sousse, est l’un des rares portraits connus du poète réalisés peu de temps après sa vie.',
+      'La mosaïque de Virgile, découverte à Sousse, l’antique Hadrumète, date du IIIe siècle apr. J.-C. : elle montre le poète tenant un rouleau de l’Énéide entre deux Muses, Clio et Melpomène.',
     insights: {
       history:
         'Le musée a ouvert ses portes en 1888 dans l’ancien palais beylical, dont les salles conservent encore leurs plafonds peints d’origine.',
@@ -172,9 +172,9 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     name: 'Amphithéâtre d’El Jem',
     tagline: 'Un Colisée surgi des oliveraies',
     description:
-      'Construit vers 238 apr. J.-C. pour 35 000 spectateurs, l’amphithéâtre de Thysdrus est l’un des mieux conservés au monde. On peut grimper sur les gradins et parcourir les galeries où attendaient les fauves.',
+      'Construit à partir de 238 apr. J.-C. environ pour, selon les estimations, 27 000 à 35 000 spectateurs, l’amphithéâtre de Thysdrus est l’un des mieux conservés au monde. On peut grimper sur les gradins et parcourir les galeries où attendaient les fauves.',
     didYouKnow:
-      'El Jem est le troisième plus grand amphithéâtre romain jamais construit. Son arène est apparue dans le film « Gladiator », et elle accueille aujourd’hui un festival de musique symphonique en été.',
+      'El Jem se classe parmi les trois ou quatre plus grands amphithéâtres du monde romain, et il accueille aujourd’hui un festival de musique symphonique en été.',
     insights: {
       history:
         'Thysdrus s’enrichit grâce à l’huile d’olive. En 238 apr. J.-C., une révolte partie d’ici fit brièvement du proconsul local Gordien l’empereur de Rome.',

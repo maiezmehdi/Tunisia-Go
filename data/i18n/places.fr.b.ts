@@ -102,7 +102,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'Un grenier fortifié fait de « ghorfas » voûtées, empilées jusqu’à quatre étages autour de deux cours, et qui accueille encore aujourd’hui des fêtes.',
     didYouKnow:
-      'Les cours du ksar ont servi de quartier des esclaves de Mos Espa dans « Star Wars : La Menace fantôme ».',
+      'On présente souvent le ksar comme un décor de Star Wars. Selon les passionnés qui ont étudié le tournage, il n’a sans doute été que repéré : le quartier des esclaves de Mos Espa, dans « La Menace fantôme », a été filmé dans d’autres ksour de la région.',
     insights: {
       history:
         'Édifié à partir du XVe siècle par des tribus berbères pour mettre le grain et l’huile d’olive à l’abri des razzias.',
@@ -1161,14 +1161,14 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
   },
   'sebkhet-kelbia': {
     name: 'Sebkhet Kelbia',
-    tagline: 'La deuxième zone humide du pays',
+    tagline: 'Un grand lac salé entre Sousse et Kairouan',
     description:
-      'Sebkhet Kelbia est un grand lac salé peu profond, au sud de Hammamet, classé site Ramsar depuis 2007. Après Ichkeul, c’est la deuxième zone humide du pays, et un lieu d’observation pour les oiseaux d’eau.',
-    didYouKnow: 'Le niveau du lac change beaucoup d’une année à l’autre : certaines années il est presque à sec.',
+      'Dans le gouvernorat de Sousse, à environ 25 km au nord-ouest de Sousse, Sebkhet Kelbia est un vaste lac salé peu profond et un lieu d’observation des oiseaux d’eau. Avec le lac Ichkeul, c’est l’une des deux grandes zones humides intérieures de la Tunisie.',
+    didYouKnow: 'Le site couvre environ 8 700 hectares, et la ville historique de Kairouan se trouve à environ 25 km, dans la même plaine.',
     insights: {
-      history: 'Le site est protégé comme zone humide d’importance internationale depuis 2007.',
-      customs: 'Venez tôt avec des jumelles, et gardez vos distances avec les oiseaux.',
-      food: 'Les villages voisins vendent huile d’olive et pain de four.',
+      history: 'Il est inscrit comme zone humide d’importance internationale au titre de la convention de Ramsar depuis le 7 novembre 2007.',
+      customs: 'Apportez des jumelles et gardez vos distances avec les oiseaux. Les pistes autour du lac peuvent être inondées après la pluie.',
+      food: 'Mangez à Enfidha ou à Sousse, qui ne sont pas loin.',
       bestTime: 'De novembre à mars, pour les oiseaux.',
     },
     visitDuration: '2 heures',

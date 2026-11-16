@@ -9,7 +9,7 @@ const PLACE_UPDATED: Record<string, string> = {
   'nabeul': '2026-11-09',
   'kairouan': '2026-11-09',
   'hammamet': '2026-11-09',
-  'el-jem': '2026-11-09',
+  'el-jem': '2026-11-16',
   'dougga': '2026-11-09',
   'carthage': '2026-11-09',
   'ksar-ghilane': '2026-10-23',
@@ -66,9 +66,12 @@ const PLACE_UPDATED: Record<string, string> = {
   'beni-khedache': '2026-11-03',
   'mareth': '2026-11-03',
   'dar-jellouli': '2026-11-05',
-  'sebkhet-kelbia': '2026-11-05',
+  'sebkhet-kelbia': '2026-11-16',
   'djebel-zaghouan': '2026-11-05',
   'el-hamma': '2026-11-05',
+  'bardo': '2026-11-16',
+  'sidi-bou-said': '2026-11-16',
+  'ksar-ouled-soltane': '2026-11-16',
 };
 
 const TRIP_UPDATED: Record<string, string> = {
@@ -86,8 +89,9 @@ const TRIP_UPDATED: Record<string, string> = {
   'quiet-sahel': '2026-11-05',
   'sfax-kerkennah': '2026-11-05',
   'gabes-sea-mountains': '2026-11-05',
-  'gafsa-savanna': '2026-11-05',
-  'grand-tour': '2026-11-05',
+  'gafsa-savanna': '2026-11-16',
+  'grand-tour': '2026-11-16',
+  'star-wars': '2026-11-16',
 };
 
 const latest = (dates: string[]) => dates.reduce((a, b) => (b > a ? b : a), CONTENT_UPDATED);
