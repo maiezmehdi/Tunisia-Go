@@ -45,7 +45,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
       'Chaque souk était traditionnellement réservé à une seule corporation. Les parfumeurs tenaient boutique au plus près de la mosquée Zitouna, tandis que les métiers bruyants ou malodorants, comme les tanneurs, étaient relégués en périphérie.',
     insights: {
       history:
-        'La médina s’est développée autour de la mosquée Zitouna, fondée au VIIIe siècle, et connut son apogée sous la dynastie hafside, lorsque Tunis était l’une des capitales du monde islamique.',
+        'La médina s’est développée autour de la mosquée Zitouna, fondée vers 699 et reconstruite en 728-729. Sous les Almohades et les Hafsides, du XIIe au XVIe siècle, Tunis était considérée comme l’une des villes les plus grandes et les plus riches du monde islamique.',
       customs:
         'Le marchandage est de mise dans les souks. Commencez autour de la moitié du prix annoncé et restez toujours cordial.',
       food: 'Goûtez le « lablabi », une soupe de pois chiches au cumin servie avec du pain, de l’huile d’olive et de la harissa.',
@@ -107,12 +107,12 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
   'bulla-regia': {
     tagline: 'Des villas romaines bâties sous terre',
     description:
-      'Pour échapper à la chaleur de l’été, les riches Romains d’ici dotaient leurs villas d’un étage entièrement souterrain. Leurs mosaïques sont toujours en place, là où elles ont été posées.',
+      'Pour échapper à la chaleur de l’été, les riches Romains d’ici dotaient leurs villas d’un étage entièrement souterrain. Chaque maison porte le nom de sa principale découverte, souvent le thème de sa mosaïque.',
     didYouKnow:
-      'Bulla Regia est l’un des seuls endroits du monde romain où l’on peut admirer des mosaïques dans leurs pièces souterraines d’origine, sous leurs voûtes d’origine.',
+      'En latin, Bulla Regia signifie « Bulla la Royale ».',
     insights: {
-      history: 'Cité royale numide, elle devint une ville romaine prospère à partir du IIe siècle apr. J.-C.',
-      customs: 'Demandez au gardien de vous montrer la maison de la Chasse et la maison d’Amphitrite.',
+      history: 'Après l’époque romaine, la ville passe sous la domination des Vandales (439-533), puis de Byzance (533-698). Son abandon progressif ne s’achève sans doute que vers la fin du XIIe siècle.',
+      customs: 'Demandez au gardien de vous montrer la maison de la Chasse et la maison de Vénus.',
       food: 'Jendouba est réputée pour son miel et son fromage de chèvre, vendus au bord de la route.',
       bestTime: 'Au printemps ou à l’automne. En été, les pièces souterraines offrent un refuge rafraîchissant.',
     },
@@ -172,7 +172,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     name: 'Amphithéâtre d’El Jem',
     tagline: 'Un Colisée surgi des oliveraies',
     description:
-      'Sa construction commence vers 238 apr. J.-C. Prévu pour, selon les estimations, 27 000 à 35 000 spectateurs, l’amphithéâtre de Thysdrus est l’un des mieux conservés au monde. On peut grimper sur les gradins et parcourir les galeries où attendaient les fauves.',
+      'Sa construction commence vers 238 apr. J.-C. Prévu pour, selon les estimations, 27 000 à 35 000 spectateurs, l’amphithéâtre de Thysdrus a conservé presque intacts le mur du podium, l’arène et les souterrains. On peut grimper sur les gradins et parcourir les galeries où attendaient les fauves.',
     didYouKnow:
       'El Jem se classe parmi les trois ou quatre plus grands amphithéâtres du monde romain, et il accueille aujourd’hui un festival de musique symphonique en été.',
     insights: {
@@ -205,9 +205,9 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     name: 'Ribat de Monastir',
     tagline: 'Une forteresse au bord de la mer',
     description:
-      'Le plus ancien ribat d’Afrique du Nord, fondé en 796, se dresse au ras de l’eau. Ses remparts et ses tours ont servi de décor à de nombreux films.',
+      'Fondé en 795-796, le ribat se dresse au ras de l’eau. Son plan a servi de modèle à tous les grands ribats d’Ifriqiya, et ses remparts et ses tours ont servi de décor de cinéma.',
     didYouKnow:
-      'Des scènes de « La Vie de Brian » des Monty Python ont été tournées au Ribat de Monastir en 1978.',
+      'Selon les guides des lieux de tournage, une grande partie de « La Vie de Brian » des Monty Python a été tournée au ribat de Monastir.',
     insights: {
       history: 'Édifié par le gouverneur abbasside Harthama ibn A’yan pour protéger la côte des raids byzantins.',
       customs: 'Monastir est la ville natale d’Habib Bourguiba, premier président de la Tunisie, dont le mausolée se trouve tout près.',

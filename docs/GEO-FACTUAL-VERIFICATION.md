@@ -1,6 +1,6 @@
 # GEO-FACTUAL-VERIFICATION — Tunisia Go, Lot 2A
 
-> **Copie dans le dépôt, 16 novembre 2026.** Ce registre a été rédigé pour le Lot 2A, avant la PR 132. La colonne « Statut » de la synthèse donne l'état actuel de chaque point. Les constats ajoutés par le Lot 3 sont à la fin, section 7. Les règles sont dans `docs/EDITORIAL-METHOD.md`, le détail des modifications dans `docs/editorial-log/`.
+> **Copie dans le dépôt, 16 novembre 2026.** Ce registre a été rédigé pour le Lot 2A, avant la PR 132. La colonne « Statut » de la synthèse donne l'état actuel de chaque point. Les constats ajoutés par le Lot 3 sont à la fin, sections 7 et 8. Les règles sont dans `docs/EDITORIAL-METHOD.md`, le détail des modifications dans `docs/editorial-log/`.
 
 
 Registre de vérification factuelle, rédigé le 16 novembre 2026. Ce fichier est destiné à `docs/GEO-FACTUAL-VERIFICATION.md` dans le dépôt. Il sera placé à cet endroit à l'étape suivante : ce lot n'ouvre aucune PR.
@@ -42,11 +42,11 @@ Registre de vérification factuelle, rédigé le 16 novembre 2026. Ce fichier es
 | 9 | `bardo` | Palais hafside ou palais beylical | **C** | moyenne | Corrigé (lot 3 · 1a) |
 | 10 | `thuburbo-majus` | Colonie sous Auguste, ou municipe puis colonie | **C** | non résolue | Corrigé (lot 3 · 1a) |
 | 11 | `chenini` | Lune de Star Wars | **E** (à reformuler) | moyenne | Ouvert |
-| 12 | `ain-draham` | 1 500 mm, record national | **B** | non résolue | Ouvert |
-| 13 | `table-de-jugurtha` | 80 ha, 136 marches, 600 m | **E** (80 ha) / **B** (le reste) | élevée / non résolue | Ouvert |
+| 12 | `ain-draham` | 1 500 mm, record national | **B** | non résolue | Retiré (lot 3 · 1b) ; normale INM à obtenir |
+| 13 | `table-de-jugurtha` | 80 ha, 136 marches, 600 m | **E** (80 ha) / **B** (le reste) | élevée / non résolue | Corrigé (lot 3 · 1b) : 82 ha ; marches et 600 m retirés |
 | 14 | `zaghouan`, `djebel-zaghouan` | Longueur de l'aqueduc | **C** | moyenne | Corrigé (lot 3 · 1a) |
-| 15 | `douz` | « Chaque hiver depuis 1910 » | **C** | moyenne | Ouvert |
-| 16 | `monastir` | « Le plus ancien ribat d'Afrique du Nord », 796 | **B** / **E** | moyenne / élevée | Ouvert |
+| 15 | `douz` | « Chaque hiver depuis 1910 » | **C** | moyenne | Nuancé (lot 3 · 1b) |
+| 16 | `monastir` | « Le plus ancien ribat d'Afrique du Nord », 796 | **B** / **E** | moyenne / élevée | Corrigé (lot 3 · 1b) |
 | 17 | `lezard-rouge` | Circulation en 2026, voitures de 1910 | **D** | non résolue | Nuancé (lot 3 · 1a) ; circulation 2026 à vérifier sur place (phase 4) |
 | 18 | `djerba-velo` | Plan vélo GIZ | **E** (à préciser) + **D** | élevée | Ouvert |
 | 19 | `zaghouan` / `djebel-zaghouan` | Eau de rose ou fleur d'oranger | **C** | non résolue | Ouvert (phase 4) |
@@ -54,7 +54,7 @@ Registre de vérification factuelle, rédigé le 16 novembre 2026. Ce fichier es
 | 21 | `chott-el-jerid` / `matmata` | « Maison de Luke » attribuée aux deux | **C** | non résolue | Ouvert |
 | 22 | `gafsa-savanna` (road trip) | Accroche = note interne | **A** (éditorial) | élevée | Corrigé (PR 132) |
 | 23 | `grand-tour` (road trip) | « Une boucle » qui finit à Djerba | **A** (éditorial) | élevée | Corrigé (PR 132) |
-| 24 | `mos-espa` | Décor « réutilisé pour *L'Attaque des clones* » | **B** | non résolue | Ouvert |
+| 24 | `mos-espa` | Décor « réutilisé pour *L'Attaque des clones* » | **B** | non résolue | Confirmé par une source secondaire (lot 3 · 1b), texte non modifié |
 
 En résumé : 6 erreurs à corriger (dont 2 probables), 5 affirmations à sourcer ou retirer, 9 incohérences, 2 informations à vérifier par un humain, et 3 points exacts qu'il suffit de reformuler.
 
@@ -413,3 +413,20 @@ Code lu : `lib/assistant/ai.ts`, `lib/gemini.ts` et `lib/assistant/engine.ts` (l
 | `djebel-zaghouan` | « L'un des plus longs du monde romain » (EN seulement) | Retiré (lot 3 · 1a) par prudence ; Hydria écrit « the longest of Roman antiquity », formule non reprise sans seconde source | Hydria (académique) |
 | `lezard-rouge` | Voiture-restaurant | Retiré (lot 3 · 1a) : aucune des sources lues ne la mentionne | Tuniscope 2018, SiViaggia 2025 (secondaires) |
 | `lezard-rouge` | Lieu de construction des voitures | À vérifier : France selon Tuniscope, Louvain (Belgique) selon SiViaggia ; non publié | Secondaires |
+
+## 8. Constats ajoutés par le lot 1b du Lot 3
+
+Sources lues le 16 novembre 2026. Détail dans `docs/editorial-log/lot3-1b.md`.
+
+| Fiche | Affirmation | Statut | Source lue |
+|---|---|---|---|
+| `medina-tunis` | Mosquée Zitouna « fondée au VIIIe siècle » ; Tunis « l'une des capitales du monde islamique » | Corrigé (lot 3 · 1b) : fondée vers 699, reconstruite en 728-729 ; formule de l'UNESCO pour les Almohades et les Hafsides | AMVPPC, Zitouna ; UNESCO 36 (institutionnelles) |
+| `el-jem` | « L'un des mieux conservés au monde » (fiche et guide) | Corrigé (lot 3 · 1b) : formule de l'UNESCO (podium, arène et souterrains « practically intact ») | UNESCO 38 |
+| `chott-el-jerid` | « Le plus grand lac salé du Sahara » | Corrigé (lot 3 · 1b) : « la plus vaste des dépressions salées entre la steppe et le désert » | UNESCO, liste indicative 5385 |
+| `chott-el-jerid` | Liste indicative de l'UNESCO depuis 2008, 586 187 ha | Vérifié, non publié (enrichissement, phase 3) | UNESCO, liste indicative 5385 |
+| `bulla-regia` | Mosaïques « toujours en place » ; « l'un des seuls endroits du monde romain » ; cité royale numide ; prospère au IIe siècle ; maison d'Amphitrite | Retiré (lot 3 · 1b) ; remplacé par le nom latin, les périodes vandale et byzantine, les maisons citées par l'AMVPPC | AMVPPC, Bulla Regia |
+| `bulla-regia` | Légende de photo « mosaïque d'Amphitrite » | À vérifier sur place (non modifiée) | — |
+| `tozeur`, `camping-tozeur` | « Plus de 200 sources », « horloge hydraulique », Ibn Chabbat « mathématicien » | Nuancé (lot 3 · 1b) : attribution à Ibn Chabbat (1221-1282) présentée comme une tradition ; le reste retiré | webdo.tn 2016 (secondaire) ; aucune source académique lue |
+| `table-de-jugurtha` | Le rebelle Senan au XVIIIe siècle a donné son nom à la ville | Retiré (lot 3 · 1b) : l'UNESCO date le toponyme « Galaat-Senen » de la fin de l'époque médiévale | UNESCO, liste indicative 6278 |
+| `monastir` | *La Vie de Brian* tournée en 1978 | Nuancé (lot 3 · 1b) : attribué aux guides de lieux de tournage, année retirée | movie-locations.com (secondaire) |
+| `mos-espa` | Décor réutilisé pour *L'Attaque des clones* | Confirmé par une source secondaire (scène du magasin de Watto tournée le 10/09/2000 au décor de Mos Espa) ; non modifié | galaxytours.com, Episode II (secondaire) |

@@ -103,7 +103,7 @@ export const PLACES: Place[] = [
       'Each souk was traditionally reserved for one guild. The perfume sellers sat closest to the Zitouna Mosque, while noisy and smelly trades such as tanners were pushed to the edges.',
     insights: {
       history:
-        'The medina grew around the Zitouna Mosque, founded in the 8th century, and peaked under the Hafsid dynasty when Tunis was a capital of the Islamic world.',
+        'The medina grew around the Zitouna Mosque, founded around 699 and rebuilt in 728–729. Under the Almohads and the Hafsids, from the 12th to the 16th century, Tunis was considered one of the greatest and wealthiest cities in the Islamic world.',
       customs: 'Bargaining is expected in the souks. Start at around half the asking price and keep it friendly.',
       food: 'Try "lablabi", a chickpea and cumin soup served with bread, olive oil and harissa.',
       bestTime: 'Weekday mornings. Many shops close on Sunday.',
@@ -203,12 +203,12 @@ export const PLACES: Place[] = [
     coords: [36.5586, 8.7564],
     tagline: 'Roman villas built underground',
     description:
-      'To escape the summer heat, wealthy Romans here built their villas with a full underground floor. Their mosaics are still in place, where they were laid.',
+      'To escape the summer heat, wealthy Romans here built their villas with a full underground floor. Each house is named after its main discovery, often the theme of its mosaic floor.',
     didYouKnow:
-      'Bulla Regia is one of the only places in the Roman world where you can see mosaics in their original underground rooms, under their original vaults.',
+      'In Latin, Bulla Regia means “Royal Bulla”.',
     insights: {
-      history: 'A royal Numidian city, it became a Roman town and was prosperous from the 2nd century AD.',
-      customs: 'Ask the guardian to show you the House of the Hunt and the House of Amphitrite.',
+      history: 'After the Roman period, the city came under the Vandals (439–533), then Byzantium (533–698). Its gradual abandonment was probably only completed towards the end of the 12th century.',
+      customs: 'Ask the guardian to show you the House of the Hunt and the House of Venus.',
       food: 'Jendouba is known for its honey and goat cheese, sold along the road.',
       bestTime: 'Spring or autumn. In summer the underground rooms are a cool refuge.',
     },
@@ -309,7 +309,7 @@ export const PLACES: Place[] = [
     unesco: true,
     tagline: 'A colosseum rising from the olive groves',
     description:
-      "Construction began around AD 238. Built for an estimated 27,000 to 35,000 spectators, Thysdrus's amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.",
+      "Construction began around AD 238. Built for an estimated 27,000 to 35,000 spectators, Thysdrus's amphitheatre has kept its podium wall, arena and underground passages practically intact. You can climb the tiers and walk the tunnels where animals waited.",
     didYouKnow:
       'El Jem ranks among the three or four largest amphitheatres of the Roman world, and it now hosts a summer symphony festival.',
     insights: {
@@ -359,8 +359,8 @@ export const PLACES: Place[] = [
     coords: [35.7772, 10.8317],
     tagline: 'A fortress on the edge of the sea',
     description:
-      'The oldest ribat in North Africa, founded in 796, stands right by the water. Its walls and towers have been used as a set by many films.',
-    didYouKnow: 'Scenes from Monty Python\'s "Life of Brian" were filmed at the Ribat of Monastir in 1978.',
+      'Founded in 795–796, the ribat stands right by the water. Its plan became the model for all the major ribats of Ifriqiya, and its walls and towers have served as a film set.',
+    didYouKnow: 'According to film-location guides, much of Monty Python\'s "Life of Brian" was shot at the Ribat of Monastir.',
     insights: {
       history: "Built by the Abbasid governor Harthama ibn A'yan to guard the coast against Byzantine raids.",
       customs: "Monastir is the hometown of Habib Bourguiba, Tunisia's first president, whose mausoleum is nearby.",
@@ -532,7 +532,7 @@ export const PLACES: Place[] = [
     description:
       'Gateway to the Sahara, Tozeur sits in a palm grove of hundreds of thousands of date palms. The old Ouled el Hadef quarter is built of yellow bricks laid in geometric patterns.',
     didYouKnow:
-      'The palm grove is irrigated by more than 200 springs, shared out with a water-clock system devised in the 13th century by the mathematician Ibn Chabbat.',
+      'The palm grove is watered by springs. Tradition credits Ibn Chabbat (1221–1282) with the system that shares out their water.',
     insights: {
       history: 'Ancient Thusuros was a caravan stop on the trans-Saharan routes.',
       customs: "The poet Abou el Kacem Chebbi, author of the national anthem's verses, was born here.",
@@ -601,7 +601,7 @@ export const PLACES: Place[] = [
     coords: [33.7, 8.43],
     tagline: 'A salt lake of mirages',
     description:
-      'The largest salt pan in the Sahara, crossed by a straight causeway. In the heat, mirages float over the white crust, and pools turn pink with algae.',
+      'The largest of the salt depressions between the steppe and the desert, crossed by a straight causeway. In the heat, mirages float over the white crust, and pools turn pink with algae.',
     didYouKnow:
       'Luke Skywalker\'s homestead scenes in the 1977 "Star Wars" were filmed at the edge of the Chott el Jerid, and the igloo-shaped set can still be visited.',
     insights: {
@@ -627,7 +627,7 @@ export const PLACES: Place[] = [
     description:
       'The "gateway to the Sahara", where the sand sea of the Grand Erg Oriental begins. Camel treks and desert camps leave from here.',
     didYouKnow:
-      'The International Festival of the Sahara in Douz, held each winter since 1910, features camel races, poetry and traditional Mrazig weddings.',
+      'According to the Tunisian press, the International Festival of the Sahara in Douz goes back to a camel race held in 1910, and became a cultural festival in 1967. It features camel races, poetry and traditional Mrazig weddings.',
     insights: {
       history: 'The Mrazig, a semi-nomadic people, settled around the oasis and still keep camels in the desert.',
       customs: 'Accept the tea offered in a desert camp. Saying no can seem rude.',
@@ -1149,10 +1149,10 @@ export const PLACES: Place[] = [
     stayQuery: 'Ain Draham, Tunisia',
     category: 'sahara',
     coords: [36.7783, 8.6872],
-    tagline: 'Cork-oak forest in the rainiest town in Tunisia',
+    tagline: 'Cork-oak forest in the Kroumirie',
     description:
-      'A small mountain town in the cork-oak forests of the Kroumirie, in Jendouba governorate, with the highest rainfall in Tunisia, around 1,500 mm a year. It is a base for walks, horse riding and mountain biking among oaks and ferns, and a cool escape in summer, a green contrast to the rest of the country.',
-    didYouKnow: 'Its rainfall is a national record, several times that of Tunis.',
+      'A small mountain town in the cork-oak forests of the Kroumirie, in Jendouba governorate, in one of the rainiest areas of Tunisia. It is a base for walks, horse riding and mountain biking among oaks and ferns, and a cool escape in summer, a green contrast to the rest of the country.',
+    didYouKnow: 'A 1975 hydrological study by Tunisia’s hydrological service and ORSTOM places the Kroumirie in the country’s “very rainy” zone, with more than 600 mm a year.',
     insights: {
       history: 'The town stands on a spur between Djebel El Bir (1,014 m) and Djebel Fersig.',
       customs: 'Pack a rain jacket even in spring. Fog and rain are common in winter.',
@@ -1599,12 +1599,12 @@ export const PLACES: Place[] = [
     coords: [35.752, 8.385],
     tagline: 'A fortress mesa above the plain',
     description:
-      'Near Kalaat Senan, close to the Algerian border, a flat-topped mountain rises about 600 m above the plain. A stairway cut into the rock, 136 steps, leads to a summit plateau of about 80 hectares with cisterns, a small mosque and a view far into Algeria.',
+      'Near Kalaat Senan, close to the Algerian border, a flat-topped mountain rises to about 1,200 m, with cliffs more than 50 m high. The climb leads to a summit plateau of about 82 hectares with cisterns, a small mosque and a view far into Algeria.',
     didYouKnow:
       'The plateau was once a valley floor: erosion wore away the softer hills around it and left the hard limestone standing.',
     insights: {
       history:
-        'Tradition links it to the Numidian king Jugurtha, who fought Rome around 110 BC. In the 18th century, the rebel Senan held it against the Bey’s troops and gave the town its name.',
+        'Tradition links it to the Numidian king Jugurtha, who fought Rome around 110 BC. At the end of the medieval period, the area took the name Galaat-Senen. The site has been on Tunisia’s World Heritage tentative list since 2017.',
       customs: 'Go with a local guide from Kalaat Senan. The climb is short but steep: no flip-flops.',
       food: 'Bring water and a picnic: there is nothing on top.',
       bestTime: 'Spring and autumn. Winter can bring snow, summer is hot.',
@@ -2094,7 +2094,7 @@ export const PLACES: Place[] = [
     description:
       'A campsite on the Berka road, in the palm grove of Tozeur. Pitches for tents, vans and motorhomes, part sun and part shade, with showers, a kitchen and a pool fed by a spring. Open all year.',
     didYouKnow:
-      'The Tozeur palm grove is watered by more than 200 springs, shared out by a system devised in the 13th century.',
+      'The Tozeur palm grove is watered by springs, shared out by a system that tradition credits to Ibn Chabbat, in the 13th century.',
     insights: {
       history: 'Tozeur was a caravan stop on the routes across the Sahara.',
       customs: 'Breakfast and dinner can be ordered on site. Check prices and availability before you arrive.',

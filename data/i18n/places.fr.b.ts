@@ -6,7 +6,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'Porte du Sahara, Tozeur s’étend au cœur d’une palmeraie de plusieurs centaines de milliers de dattiers. Le vieux quartier d’Ouled el Hadef est bâti de briques jaunes disposées en motifs géométriques.',
     didYouKnow:
-      'La palmeraie est irriguée par plus de 200 sources, dont l’eau est répartie selon un système d’horloge hydraulique mis au point au XIIIe siècle par le mathématicien Ibn Chabbat.',
+      'La palmeraie est irriguée par des sources. La tradition attribue à Ibn Chabbat (1221-1282) le système qui en partage l’eau.',
     insights: {
       history: 'L’antique Thusuros était une halte caravanière sur les routes transsahariennes.',
       customs: 'Le poète Abou el Kacem Chebbi, auteur des vers de l’hymne national, est né ici.',
@@ -52,7 +52,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     region: 'Kébili',
     tagline: 'Un lac salé peuplé de mirages',
     description:
-      'Le plus grand lac salé du Sahara, traversé par une chaussée rectiligne. Sous la chaleur, des mirages flottent au-dessus de la croûte blanche, et les mares se teintent de rose sous l’effet des algues.',
+      'La plus vaste des dépressions salées entre la steppe et le désert, traversée par une chaussée rectiligne. Sous la chaleur, des mirages flottent au-dessus de la croûte blanche, et les mares se teintent de rose sous l’effet des algues.',
     didYouKnow:
       'Les scènes de la ferme de Luke Skywalker dans le « Star Wars » de 1977 ont été tournées en bordure du chott el Jérid, et le décor en forme d’igloo se visite encore.',
     insights: {
@@ -71,7 +71,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'La « porte du Sahara », là où commence la mer de sable du Grand Erg oriental. C’est d’ici que partent les randonnées à dos de dromadaire et les nuits en campement dans le désert.',
     didYouKnow:
-      'Le Festival international du Sahara de Douz, organisé chaque hiver depuis 1910, réunit courses de dromadaires, poésie et mariages traditionnels mrazig.',
+      'Selon la presse tunisienne, le Festival international du Sahara de Douz remonte à une course de méharis organisée en 1910, et il est devenu un festival culturel en 1967. Il réunit courses de dromadaires, poésie et mariages traditionnels mrazig.',
     insights: {
       history:
         'Les Mrazig, peuple semi-nomade, se sont fixés autour de l’oasis et élèvent toujours des dromadaires dans le désert.',
@@ -408,10 +408,10 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     captions: ['Jarres modelées à la main', 'Figurines aux motifs géométriques', 'Une potière au travail'],
   },
   'ain-draham': {
-    tagline: 'La forêt de chênes-lièges de la ville la plus pluvieuse de Tunisie',
+    tagline: 'La forêt de chênes-lièges de la Kroumirie',
     description:
-      'Une petite ville de montagne au cœur des forêts de chênes-lièges de la Kroumirie, dans le gouvernorat de Jendouba, où il pleut plus que partout ailleurs en Tunisie : environ 1 500 mm par an. On y vient pour marcher, monter à cheval ou faire du VTT entre chênes et fougères, et pour échapper à la chaleur de l’été, dans un décor vert qui contraste avec le reste du pays.',
-    didYouKnow: 'Ses précipitations sont un record national, plusieurs fois celles de Tunis.',
+      'Une petite ville de montagne au cœur des forêts de chênes-lièges de la Kroumirie, dans le gouvernorat de Jendouba, dans l’une des zones les plus pluvieuses de Tunisie. On y vient pour marcher, monter à cheval ou faire du VTT entre chênes et fougères, et pour échapper à la chaleur de l’été, dans un décor vert qui contraste avec le reste du pays.',
+    didYouKnow: 'Une étude hydrologique de 1975, menée par le service hydrologique tunisien et l’ORSTOM, range la Kroumirie dans la « zone très pluvieuse » du pays, avec plus de 600 mm par an.',
     insights: {
       history: 'La ville est bâtie sur un éperon entre le djebel El Bir (1 014 m) et le djebel Fersig.',
       customs: 'Emportez un imperméable même au printemps. Brouillard et pluie sont fréquents en hiver.',
@@ -694,12 +694,12 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     name: 'Table de Jugurtha',
     tagline: 'Une montagne forteresse au-dessus de la plaine',
     description:
-      'Près de Kalaat Senan, à proximité de la frontière algérienne, une montagne tabulaire s’élève d’environ 600 m au-dessus de la plaine. Un escalier de 136 marches taillé dans la roche mène à un plateau sommital d’environ 80 hectares, avec ses citernes, une petite mosquée et une vue jusqu’en Algérie.',
+      'Près de Kalaat Senan, à proximité de la frontière algérienne, une montagne tabulaire culmine à environ 1 200 m, avec des parois de plus de 50 m. La montée mène à un plateau sommital d’environ 82 hectares, avec ses citernes, une petite mosquée et une vue jusqu’en Algérie.',
     didYouKnow:
       'Le plateau était autrefois un fond de vallée : l’érosion a emporté les collines plus tendres autour et laissé debout le calcaire dur.',
     insights: {
       history:
-        'La tradition la relie au roi numide Jugurtha, qui combattit Rome vers 110 av. J.-C. Au XVIIIe siècle, le rebelle Senan y tint tête aux troupes du bey et donna son nom à la ville.',
+        'La tradition la relie au roi numide Jugurtha, qui combattit Rome vers 110 av. J.-C. À la fin de l’époque médiévale, le lieu prend le nom de Galaat-Senen. Le site figure depuis 2017 sur la liste indicative de la Tunisie pour le patrimoine mondial.',
       customs: 'Montez avec un guide de Kalaat Senan. La montée est courte mais raide : pas de tongs.',
       food: 'Emportez de l’eau et un pique-nique : il n’y a rien au sommet.',
       bestTime: 'Au printemps et à l’automne. L’hiver peut apporter la neige, l’été est chaud.',
@@ -1011,7 +1011,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'Un camping sur la route de la Berka, dans la palmeraie de Tozeur. Emplacements pour tentes, vans et camping-cars, mi-soleil mi-ombre, avec douches, cuisine et une piscine alimentée par une source. Ouvert toute l’année.',
     didYouKnow:
-      'La palmeraie de Tozeur est irriguée par plus de 200 sources, réparties selon un système mis au point au XIIIe siècle.',
+      'La palmeraie de Tozeur est irriguée par des sources, réparties selon un système que la tradition attribue à Ibn Chabbat, au XIIIe siècle.',
     insights: {
       history: 'Tozeur était une étape caravanière sur les routes transsahariennes.',
       customs: 'Petit-déjeuner et dîner sur commande. Vérifiez prix et disponibilités avant d’arriver.',
