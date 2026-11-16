@@ -73,7 +73,7 @@ export const PLACES: Place[] = [
     description:
       'A clifftop village of whitewashed houses, studded blue doors and bougainvillea, long loved by painters such as Paul Klee and August Macke. Wander the cobbled lanes, then watch the sun set over the bay.',
     didYouKnow:
-      "In July 2026, UNESCO inscribed the Village of Sidi Bou Saïd on the World Heritage List. Its protection is much older: in 1915, at the urging of Baron Rodolphe d'Erlanger, a decree began to regulate building and façades in the village.",
+      "In July 2026, UNESCO inscribed the Village of Sidi Bou Saïd on the World Heritage List. Its protection is much older: a beylical decree of 1915 helped preserve the village's historic urban fabric.",
     insights: {
       history:
         'The village is named after Abu Said al-Baji, a 13th-century Sufi saint whose shrine still stands at the top of the hill.',
@@ -309,7 +309,7 @@ export const PLACES: Place[] = [
     unesco: true,
     tagline: 'A colosseum rising from the olive groves',
     description:
-      "Built from around AD 238 for an estimated 27,000 to 35,000 spectators, Thysdrus's amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.",
+      "Construction began around AD 238. Built for an estimated 27,000 to 35,000 spectators, Thysdrus's amphitheatre is one of the best-preserved in the world. You can climb the tiers and walk the tunnels where animals waited.",
     didYouKnow:
       'El Jem ranks among the three or four largest amphitheatres of the Roman world, and it now hosts a summer symphony festival.',
     insights: {

@@ -24,7 +24,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     description:
       'Un village perché sur la falaise, avec ses maisons chaulées, ses portes bleues cloutées et ses bougainvilliers, adoré de longue date par des peintres comme Paul Klee et August Macke. Flânez dans les ruelles pavées, puis regardez le soleil se coucher sur la baie.',
     didYouKnow:
-      'En juillet 2026, l’UNESCO a inscrit le Village de Sidi Bou Saïd sur la Liste du patrimoine mondial. Sa protection est bien plus ancienne : dès 1915, à l’initiative du baron Rodolphe d’Erlanger, un décret encadre les constructions et les façades du village.',
+      'En juillet 2026, l’UNESCO a inscrit le Village de Sidi Bou Saïd sur la Liste du patrimoine mondial. Sa protection est bien plus ancienne : un décret beylical de 1915 a contribué à préserver le tissu urbain historique du village.',
     insights: {
       history:
         'Le village doit son nom à Abou Saïd al-Baji, saint soufi du XIIIe siècle dont le mausolée se dresse toujours au sommet de la colline.',
@@ -172,7 +172,7 @@ export const PLACES_FR_A: Record<string, PlaceTextFr> = {
     name: 'Amphithéâtre d’El Jem',
     tagline: 'Un Colisée surgi des oliveraies',
     description:
-      'Construit à partir de 238 apr. J.-C. environ pour, selon les estimations, 27 000 à 35 000 spectateurs, l’amphithéâtre de Thysdrus est l’un des mieux conservés au monde. On peut grimper sur les gradins et parcourir les galeries où attendaient les fauves.',
+      'Sa construction commence vers 238 apr. J.-C. Prévu pour, selon les estimations, 27 000 à 35 000 spectateurs, l’amphithéâtre de Thysdrus est l’un des mieux conservés au monde. On peut grimper sur les gradins et parcourir les galeries où attendaient les fauves.',
     didYouKnow:
       'El Jem se classe parmi les trois ou quatre plus grands amphithéâtres du monde romain, et il accueille aujourd’hui un festival de musique symphonique en été.',
     insights: {
