@@ -6,11 +6,13 @@ import { ITINERARIES, PLACES } from '@/data/tunisiaData';
 import { getCatalog } from '@/lib/i18n/catalog';
 import { runChecks } from '@/lib/kg/check';
 import { compareEventSources, festivalOf, type EventSourceRow } from '@/lib/kg/events';
+import { factsText, placeFacts } from '@/lib/kg/facts';
+
+const facts = (id: string, lang: 'fr' | 'en') => placeFacts(id, lang).map((f) => f.text);
 import {
   GOVERNORATES,
   RELATIONS,
   designationsOf,
-  facts,
   get,
   governorateByName,
   isPublished,
@@ -106,6 +108,8 @@ test('faits : au plus 5 par lieu, seulement des énoncés publiés, en FR et en 
   assert.ok(!facts('tozeur', 'fr').some((s) => /Chabbat/.test(s)));
   assert.ok(!facts('el-jem', 'en').some((s) => /Gladiator/.test(s)));
   assert.ok(facts('nabeul', 'fr').length === 0);
+  assert.equal(factsText('nabeul', 'fr'), '');
+  for (const f of placeFacts('kairouan', 'fr')) assert.ok(f.sources.length > 0);
 });
 
 test('événements : chaque fiche a son festival, écarts Supabase/fichier détectés', () => {

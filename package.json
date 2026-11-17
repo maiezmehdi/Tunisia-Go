@@ -8,7 +8,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "kg:check": "tsx scripts/kg-check.ts",
-    "test:kg": "tsx --test tests/kg/*.test.ts"
+    "test:kg": "tsx --test tests/kg/graph.test.ts tests/kg/site.test.ts tests/kg/assistant.test.ts"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",
