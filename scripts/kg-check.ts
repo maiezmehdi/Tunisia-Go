@@ -26,8 +26,8 @@ async function main() {
   let failed = false;
   for (const r of runChecks()) {
     const ok = r.errors.length === 0;
-    failed ||= !ok;
-    console.log(`${ok ? '✓' : '✗'} ${r.rule}${ok ? '' : ` (${r.errors.length})`}`);
+    if (!r.warning) failed ||= !ok;
+    console.log(`${ok ? '✓' : r.warning ? '!' : '✗'} ${r.rule}${ok ? '' : ` (${r.errors.length})`}`);
     for (const e of r.errors) console.log(`    - ${e}`);
   }
   const pub = RELATIONS.filter(isPublished).length;
@@ -36,15 +36,15 @@ async function main() {
   try {
     const { rows, from } = await eventRows();
     if (!rows) {
-      console.log(`– 10. Écarts entre Supabase et le fichier des événements : non exécuté (${from}).`);
+      console.log(`– C. Écarts entre Supabase et le fichier des événements : non exécuté (${from}).`);
     } else {
       const issues = compareEventSources(rows, EVENTS);
       // A divergence is a warning: Supabase is the source of truth, the file is only the fallback.
-      console.log(`${issues.length ? '!' : '✓'} 10. Écarts entre Supabase et le fichier des événements (${from}) : ${issues.length}`);
+      console.log(`${issues.length ? '!' : '✓'} C. Écarts entre Supabase et le fichier des événements (${from}) : ${issues.length}`);
       for (const e of issues) console.log(`    - ${e}`);
     }
   } catch (e) {
-    console.log(`– 10. Écarts entre Supabase et le fichier des événements : non exécuté (${(e as Error).message}).`);
+    console.log(`– C. Écarts entre Supabase et le fichier des événements : non exécuté (${(e as Error).message}).`);
   }
   process.exit(failed ? 1 : 0);
 }

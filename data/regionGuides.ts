@@ -388,7 +388,7 @@ export function regionGuides(locale: Locale): RegionGuide[] {
 export const GENERAL_GUIDE = 'partout';
 
 /** Which guide a place belongs to. Places outside these regions point to the general one. */
-const GUIDE_BY_PLACE: Record<string, string> = {
+export const GUIDE_BY_PLACE: Record<string, string> = {
   carthage: 'tunis',
   'sidi-bou-said': 'tunis',
   'medina-tunis': 'tunis',

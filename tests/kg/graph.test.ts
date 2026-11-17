@@ -25,7 +25,9 @@ import {
 const fixture = (name: string) => JSON.parse(readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8'));
 
 test('kg:check : toutes les règles passent', () => {
-  for (const r of runChecks()) assert.deepEqual(r.errors, [], r.rule);
+  for (const r of runChecks()) if (!r.warning) assert.deepEqual(r.errors, [], r.rule);
+  const seasons = runChecks().find((r) => r.rule.startsWith('B.'));
+  assert.deepEqual(seasons?.errors, ['ksar-ghilane', 'djerba-velo'], 'avertissement des saisons conservé, rien d’inventé');
 });
 
 test('24 gouvernorats, clés ASCII, arabe toujours sourcé', () => {

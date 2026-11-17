@@ -1,4 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { EVENTS } from '@/data/events';
+import { GENERAL_GUIDE, GUIDE_BY_PLACE, regionGuides } from '@/data/regionGuides';
+import { SEASONS } from '@/data/seasons';
 import { GOVERNORATES } from '@/data/kg/governorates';
 import { ITINERARIES, PLACES } from '@/data/tunisiaData';
 import { festivalOf } from './events';
@@ -11,14 +14,24 @@ import { DESIGNATIONS, ENTITIES, FESTIVALS, HERITAGE, RELATIONS, SOURCES, get, i
 export interface RuleResult {
   rule: string;
   errors: string[];
+  /** Warnings do not fail the check. */
+  warning?: true;
 }
+
+/** Slugs frozen at the start of Lot 4 (risk T1): a renamed place or road trip fails the check. */
+const FROZEN = JSON.parse(readFileSync(new URL('../../tests/kg/fixtures/slugs.json', import.meta.url), 'utf8')) as {
+  places: string[];
+  trips: string[];
+};
+const SIX_MONTHS = 183 * 24 * 3600 * 1000;
 
 const ID = /^[a-z]+:[a-z0-9][a-z0-9-]*$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export function runChecks(): RuleResult[] {
+export function runChecks(today = new Date()): RuleResult[] {
   const out: RuleResult[] = [];
   const rule = (name: string, errors: string[]) => out.push({ rule: name, errors });
+  const warn = (name: string, errors: string[]) => out.push({ rule: name, errors, warning: true });
 
   // 1. Ids: unique, ASCII, prefixed.
   {
@@ -50,6 +63,12 @@ export function runChecks(): RuleResult[] {
     for (const t of ITINERARIES) for (const s of t.stops) if (!get(`place:${s}`)) errors.push(`trip:${t.id} → place:${s} inconnu`);
     for (const h of HERITAGE) for (const p of h.in) if (!get(p)) errors.push(`${h.id} dans ${p} inconnu`);
     for (const f of FESTIVALS) if (!get(f.place)) errors.push(`${f.id} → ${f.place} inconnu`);
+    for (const e of EVENTS) if (!get(`place:${e.placeId}`)) errors.push(`événement ${e.id} → place:${e.placeId} inconnu`);
+    const guides = new Set([GENERAL_GUIDE, ...regionGuides('fr').map((g) => g.id)]);
+    for (const [p, g] of Object.entries(GUIDE_BY_PLACE)) {
+      if (!get(`place:${p}`)) errors.push(`GUIDE_BY_PLACE : place:${p} inconnu`);
+      if (!guides.has(g)) errors.push(`GUIDE_BY_PLACE : cahier ${g} inconnu`);
+    }
     if (GOVERNORATES.length !== 24) errors.push(`${GOVERNORATES.length} gouvernorats au lieu de 24`);
     rule('3. Références structurelles', errors);
   }
@@ -64,7 +83,12 @@ export function runChecks(): RuleResult[] {
       if (!['place', 'trip', 'festival'].includes(e.kind ?? '') && e.sources.length === 0) errors.push(`${e.id} : aucune source`);
     }
     for (const d of DESIGNATIONS) if (d.date && (!d.dateSource || !source(d.dateSource))) errors.push(`${d.id} : date sans source`);
-    rule('4. Sources connues et présentes', errors);
+    for (const r of RELATIONS) {
+      if (['established', 'partial'].includes(r.status) && r.sources.length === 0) errors.push(`${r.id} (${r.status}) sans source`);
+      if (r.status === 'established' && r.sources.some((s) => source(s)?.level === 'secondary'))
+        errors.push(`${r.id} établie sur une source secondaire`);
+    }
+    rule('4. Sources connues, présentes et de niveau suffisant', errors);
   }
 
   // 5. Relations: both ends exist (or are candidates), sources exist, dates valid.
@@ -118,6 +142,26 @@ export function runChecks(): RuleResult[] {
   rule(
     '9. Chaque événement du fichier a son festival',
     EVENTS.filter((e) => !festivalOf({ id: e.id, placeId: e.placeId, titleFr: e.title.fr })).map((e) => `${e.id} sans festival`),
+  );
+
+  // 10. Frozen slugs (risk T1).
+  {
+    const errors: string[] = [];
+    const places = new Set(PLACES.map((p) => p.id));
+    const trips = new Set(ITINERARIES.map((t) => t.id));
+    for (const p of FROZEN.places) if (!places.has(p)) errors.push(`lieu disparu ou renommé : ${p}`);
+    for (const t of FROZEN.trips) if (!trips.has(t)) errors.push(`road trip disparu ou renommé : ${t}`);
+    rule('10. Slugs des 95 lieux et des 20 road trips conservés', errors);
+  }
+
+  // Warnings.
+  warn(
+    'A. Sources lues il y a plus de 6 mois',
+    SOURCES.filter((s) => today.getTime() - new Date(s.consulted).getTime() > SIX_MONTHS).map((s) => `${s.id} (${s.consulted})`),
+  );
+  warn(
+    'B. Lieux sans saison (aucun mois inventé)',
+    PLACES.filter((p) => !SEASONS[p.id]).map((p) => p.id),
   );
 
   return out;
