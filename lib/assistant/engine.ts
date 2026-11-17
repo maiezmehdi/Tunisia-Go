@@ -1,9 +1,11 @@
 import { LEXICON, type Word } from '@/data/lexicon';
 import { GENERAL_GUIDE, guideAnchor, guideFor, regionGuides } from '@/data/regionGuides';
 import { bestMonthsLabel, seasonFor } from '@/data/seasons';
+import { PLACES } from '@/data/tunisiaData';
 import type { CategoryId, Place } from '@/data/types';
 import { summarizeRoute } from '@/lib/geo';
 import { getCatalog } from '@/lib/i18n/catalog';
+import { governorateByName } from '@/lib/kg/governorate';
 import type { Locale } from '@/lib/i18n/config';
 
 import { STOPWORDS, normalize, similar, stem, tokenize } from './text';
@@ -63,50 +65,17 @@ export const EMPTY_PROFILE: Profile = { cats: [], zones: [] };
 
 // ── Geography ─────────────────────────────────────────────────────────────
 
-const ZONE_PLACES: Record<ZoneId, string[]> = {
-  nord: [
-    'carthage',
-    'sidi-bou-said',
-    'medina-tunis',
-    'bardo',
-    'marche-central',
-    'souk-el-attarine',
-    'dougga',
-    'bulla-regia',
-    'tabarka',
-    'ghar-el-melh',
-  ],
-  capbon: ['hammamet', 'nabeul', 'nabeul-market', 'kelibia', 'el-haouaria', 'korbous'],
-  centre: [
-    'kairouan',
-    'kairouan-souks',
-    'sbeitla',
-    'el-jem',
-    'sousse-medina',
-    'monastir',
-    'mahdia',
-    'sfax-medina',
-    'kerkennah',
-  ],
-  sud: [
-    'tozeur',
-    'mos-espa',
-    'chebika',
-    'chott-el-jerid',
-    'douz',
-    'matmata',
-    'ksar-ouled-soltane',
-    'gabes-jara',
-    'djerba',
-    'el-ghriba',
-    'guellala',
-    'houmt-souk',
-    'zarzis',
-  ],
-};
-const ZONES = Object.keys(ZONE_PLACES) as ZoneId[];
+/**
+ * Zone of each place, computed place → governorate → zone (data/kg/governorates.ts) from the English base
+ * data. It covers the 95 places instead of the 38 listed by hand before Lot 4, with the same 4 zones;
+ * the 38 places keep the zone they had.
+ */
+const ZONES: ZoneId[] = ['nord', 'capbon', 'centre', 'sud'];
 const ZONE_OF: Record<string, ZoneId> = Object.fromEntries(
-  ZONES.flatMap((z) => ZONE_PLACES[z].map((id) => [id, z] as const)),
+  PLACES.flatMap((p) => {
+    const zone = governorateByName(p.region)?.zone;
+    return zone ? [[p.id, zone] as const] : [];
+  }),
 );
 const NEIGHBOURS: Record<ZoneId, ZoneId[]> = {
   nord: ['capbon', 'centre'],
