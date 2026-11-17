@@ -26,6 +26,7 @@ import { loadPhotos } from '@/lib/photos';
 import { applyOverrides, loadPlaceOverrides, withOverridePhotos } from '@/lib/placeOverrides';
 import { placeUpdated } from '@/data/contentDates';
 import { formatUpdated, placePath } from '@/lib/placePages';
+import { isWorldHeritage } from '@/lib/kg';
 import { hasRegionPage, regionPath } from '@/lib/regionPages';
 import { loadRatingStats } from '@/lib/ratings';
 import { pageMetadata, localePath } from '@/lib/seo';
@@ -181,7 +182,7 @@ export default async function PlacePage({ params }: Params) {
         />
         <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-charcoal-300">
           {category.label}
-          {place.unesco && ` · ${c.unesco}`}
+          {isWorldHeritage(place.id) && ` · ${c.unesco}`}
         </p>
         <div className="mt-2 flex items-baseline justify-between gap-4">
           <h1 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">{place.name}</h1>
