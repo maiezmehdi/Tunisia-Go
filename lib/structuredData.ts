@@ -3,6 +3,11 @@ import type { Locale } from '@/lib/i18n/config';
 import { placeUpdated } from '@/data/contentDates';
 import { placePath } from '@/lib/placePages';
 import { hasRegionPage, regionPath, regionSlug } from '@/lib/regionPages';
+import { designationsOf, heritageIn, placeGovernorate } from '@/lib/kg';
+import { COUNTRY } from '@/data/kg/governorates';
+import type { Heritage } from '@/data/kg/types';
+import type { TunisiaEvent } from '@/data/events';
+import { festivalOf } from '@/lib/kg/events';
 import { LEGAL } from '@/lib/legal';
 import { SITE_NAME, SITE_URL, localePath } from '@/lib/seo';
 
@@ -35,11 +40,8 @@ export function siteData(lang: Locale) {
       url: SITE_URL,
       logo: abs('/icons/icon-512.png'),
       email: LEGAL.email,
-      sameAs: [
-        'https://www.tiktok.com/@tunisiagoo',
-        'https://www.linkedin.com/company/tunisiagoo',
-        ...LEGAL.extraProfiles,
-      ],
+      // LinkedIn removed (Lot 4, OPEN-ISSUES § 8): the page could not be checked as belonging to Tunisia Go.
+      sameAs: ['https://www.tiktok.com/@tunisiagoo', ...LEGAL.extraProfiles],
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer support',
@@ -63,10 +65,70 @@ export function siteData(lang: Locale) {
   ];
 }
 
+/**
+ * One JSON-LD identifier per place, whatever the language: the French canonical URL + `#place`
+ * (LOT4-FINAL-ARCHITECTURE § 6). The English page keeps its English `url` but reuses this `@id`.
+ */
+export const placeId = (id: string) => abs(`${placePath(id)}#place`);
+/** One identifier per road trip, on /explore and on the trip's own page. */
+export const tripId = (id: string) => abs(`/road-trips/${id}#trip`);
+const countryId = `${SITE_URL}/#country-tn`;
+const govNodeId = (key: string) => `${SITE_URL}/#gov-${key.replace(/^gov:/, '')}`;
+
+/** Governorate, then country, from the knowledge graph (data/kg/governorates.ts). */
+function containedIn(placeKey: string, lang: Locale) {
+  const g = placeGovernorate(placeKey);
+  if (!g) return undefined;
+  const base = g.regionNames[0];
+  return {
+    '@type': 'AdministrativeArea',
+    '@id': govNodeId(g.id),
+    name: g.name[lang],
+    ...(hasRegionPage(base) && { url: abs(localePath(regionPath(base), lang)) }),
+    containedInPlace: { '@type': 'Country', '@id': countryId, name: COUNTRY.name[lang] },
+  };
+}
+
+const HERITAGE_TYPE: Record<Heritage['kind'], string> = {
+  mosque: 'Mosque',
+  museum: 'Museum',
+  monument: 'LandmarksOrHistoricalBuildings',
+  'archaeological-site': 'LandmarksOrHistoricalBuildings',
+};
+
+/**
+ * Graph data of a place page: governorate, heritage items it contains, official statuses.
+ * Only published relations (status `established`) reach this point (lib/kg `designationsOf`).
+ */
+function graphData(place: Place, lang: Locale) {
+  const id = placeId(place.id);
+  const heritage = heritageIn(place.id);
+  const statuses = designationsOf(place.id);
+  const area = containedIn(place.id, lang);
+  return {
+    ...(area && { containedInPlace: area }),
+    ...(heritage.length && {
+      containsPlace: heritage.map((h) => ({
+        '@type': HERITAGE_TYPE[h.kind],
+        '@id': `${id}-${h.id.replace(/^heritage:/, '')}`,
+        name: h.name[lang],
+        ...(h.officialUrl && { url: h.officialUrl }),
+      })),
+    }),
+    ...(statuses.length && {
+      subjectOf: statuses.map((d) => ({
+        '@type': 'WebPage',
+        name: d.name[lang],
+        ...(d.officialUrl && { url: d.officialUrl }),
+      })),
+    }),
+  };
+}
+
 function attraction(place: Place, photos: Photo[], lang: Locale) {
   return {
     '@type': 'TouristAttraction',
-    '@id': abs(`${localePath(placePath(place.id), lang)}#place`),
+    '@id': placeId(place.id),
     name: place.name,
     ...(place.nameAr && { alternateName: place.nameAr }),
     description: place.tagline ? `${place.tagline}. ${place.description}` : place.description,
@@ -106,6 +168,7 @@ export function exploreData(places: Place[], itineraries: Itinerary[], photos: R
     ...itineraries.map((it) => ({
       '@context': 'https://schema.org',
       '@type': 'TouristTrip',
+      '@id': tripId(it.id),
       name: it.name,
       description: it.description,
       url: tripUrl(it.id, lang),
@@ -122,7 +185,7 @@ export function exploreData(places: Place[], itineraries: Itinerary[], photos: R
             item: {
               '@type': 'TouristAttraction',
               name: p.name,
-              '@id': abs(`${localePath(placePath(p.id), lang)}#place`),
+              '@id': placeId(p.id),
             },
           })),
       },
@@ -136,6 +199,7 @@ export function placePageData(place: Place, photos: Photo[], lang: Locale, descr
     {
       '@context': 'https://schema.org',
       ...attraction(place, photos, lang),
+      ...graphData(place, lang),
       ...(description && { description }),
       inLanguage: lang,
       dateModified: placeUpdated(place.id),
@@ -156,6 +220,7 @@ export function placePageData(place: Place, photos: Photo[], lang: Locale, descr
           name: lang === 'en' ? 'Places' : 'Lieux',
           item: abs(localePath('/lieux', lang)),
         },
+        // The region is resolved through its governorate, so « Kébili » (French catalogue) finds its page.
         ...(hasRegionPage(place.region)
           ? [{ name: place.region, item: abs(localePath(regionPath(place.region), lang)) }]
           : []),
@@ -173,6 +238,7 @@ export function tripPageData(trip: Itinerary, stops: Place[], lang: Locale) {
     {
       '@context': 'https://schema.org',
       '@type': 'TouristTrip',
+      '@id': tripId(trip.id),
       name: trip.name,
       description: trip.tagline ? `${trip.tagline}. ${trip.description}` : trip.description,
       url: tripUrl(trip.id, lang),
@@ -188,7 +254,7 @@ export function tripPageData(trip: Itinerary, stops: Place[], lang: Locale) {
             '@type': 'TouristAttraction',
             name: p.name,
             url: abs(localePath(placePath(p.id), lang)),
-            '@id': abs(`${localePath(placePath(p.id), lang)}#place`),
+            '@id': placeId(p.id),
           },
         })),
       },
@@ -243,13 +309,13 @@ export function sectionBreadcrumb(name: string, path: string, lang: Locale) {
 }
 
 /** « Que voir à… » page: the region's places as a list of tourist attractions, plus a breadcrumb. */
-export function regionPageData(region: string, places: Place[], lang: Locale) {
+export function regionPageData(region: string, places: Place[], lang: Locale, name = region) {
   const url = abs(localePath(`/que-voir/${regionSlug(region)}`, lang));
   return [
     {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: lang === 'en' ? `What to see in ${region}` : `Que voir à ${region}`,
+      name: lang === 'en' ? `What to see in ${name}` : `Que voir à ${name}`,
       url,
       numberOfItems: places.length,
       itemListElement: places.map((p, i) => ({
@@ -259,7 +325,7 @@ export function regionPageData(region: string, places: Place[], lang: Locale) {
           '@type': 'TouristAttraction',
           name: p.name,
           url: abs(localePath(placePath(p.id), lang)),
-          '@id': abs(`${localePath(placePath(p.id), lang)}#place`),
+          '@id': placeId(p.id),
         },
       })),
     },
@@ -279,7 +345,7 @@ export function regionPageData(region: string, places: Place[], lang: Locale) {
           name: lang === 'en' ? 'Places' : 'Lieux',
           item: abs(localePath('/lieux', lang)),
         },
-        { '@type': 'ListItem', position: 3, name: region, item: url },
+        { '@type': 'ListItem', position: 3, name, item: url },
       ],
     },
   ];
@@ -296,4 +362,42 @@ export function faqData(items: { q: string; a: string }[]) {
       acceptedAnswer: { '@type': 'Answer', text: i.a },
     })),
   };
+}
+
+/**
+ * Event markup of /evenements. Only confirmed editions with a known place: an Event without a location
+ * is not valid. The location reuses the place's `@id` (one node per place), and `superEvent` points to the
+ * recurring festival when the edition is matched to it (lib/kg/events.ts).
+ */
+export function eventsData(events: TunisiaEvent[], places: Map<string, Place>, lang: Locale) {
+  return events
+    .filter((e) => e.confirmed && e.start && places.has(e.placeId))
+    .map((e) => {
+      const place = places.get(e.placeId)!;
+      const festival = festivalOf({ id: e.id, placeId: e.placeId, titleFr: e.title.fr });
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        name: e.title[lang],
+        description: e.description[lang],
+        startDate: e.start,
+        endDate: e.end,
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: {
+          '@type': 'Place',
+          '@id': placeId(place.id),
+          name: place.name,
+          address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
+          geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
+        },
+        ...(festival && {
+          superEvent: {
+            '@type': 'EventSeries',
+            '@id': `${SITE_URL}/evenements#festival-${festival.id.replace(/^festival:/, '')}`,
+            name: festival.name[lang],
+          },
+        }),
+        url: `${SITE_URL}${localePath('/evenements', lang)}#${e.id}`,
+      };
+    });
 }

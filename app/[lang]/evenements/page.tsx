@@ -15,7 +15,7 @@ import { tunisieBookingUrl } from '@/lib/links';
 import { loadPhotos } from '@/lib/photos';
 import { placePath } from '@/lib/placePages';
 import { pageMetadata, SITE_URL, localePath } from '@/lib/seo';
-import { sectionBreadcrumb } from '@/lib/structuredData';
+import { eventsData, sectionBreadcrumb } from '@/lib/structuredData';
 
 export const revalidate = 86400;
 
@@ -85,27 +85,7 @@ export default async function EventsPage({ params }: Params) {
   );
 
   // Only confirmed events with a known place: an Event without a location is not valid markup.
-  const jsonLd = events
-    .filter((e) => e.confirmed && e.start && places.has(e.placeId))
-    .map((e) => {
-      const place = places.get(e.placeId)!;
-      return {
-        '@context': 'https://schema.org',
-        '@type': 'Event',
-        name: e.title[locale],
-        description: e.description[locale],
-        startDate: e.start,
-        endDate: e.end,
-        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-        location: {
-          '@type': 'Place',
-          name: place.name,
-          address: { '@type': 'PostalAddress', addressRegion: place.region, addressCountry: 'TN' },
-          geo: { '@type': 'GeoCoordinates', latitude: place.coords[0], longitude: place.coords[1] },
-        },
-        url: `${SITE_URL}${localePath('/evenements', locale)}#${e.id}`,
-      };
-    });
+  const jsonLd = eventsData(events, places, locale);
 
   const actionHref = (e: TunisiaEvent, a: EventAction): string | null => {
     if (a.kind === 'stay') {
