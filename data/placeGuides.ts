@@ -112,7 +112,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
       {
         intro: [
           'Avant d’être romaine, Thugga est une ville numide, installée sur un plateau qui domine la vallée de l’oued Khalled. Sous Rome, Numides et Romains y vivent côte à côte pendant des siècles, ce qui explique son plan irrégulier, loin des villes tracées au cordeau.',
-          'Dougga est inscrite au patrimoine mondial de l’UNESCO depuis 1997. C’est souvent considérée comme la ville romaine la mieux conservée d’Afrique du Nord : on y lit encore les rues, les places, les maisons et les monuments publics d’une ville entière, au milieu des oliviers et presque sans aménagement moderne.',
+          'Dougga est inscrite au patrimoine mondial de l’UNESCO depuis 1997. L’UNESCO présente Dougga comme l’exemple le mieux conservé d’une ville africo-romaine en Afrique du Nord : on y lit encore les rues, les places, les maisons et les monuments publics d’une ville entière, au milieu des oliviers et presque sans aménagement moderne.',
           'La ville connaît son apogée aux IIe et IIIe siècles, quand ses notables financent temples, thermes et théâtre : leurs dédicaces gravées se lisent encore sur de nombreux monuments. Plus tard, un village s’installe au milieu des ruines ; ses habitants sont relogés au XXe siècle dans un nouveau village, au pied du site.',
         ],
         see: [
@@ -141,7 +141,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
       {
         intro: [
           'Before it was Roman, Thugga was a Numidian town on a plateau above the valley of the Oued Khalled. Under Rome, Numidians and Romans lived side by side here for centuries, which is why the street plan is irregular rather than laid out on a grid.',
-          'Dougga has been a UNESCO World Heritage Site since 1997 and is often described as the best-preserved Roman town in North Africa. Streets, squares, houses and public buildings of a whole town can still be read on the ground, among olive groves and with almost no modern development.',
+          'Dougga has been a UNESCO World Heritage Site since 1997. UNESCO describes Dougga as the best-preserved example of an Africo-Roman town in North Africa. Streets, squares, houses and public buildings of a whole town can still be read on the ground, among olive groves and with almost no modern development.',
           'The town peaked in the 2nd and 3rd centuries AD, when its leading citizens paid for temples, baths and the theatre: their carved dedications can still be read on many buildings. Later a village grew up among the ruins; its families were rehoused in a new village below the site in the 20th century.',
         ],
         see: [

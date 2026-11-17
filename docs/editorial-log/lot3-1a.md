@@ -138,3 +138,18 @@
 Meta descriptions des guides : inchangées. Pour les 8 fiches sans guide long, la meta description est construite à partir de l'accroche et de la description : elle suit donc les changements ci-dessus (Bardo, Kerkouane, Sousse, Thuburbo Majus, Zaghouan, Djebel Zaghouan, Ksar Hadada, Lézard Rouge). Carthage garde la meta de son guide.
 
 **Note** : dans un relevé, « Avant » cite seulement le passage modifié ; le reste du champ ne change pas.
+
+## Complément (après relecture de Mehdi, 16 novembre 2026) : introduction du guide de Dougga
+
+Fait dans une PR séparée, parce que la PR 133 était déjà fusionnée. Formulations proposées par Mehdi.
+
+**Source** (institutionnelle) : UNESCO, Dougga / Thugga (n° 794). https://whc.unesco.org/en/list/794/
+
+**Raison** : reprendre la formule de l'UNESCO avec son attribution explicite, et le terme « africo-romaine » (« considered the best preserved example of an Africo-Roman town in North Africa »). La faute de français « C'est … considérée » disparaît aussi.
+
+| Champ | Langue | Fichier | Avant | Après |
+|---|---|---|---|---|
+| guide.intro[1] | FR | `placeGuides.ts` | Dougga est inscrite au patrimoine mondial de l’UNESCO depuis 1997. C’est souvent considérée comme la ville romaine la mieux conservée d’Afrique du Nord : on y lit encore… | Dougga est inscrite au patrimoine mondial de l’UNESCO depuis 1997. L’UNESCO présente Dougga comme l’exemple le mieux conservé d’une ville africo-romaine en Afrique du Nord : on y lit encore… |
+| guide.intro[1] | EN | `placeGuides.ts` | Dougga has been a UNESCO World Heritage Site since 1997 and is often described as the best-preserved Roman town in North Africa. Streets… | Dougga has been a UNESCO World Heritage Site since 1997. UNESCO describes Dougga as the best-preserved example of an Africo-Roman town in North Africa. Streets… |
+
+`data/contentDates.ts` : `dougga` est déjà au 2026-11-16, donc pas de changement.
