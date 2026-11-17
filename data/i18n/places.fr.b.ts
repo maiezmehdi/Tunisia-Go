@@ -6,7 +6,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'Porte du Sahara, Tozeur s’étend au cœur d’une palmeraie de plusieurs centaines de milliers de dattiers. Le vieux quartier d’Ouled el Hadef est bâti de briques jaunes disposées en motifs géométriques.',
     didYouKnow:
-      'La palmeraie est irriguée par des sources. La tradition attribue à Ibn Chabbat (1221-1282) le système qui en partage l’eau.',
+      'Une tradition historique attribue à Ibn Chabbat le système de partage de l’eau de la palmeraie de Tozeur.',
     insights: {
       history: 'L’antique Thusuros était une halte caravanière sur les routes transsahariennes.',
       customs: 'Le poète Abou el Kacem Chebbi, auteur des vers de l’hymne national, est né ici.',
@@ -1011,7 +1011,7 @@ export const PLACES_FR_B: Record<string, PlaceTextFr> = {
     description:
       'Un camping sur la route de la Berka, dans la palmeraie de Tozeur. Emplacements pour tentes, vans et camping-cars, mi-soleil mi-ombre, avec douches, cuisine et une piscine alimentée par une source. Ouvert toute l’année.',
     didYouKnow:
-      'La palmeraie de Tozeur est irriguée par des sources, réparties selon un système que la tradition attribue à Ibn Chabbat, au XIIIe siècle.',
+      'Selon une tradition historique, le système de partage de l’eau de la palmeraie de Tozeur est attribué à Ibn Chabbat.',
     insights: {
       history: 'Tozeur était une étape caravanière sur les routes transsahariennes.',
       customs: 'Petit-déjeuner et dîner sur commande. Vérifiez prix et disponibilités avant d’arriver.',

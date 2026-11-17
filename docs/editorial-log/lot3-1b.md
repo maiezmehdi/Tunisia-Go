@@ -127,24 +127,28 @@ Dans le tableau, « Avant » ne cite que le passage modifié. Le reste du champ 
 **Sources** (consultées le 16 novembre 2026) :
 - Hatem Bourial, « Ibn Chabbat, maître des eaux du Djérid », webdo.tn, 18/02/2016 (secondaire) : https://www.webdo.tn/fr/actualite/chroniques/ibn-chabbat-maitre-eaux-djerid/187014/
 
-**Raison** : « Né en 1221 et mort en 1282 » ; « La postérité reconnait à Ibn Chabbat la paternité du système de distribution des eaux à Tozeur ». Les « plus de 200 sources » et « l’horloge hydraulique » ne sont dans aucune source lue : retirés. L’attribution est présentée comme une tradition. Aucune source académique lue sur le sujet.
+**Raison** : webdo.tn écrit « La postérité reconnait à Ibn Chabbat la paternité du système de distribution des eaux à Tozeur ». Cette source secondaire documente l’existence de la tradition, pas le fait lui-même : l’attribution est donc présentée comme une tradition historique. Les « plus de 200 sources » et « l’horloge hydraulique » ne sont dans aucune source lue : retirés.
+
+**Révision du 17 novembre 2026 (décision de Mehdi après revue)** : l’irrigation actuelle « par des sources » est retirée, faute de source solide sur la situation actuelle. Les dates 1221-1282 (données par webdo.tn seulement) et la mention du XIIIe siècle sont retirées tant qu’aucune source institutionnelle ou académique ne les confirme. Aucune source académique lue sur le sujet. Le tableau donne le texte final.
+
+**À vérifier plus tard (hors de cette PR)** : la description de Tozeur, non modifiée, parle de « plusieurs centaines de milliers de dattiers » (EN « hundreds of thousands of date palms ») sans source lue.
 
 | Champ | Langue | Fichier | Avant | Après |
 |---|---|---|---|---|
-| didYouKnow | EN | `tunisiaData.ts` | The palm grove is irrigated by more than 200 springs, shared out with a water-clock system devised in the 13th century by the mathematician Ibn Chabbat. | The palm grove is watered by springs. Tradition credits Ibn Chabbat (1221–1282) with the system that shares out their water. |
-| didYouKnow | FR | `places.fr.b.ts` | La palmeraie est irriguée par plus de 200 sources, dont l’eau est répartie selon un système d’horloge hydraulique mis au point au XIIIe siècle par le mathématicien Ibn Chabbat. | La palmeraie est irriguée par des sources. La tradition attribue à Ibn Chabbat (1221-1282) le système qui en partage l’eau. |
+| didYouKnow | EN | `tunisiaData.ts` | The palm grove is irrigated by more than 200 springs, shared out with a water-clock system devised in the 13th century by the mathematician Ibn Chabbat. | A historical tradition credits Ibn Chabbat with the system for sharing out the water of the Tozeur palm grove. |
+| didYouKnow | FR | `places.fr.b.ts` | La palmeraie est irriguée par plus de 200 sources, dont l’eau est répartie selon un système d’horloge hydraulique mis au point au XIIIe siècle par le mathématicien Ibn Chabbat. | Une tradition historique attribue à Ibn Chabbat le système de partage de l’eau de la palmeraie de Tozeur. |
 
 ## 10. `camping-tozeur`
 
 **Sources** (consultées le 16 novembre 2026) :
 - Hatem Bourial, webdo.tn, 18/02/2016 (même source que Tozeur) (secondaire) : https://www.webdo.tn/fr/actualite/chroniques/ibn-chabbat-maitre-eaux-djerid/187014/
 
-**Raison** : Même affirmation que la fiche Tozeur, corrigée de la même façon pour que les deux fiches ne se contredisent pas.
+**Raison** : Même affirmation que la fiche Tozeur, corrigée de la même façon pour que les deux fiches ne se contredisent pas. Révisée le 17 novembre 2026 comme Tozeur : sources actuelles, XIIIe siècle et dates retirés.
 
 | Champ | Langue | Fichier | Avant | Après |
 |---|---|---|---|---|
-| didYouKnow | EN | `tunisiaData.ts` | The Tozeur palm grove is watered by more than 200 springs, shared out by a system devised in the 13th century. | The Tozeur palm grove is watered by springs, shared out by a system that tradition credits to Ibn Chabbat, in the 13th century. |
-| didYouKnow | FR | `places.fr.b.ts` | La palmeraie de Tozeur est irriguée par plus de 200 sources, réparties selon un système mis au point au XIIIe siècle. | La palmeraie de Tozeur est irriguée par des sources, réparties selon un système que la tradition attribue à Ibn Chabbat, au XIIIe siècle. |
+| didYouKnow | EN | `tunisiaData.ts` | The Tozeur palm grove is watered by more than 200 springs, shared out by a system devised in the 13th century. | According to a historical tradition, the system for sharing out the water of the Tozeur palm grove is credited to Ibn Chabbat. |
+| didYouKnow | FR | `places.fr.b.ts` | La palmeraie de Tozeur est irriguée par plus de 200 sources, réparties selon un système mis au point au XIIIe siècle. | Selon une tradition historique, le système de partage de l’eau de la palmeraie de Tozeur est attribué à Ibn Chabbat. |
 
 ## Titres et meta descriptions
 

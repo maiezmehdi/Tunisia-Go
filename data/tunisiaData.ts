@@ -532,7 +532,7 @@ export const PLACES: Place[] = [
     description:
       'Gateway to the Sahara, Tozeur sits in a palm grove of hundreds of thousands of date palms. The old Ouled el Hadef quarter is built of yellow bricks laid in geometric patterns.',
     didYouKnow:
-      'The palm grove is watered by springs. Tradition credits Ibn Chabbat (1221–1282) with the system that shares out their water.',
+      'A historical tradition credits Ibn Chabbat with the system for sharing out the water of the Tozeur palm grove.',
     insights: {
       history: 'Ancient Thusuros was a caravan stop on the trans-Saharan routes.',
       customs: "The poet Abou el Kacem Chebbi, author of the national anthem's verses, was born here.",
@@ -2094,7 +2094,7 @@ export const PLACES: Place[] = [
     description:
       'A campsite on the Berka road, in the palm grove of Tozeur. Pitches for tents, vans and motorhomes, part sun and part shade, with showers, a kitchen and a pool fed by a spring. Open all year.',
     didYouKnow:
-      'The Tozeur palm grove is watered by springs, shared out by a system that tradition credits to Ibn Chabbat, in the 13th century.',
+      'According to a historical tradition, the system for sharing out the water of the Tozeur palm grove is credited to Ibn Chabbat.',
     insights: {
       history: 'Tozeur was a caravan stop on the routes across the Sahara.',
       customs: 'Breakfast and dinner can be ordered on site. Check prices and availability before you arrive.',
