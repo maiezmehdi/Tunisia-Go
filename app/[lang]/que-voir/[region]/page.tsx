@@ -82,18 +82,20 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { locale, entry, places } = find(lang, slug);
   if (!entry) return {};
   const c = COPY[locale];
+  // Name of the governorate in the page's language (« Kébili » in French); the slug stays the English one.
+  const name = entry.name[locale];
   return pageMetadata({
     lang: locale,
     path: regionPath(entry.region),
-    title: c.metaTitle(entry.region),
+    title: c.metaTitle(name),
     description: c.metaDescription(
-      entry.region,
+      name,
       places
         .slice(0, 3)
         .map((p) => p.name)
         .join(', '),
     ),
-    image: places[0] ? { url: `/api/og/${places[0].id}?lang=${locale}`, alt: entry.region } : undefined,
+    image: places[0] ? { url: `/api/og/${places[0].id}?lang=${locale}`, alt: name } : undefined,
   });
 }
 
@@ -103,11 +105,12 @@ export default async function RegionPage({ params }: Params) {
   const lp = (path: string) => localePath(path, locale);
   if (!entry) notFound();
   const c = COPY[locale];
+  const name = entry.name[locale];
   const guide = regionGuides(locale).find((g) => g.id === guideFor(places[0].id));
 
   return (
     <main className="min-h-dvh bg-cream text-charcoal">
-      <JsonLd data={regionPageData(entry.region, places, locale)} />
+      <JsonLd data={regionPageData(entry.region, places, locale, name)} />
       <header className="border-b border-sand-200">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
           <BrandLogo tag={c.brandTag} size={40} compact />
@@ -128,13 +131,13 @@ export default async function RegionPage({ params }: Params) {
 
       <article className="mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
         <Breadcrumbs
-          items={[{ name: c.home, href: lp('/') }, { name: c.places, href: lp('/lieux') }, { name: entry.region }]}
+          items={[{ name: c.home, href: lp('/') }, { name: c.places, href: lp('/lieux') }, { name }]}
         />
         <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight sm:text-5xl">
-          {c.title(entry.region)}
+          {c.title(name)}
         </h1>
         <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-charcoal-500">
-          {c.lead(entry.region, places.length)}
+          {c.lead(name, places.length)}
         </p>
 
         <ol className="mt-12 divide-y divide-sand-200 border-y border-sand-200">
@@ -160,7 +163,7 @@ export default async function RegionPage({ params }: Params) {
         {trips.length > 0 && (
           <section className="mt-12">
             <h2 className="text-[11px] font-medium uppercase tracking-[0.22em] text-charcoal-300">
-              {c.trips(entry.region)}
+              {c.trips(name)}
             </h2>
             <ul className="mt-3 space-y-2">
               {trips.map((it) => (

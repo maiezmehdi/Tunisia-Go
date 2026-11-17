@@ -6,10 +6,17 @@ import { ICH } from '@/data/kg/ich';
 import { RELATIONS } from '@/data/kg/relations';
 import { SOURCES } from '@/data/kg/sources';
 import type { Designation, EntityId, Heritage, KgEntity, KgRelation, KgSource, Labels } from '@/data/kg/types';
-import { ITINERARIES, PLACES } from '@/data/tunisiaData';
-import { COUNTRY, GOVERNORATES, governorateByName, placeGovernorate } from './governorate';
+import { ITINERARIES, PLACES, PLACE_BY_ID } from '@/data/tunisiaData';
+import { COUNTRY, GOVERNORATES, governorateByName, type Governorate } from './governorate';
 
-export { COUNTRY, GOVERNORATES, governorateByName, placeGovernorate };
+export { COUNTRY, GOVERNORATES, governorateByName };
+
+/**
+ * Governorate of a place, computed from the English base data: it does not depend on the translated
+ * `region` of the catalogue, which is what broke the Kébili and Le Kef pages.
+ */
+export const placeGovernorate = (placeId: string): Governorate | undefined =>
+  governorateByName(PLACE_BY_ID[placeId]?.region);
 export { governorate, governorateBaseName } from './governorate';
 
 type Lang = 'fr' | 'en';
@@ -99,25 +106,6 @@ export const tripPlaces = (tripId: string): EntityId[] =>
   (ITINERARIES.find((t) => t.id === tripId)?.stops ?? []).map((s) => `place:${s}` as EntityId);
 
 export const MAX_FACTS_PER_PLACE = 5;
-
-/**
- * Published facts about a place, as short sentences: the place's own relations, then those of the
- * heritage items it contains. Used by the assistant and llms.txt. At most 5 (implementation plan, step 7).
- */
-export function facts(placeId: string, lang: Lang, max = MAX_FACTS_PER_PLACE): string[] {
-  const ids = [`place:${placeId}`, ...heritageIn(placeId).map((h) => h.id)];
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const id of ids) {
-    for (const r of relationsOf(id, { published: true })) {
-      const s = r.statement[lang];
-      if (seen.has(s)) continue;
-      seen.add(s);
-      out.push(s);
-    }
-  }
-  return out.slice(0, max);
-}
 
 /** Labels of a governorate for a place, in both languages. */
 export const placeGovernorateLabels = (placeId: string): Labels | undefined => placeGovernorate(placeId)?.name;
