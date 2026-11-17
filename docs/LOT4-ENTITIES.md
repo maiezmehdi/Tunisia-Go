@@ -98,8 +98,9 @@ On ne publie que ce qui est établi (Prompt 2C, § 5). Toutes les autres entité
 - 24 `gov:`. Clés proposées, sans accent : `tunis`, `ariana`, `ben-arous`, `manouba`, `nabeul`, `zaghouan`, `bizerte`, `beja`, `jendouba`, `kef`, `siliana`, `sousse`, `monastir`, `mahdia`, `sfax`, `kairouan`, `kasserine`, `sidi-bouzid`, `gabes`, `medenine`, `tataouine`, `gafsa`, `tozeur`, `kebili`.
   - Les noms FR et EN repartent des 22 valeurs actuelles de `Place.region`.
   - Le FR suit les fiches : « Kébili », « Le Kef ».
-  - L'arabe et la liste officielle restent à sourcer (OPEN-ISSUES § 1). En attendant, l'arabe est laissé vide.
-- `area:` : les découpages existants, recopiés **sans changement** sous forme de correspondances gouvernorat → zone :
+  - La liste des 24 vient de l'Institut national de la statistique (`S20`), et les 24 noms arabes de sa page arabe (`S21`), lues le 17/11/2026.
+  - Chaque gouvernorat porte aussi sa zone de l'assistant (`nord`, `capbon`, `centre`, `sud`).
+- `area:` : **non créé à la mise en œuvre**. Les découpages existants restent dans leurs fichiers, sans copie ; seule la zone de l'assistant devient un champ du gouvernorat. Pour mémoire, ces découpages sont :
   - 7 cahiers (`data/regionGuides.ts`) ;
   - 4 zones de l'assistant ;
   - 10 régions d'hébergement ONTT (`data/stays.ts`) ;

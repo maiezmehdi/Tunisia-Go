@@ -86,7 +86,7 @@ En résumé :
 - contestée : 1 ;
 - réfutée : 1.
 
-**24 relations sont publiables telles quelles**, et les relations partielles le sont pour leur partie établie. Les autres restent au registre, sans bloquer l'architecture : une relation incertaine n'est simplement pas publiée.
+**24 relations sont publiables telles quelles**, et les relations partielles le sont pour leur partie établie, enregistrée comme relation distincte (§ 3.3). Dans le code (`data/kg/relations.ts`), **35 relations sont publiées** : ces 24, plus les 11 du § 3.3. `rel-42` est établie mais reste un texte (`textOnly`). Les autres restent au registre, sans bloquer l'architecture : une relation incertaine n'est simplement pas publiée.
 
 
 | Id | Sujet | Type | Objet | Statut | Sources | Réserve | Publication |
@@ -167,9 +167,29 @@ En résumé :
 | `rel-74` | Toujane | `filmingLocationOf` | La Folle de Toujane (1974) | **non vérifiée** | — | non, après source filmographique | non |
 | `rel-75` | Tataouine ; Chenini | `(texte : nom de fiction)` | Tatooine ; lune Chenini (fiction) | **secondaire** | L-WOOK | oui : inspiration de nom, pas tournage | non en données structurées ; texte avec « selon… » seulement |
 
+### 3.3 Relations ajoutées à la mise en œuvre (rel-76 à rel-86)
+
+Ce sont les parties établies des relations partielles, et des relations sourcées au 2C ou déjà présentes dans les fiches. Toutes ont le statut `established`. Les relations d'origine gardent leur statut et ne sont pas publiées.
+
+| Id | Sujet | Type | Objet | Sources | Origine |
+|---|---|---|---|---|---|
+| `rel-76` | Ichkeul | `hasDesignation` | patrimoine mondial n° 8, **sans année** | S17, S16, L-U8 | partie établie de rel-04 |
+| `rel-77` | Sidi Bou Saïd | `hasDesignation` | patrimoine mondial n° 1769 (2026) | L-U1769 | partie établie de rel-11 (inscription vérifiée par Mehdi au Lot 3) |
+| `rel-78` | Harissa (PCI 01710) | `ichPracticedIn` | Tunisie (`country:tn`), **jamais Nabeul** | S04 | partie établie de rel-17 |
+| `rel-79` | Ichkeul | `hasDesignation` | Ramsar n° 213 (24/11/1980) | S16 | 2C |
+| `rel-80` | Bou Hedma | `hasDesignation` | réserve de biosphère (1977) | S07, S18 | 2C |
+| `rel-81` | Bou Hedma | `hasDesignation` | parc national, décret 80-1606 du 18/12/1980 | S07, S18 | partie établie de rel-22 |
+| `rel-82` | Jebil | `hasDesignation` | parc national, décret 94-2210 du 24/10/1994 | S19, S18 | partie établie de rel-22 |
+| `rel-83` | Bassins des Aghlabides | `builtBy` | Abû Ibrâhîm Ahmad, émir aghlabide | S09 | 2C |
+| `rel-84` | Mosquée Zitouna | date | fondée vers 699, reconstruite en 728-729 | L-AZIT | version corrigée de rel-28 (texte de main depuis la PR 135) |
+| `rel-85` | Médina de Tunis | `associatedPolity` | Almohades | L-U36 | second objet de rel-29 |
+| `rel-86` | Djebel Zaghouan | `hasDesignation` | liste indicative n° 5685 | S08 | second sujet de rel-16 |
+
+Les objets qui ne sont pas des entités (personnes, films, légendes non créées) sont notés `candidate:<clé>` dans le code. Une relation qui touche un `candidate:` n'est jamais publiée.
+
 ## 4. Registre des sources
 
-Chaque relation cite un ou plusieurs codes de ce registre. La date de consultation est celle du lot qui a lu la source. Les registres d'origine sont `docs/GEO-FACTUAL-VERIFICATION.md` et `docs/editorial-log/` pour les Lots 2 et 3, et `seo/lot4/lot4-2c-verification-institutionnelle.md` (dossier projet) pour le Prompt 2C. Aucune source n'a été ajoutée pendant la finalisation.
+Chaque relation cite un ou plusieurs codes de ce registre. La date de consultation est celle du lot qui a lu la source. Les registres d'origine sont `docs/GEO-FACTUAL-VERIFICATION.md` et `docs/editorial-log/` pour les Lots 2 et 3, et `seo/lot4/lot4-2c-verification-institutionnelle.md` (dossier projet) pour le Prompt 2C. Deux sources ont été ajoutées à la mise en œuvre, pour les gouvernorats (`S20`, `S21`).
 
 ### 4.1 Sources lues aux Lots 2 et 3 (novembre 2026)
 
@@ -233,6 +253,8 @@ Chaque relation cite un ou plusieurs codes de ce registre. La date de consultati
 | `S16` | Convention de Ramsar, fiche n° 213 « Ichkeul », désignation 24/11/1980, https://rsis.ramsar.org/ris/213 (lu le 17/11/2026) |
 | `S17` | UNESCO, Centre du patrimoine mondial, « Ichkeul National Park », https://whc.unesco.org/en/list/8/ (relu le 17/11/2026) |
 | `S18` | Ministère de l’Environnement (site environnement.gov.tn), support de formation « Les aires protégées » (Thème V), sans date ni auteur affichés, https://www.environnement.gov.tn/fileadmin/Bibliotheque/Projets_en_cours/Ecotourisme_en_Tunisie/Documentation_projet_ecotourisme/les_aires_proteges.pdf (lu le 17/11/2026) |
+| `S20` | Institut national de la statistique, liste des 24 gouvernorats (page anglaise), https://www.ins.tn/en/statistiques/112 (lu le 17/11/2026, mise en œuvre) |
+| `S21` | Institut national de la statistique, même liste en arabe, https://www.ins.tn/ar/statistiques/112 (lu le 17/11/2026, mise en œuvre) : source des 24 noms arabes |
 | `S19` | Ministère de l’Environnement et du Développement durable, DGEQV, « Évaluation des impacts environnementaux et sociaux… Parc National de Jbil », décembre 2015, https://www.environnement.gov.tn/fileadmin/Bibliotheque/Projets_en_cours/Ecotourisme_en_Tunisie/FES_jbil.pdf (lu le 17/11/2026) |
 
 ## 5. Limites connues (non bloquantes)

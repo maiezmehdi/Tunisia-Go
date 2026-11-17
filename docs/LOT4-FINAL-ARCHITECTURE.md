@@ -1,6 +1,6 @@
 # Lot 4 · Architecture définitive du Knowledge Graph
 
-Version 1, 17 novembre 2026. Base : `main` au commit `de63e15`. Ce document est le seul à décrire le stockage, les identifiants, la publication et la validation. Les autres documents du Lot 4 se partagent le reste :
+Version 2, 17 novembre 2026 (mise en œuvre : voir § 11). Base : `main` au commit `de63e15`. Ce document est le seul à décrire le stockage, les identifiants, la publication et la validation. Les autres documents du Lot 4 se partagent le reste :
 - les entités sont dans [`LOT4-ENTITIES.md`](LOT4-ENTITIES.md) ;
 - les relations et leurs preuves sont dans [`LOT4-RELATIONS.md`](LOT4-RELATIONS.md) ;
 - l'ordre de réalisation est dans [`LOT4-IMPLEMENTATION-PLAN.md`](LOT4-IMPLEMENTATION-PLAN.md) ;
@@ -19,6 +19,8 @@ Version 1, 17 novembre 2026. Base : `main` au commit `de63e15`. Ce document est 
 | A7 | **Une relation documentaire n'est publiée que si elle est « établie »** (LOT4-RELATIONS § 3). Le contrôle est fait par le code : le filtre `published` est le seul chemin vers le JSON-LD, `llms.txt` et les réponses factuelles de l'assistant. | Les principes validés le 17/11, et la recommandation R4 de l'audit. |
 
 ## 2. Arborescence
+
+Arborescence prévue en version 1. Les fichiers réellement créés sont décrits au § 11.
 
 ```
 data/kg/
@@ -101,7 +103,7 @@ interface KgSource {
 
 - **Une seule convention pour les nouvelles données** : l'objet `{ fr, en }`, déjà utilisé par les guides, les cahiers et les événements. Les deux autres conventions (la surcouche des fiches, les colonnes `_fr`/`_en` de Supabase) restent en place pour l'existant et ne sont pas migrées.
 - **Arabe** : champ `nameAr` facultatif, toujours accompagné de sa source.
-  - Pour les gouvernorats, il attend la source officielle (OPEN-ISSUES § 1).
+  - Pour les gouvernorats, il vient de la page arabe de l'Institut national de la statistique (`S21`), lue le 17/11/2026.
   - Pour les lieux, le `nameAr` des fiches reste ce qu'il est, publié en `alternateName` comme aujourd'hui.
 - Le validateur exige que `name.fr` et `name.en` soient tous deux remplis, comme pour les fiches.
 
@@ -113,10 +115,10 @@ Aucune refonte, aucun nouveau composant visuel en phase 1. Le graphe remplace de
 |---|---|---|
 | Fil d'Ariane, lien « Que voir à », bloc des agences (page lieu, carte) | comparaison sur la région **traduite** | `placeGovernorate(id)`. Le défaut des 4 pages FR de Kébili est corrigé. |
 | Titre FR des pages région, liste des régions de l'accueil | nom anglais | `name.fr` du gouvernorat (« Que voir à Kébili ? »). Les URL `/que-voir/kebili` ne changent pas. |
-| Mention « Patrimoine mondial de l'UNESCO » (page lieu, carte, carnet imprimable) | booléen `unesco` (12 fiches, dont 2 souks) | dérivée de `hasDesignation` vers un bien du patrimoine mondial. Le booléen reste, et le validateur vérifie la concordance. Le cas des deux souks est décrit dans OPEN-ISSUES § 5. |
+| Mention « Patrimoine mondial de l'UNESCO » (page lieu, carte, carnet imprimable) | booléen `unesco` (12 fiches, dont 2 souks) | dérivée de `hasDesignation` vers un bien du patrimoine mondial (page lieu : `isWorldHeritage`). Le booléen reste pour la carte et le carnet (composants client), et le validateur vérifie la concordance. Les deux souks perdent la mention (décision OPEN-ISSUES § 5) : 10 fiches. |
 | `llms.txt` | liste de pages | ajout d'une section générée, « Statuts officiels », avec les relations établies et l'URL de leur source |
 
-Afficher les sources aux visiteurs serait un nouvel élément d'interface. Ce n'est **pas** prévu sans décision (OPEN-ISSUES § 7).
+Afficher les sources aux visiteurs serait un nouvel élément d'interface : c'est exclu (décision OPEN-ISSUES § 7). Les sources alimentent le graphe, les données structurées et `llms.txt`.
 
 ## 6. Données structurées (Schema.org)
 
@@ -126,9 +128,9 @@ Afficher les sources aux visiteurs serait un nouvel élément d'interface. Ce n'
 | **Gouvernorat** | `containedInPlace: { "@type": "AdministrativeArea", "@id": SITE_URL + "/#gov-<clé>", name, containedInPlace: { "@type": "Country", "@id": SITE_URL + "/#country-tn", name: "Tunisie" / "Tunisia" } }`. Si le gouvernorat a une page « Que voir à », on ajoute `url`. |
 | **Élément patrimonial contenu** | `containsPlace` sur le lieu, avec un nœud `@id = <@id du lieu>-<clé>` et un type précis (`Mosque`, `Museum`, `LandmarksOrHistoricalBuildings`). Seulement si la relation `containsHeritage` est établie. |
 | **Statut officiel** | `subjectOf: { "@type": "WebPage", name: "<nom officiel>", url: "<page officielle lue>" }`, par exemple la fiche UNESCO 499 pour Kairouan. Pas de `sameAs` vers la page UNESCO : elle décrit un bien, pas toujours la fiche entière (Kairouan, Djerba). |
-| **Fondateur, dynastie** | `founder: { "@type": "Person", name }` seulement pour `builtBy` établi vers une personne. Pas de JSON-LD pour les dynasties : c'est du texte. |
+| **Fondateur, dynastie** | **Pas de JSON-LD.** La propriété `founder` n'existe pas sur `TouristAttraction` (elle est réservée à `Organization`) : la proposition de la version 1 est retirée. Les constructeurs et dynasties établis (`builtBy`, `associatedPolity`) ne servent qu'au texte de l'assistant et à `llms.txt`. |
 | **Road trips** | `@id = <URL FR du road trip>#trip`, réutilisé sur `/explore` et sur la page du road trip (écart S5). |
-| **Éditions d'événements** | `location: { "@id": <@id du lieu> }` au lieu d'un `Place` anonyme (écart S6). `superEvent` pointe vers le festival quand l'édition y est reliée. |
+| **Éditions d'événements** | `location` porte l'`@id` du lieu (écart S6). On y garde `name`, `address` et `geo`, que Google exige pour un `Event` : le nœud n'est plus anonyme, il est relié. `superEvent` (`EventSeries`, `@id = SITE_URL/evenements#festival-<clé>`) pointe vers le festival quand l'édition y est reliée. |
 | **`sameAs` des lieux** | Wikidata seulement, après vérification manuelle une par une (étape optionnelle du plan). Jamais en automatique (risque T6). |
 | **Annuaires ONTT** | Rien en JSON-LD (recommandation R7 de l'audit). |
 | **Poids** | `/explore` ne reçoit que des références par `@id`, pas les nœuds complets. La taille est mesurée avant et après (plan, étape 4). |
@@ -142,6 +144,8 @@ Afficher les sources aux visiteurs serait un nouvel élément d'interface. Ce n'
 - **`llms.txt`** : ajout de la section générée décrite au § 5. Les moteurs IA lisent déjà ce fichier et les données structurées. Il n'y a rien d'autre à exposer.
 
 ## 8. Validation automatique (`npm run kg:check`)
+
+Règles prévues en version 1. Les règles réellement appliquées sont au § 11.
 
 C'est un script en lecture seule, lancé localement et dans chaque PR, avec un code de sortie non nul en cas d'erreur.
 
@@ -177,3 +181,32 @@ Les lieux y seraient référencés par leur slug, comme aujourd'hui. Une requêt
 - Le graphe ne contient que des entités publiques et des acteurs publiés avec leur consentement (`consent` dans `pro_listings` et `partner_listings`).
 - `traveler_data`, `place_ratings`, `place_reports`, `link_clicks` et les suggestions non approuvées n'y entrent jamais.
 - Les annuaires ONTT restent des données d'annuaire. Ils ne sont pas exposés en JSON-LD, et rien n'est ajouté sur les personnes physiques.
+
+## 11. Mise en œuvre (17 novembre 2026)
+
+Les étapes 1 à 7 du plan sont réalisées dans la PR 136. Écarts avec la version 1 de ce document, tous dans le sens de moins de fichiers et d'aucune duplication :
+
+| Prévu en version 1 | Réalisé | Pourquoi |
+|---|---|---|
+| `data/kg/areas.ts` (copie des découpages éditoriaux) | Non créé. La zone de l'assistant est un champ `zone` de chaque gouvernorat. Les cahiers (`GUIDE_BY_PLACE`) et les régions ONTT (`REGION_OF_GOVERNORATE`) restent dans leurs fichiers, et `kg:check` vérifie leurs références. | Recopier ces tables aurait créé une deuxième source de vérité. |
+| `data/kg/placeKinds.ts` | Non créé. | Aucune sortie publique ne l'utilise encore (ni JSON-LD, ni assistant). |
+| `lib/kg/structural.ts`, `lib/kg/jsonld.ts` | Regroupés : les relations structurelles sont lues directement dans les données (étapes, régions) par `lib/kg/index.ts` ; le JSON-LD reste dans `lib/structuredData.ts`, qui interroge le graphe. | Un seul endroit pour le JSON-LD du site. |
+| `lib/kg/governorate.ts`, `lib/kg/events.ts`, `lib/kg/check.ts`, `lib/kg/llms.ts` | Ajoutés. | Recherche par nom FR ou EN utilisable côté client ; rapprochement édition → festival ; règles du validateur testables ; `llms.txt` généré. |
+| `public/llms.txt` statique | Remplacé par `app/llms.txt/route.ts` (statique, généré au build). Le texte d'origine est conservé mot pour mot (`lib/kg/llmsBase.ts`), suivi des sections « Statuts officiels » et « Official statuses ». | Même URL, même contenu de départ. |
+| `founder` en JSON-LD | Retiré (§ 6). | Propriété invalide sur `TouristAttraction`. |
+| LinkedIn dans `Organization.sameAs` | Retiré. | Page non vérifiable (OPEN-ISSUES § 8). |
+
+**Règles réelles de `npm run kg:check`** (`lib/kg/check.ts`), code de sortie 1 si une erreur :
+1. identifiants uniques, ASCII, préfixés ;
+2. chaque lieu a son gouvernorat ;
+3. références structurelles : étapes des road trips, conteneurs des éléments patrimoniaux, lieux des festivals et des événements, `GUIDE_BY_PLACE`, 24 gouvernorats ;
+4. sources connues ; entité sans source interdite (sauf lieux, road trips, festivals) ; date de statut sans source interdite ; relation établie ou partielle sans source interdite ; relation établie sur une source secondaire interdite ;
+5. extrémités des relations existantes (ou `candidate:`, jamais publiables) ;
+6. seules les relations `established` sont publiées, jamais un tournage ;
+7. décisions du registre : harissa rattachée à la Tunisie seulement, aucun `partOf` ni `componentOf` publié, Guellala jamais relié au musée AMVPPC, souks jamais présentés comme patrimoine mondial ;
+8. booléen `unesco` = statuts du patrimoine mondial publiés ;
+9. chaque événement du fichier a son festival ;
+10. slugs des 95 lieux et des 20 road trips conservés.
+
+Avertissements (sans échec) : sources lues il y a plus de 6 mois ; lieux sans saison (`ksar-ghilane`, `djerba-velo`) ; écarts entre la table `events` et `data/events.ts`, en lecture seule (`SELECT`), seulement si `SUPABASE_URL` et une clé serveur sont présentes, sinon « non exécuté ». `--events-file <json>` compare un export.
+

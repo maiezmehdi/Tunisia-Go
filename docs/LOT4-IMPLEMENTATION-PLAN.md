@@ -1,6 +1,20 @@
 # Lot 4 · Plan d'implémentation séquencé
 
-Version 1, 17 novembre 2026. Ce plan met en œuvre [`LOT4-FINAL-ARCHITECTURE.md`](LOT4-FINAL-ARCHITECTURE.md) en **7 étapes**, plus **une étape facultative**. Chaque étape fait l'objet d'une PR séparée, relue avant fusion, comme pour les Lots 1 à 3. Aucune étape ne demande de migration Supabase ni de nouvelle infrastructure.
+Version 2, 17 novembre 2026. Ce plan met en œuvre [`LOT4-FINAL-ARCHITECTURE.md`](LOT4-FINAL-ARCHITECTURE.md) en **7 étapes**, plus **une étape facultative**. Chaque étape fait l'objet d'une PR séparée, relue avant fusion, comme pour les Lots 1 à 3. Aucune étape ne demande de migration Supabase ni de nouvelle infrastructure.
+
+## État d'exécution (17 novembre 2026)
+
+Les étapes 1 à 7 sont réalisées dans **une seule PR, la 136**, à la demande de Mehdi (un commit par étape). L'étape 8 (Wikidata) n'est pas faite, comme demandé. Les décisions prises sur les points ouverts sont dans [`LOT4-OPEN-ISSUES.md`](LOT4-OPEN-ISSUES.md) ; les écarts de fichiers avec ce plan sont dans l'architecture, § 11.
+
+| Étape | Réalisé | Tests |
+|---|---|---|
+| 1 | `data/kg/*`, `lib/kg/*`, `npm run kg:check`, `npm run test:kg` | `tests/kg/graph.test.ts` |
+| 2 | pages région, fil d'Ariane, agences et titres FR par gouvernorat | sitemap identique ; fil d'Ariane : seules les 4 fiches FR de Kébili changent |
+| 3 | 75 relations du registre + rel-76 à rel-86 ; 35 publiées | aucune relation non établie dans une sortie publique |
+| 4 | `@id` unique, `containedInPlace`, `containsPlace`, `subjectOf`, `@id` des road trips, événements reliés ; LinkedIn retiré | `tests/kg/site.test.ts` ; `/explore` : +1,4 % (FR) et +0,8 % (EN) de JSON-LD, hors photos |
+| 5 | mention UNESCO lue depuis les statuts ; retirée des 2 souks | 10 fiches avec la mention ; règle 8 de `kg:check` |
+| 6 | festivals, rattachement des éditions, `superEvent`, écarts Supabase/fichier | 0 écart sur la lecture du 17/11/2026 |
+| 7 | zones de l'assistant sur 95 lieux, faits publiés dans le contexte de Gemini, `/llms.txt` généré | `tests/kg/assistant.test.ts` (10 questions de référence, sans appel réseau) |
 
 ## Règles pour toutes les étapes
 
