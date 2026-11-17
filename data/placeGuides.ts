@@ -173,7 +173,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
       {
         intro: [
           'Au IIIe siècle, Thysdrus est une ville prospère, enrichie par le commerce de l’huile d’olive. Vers 238, elle se dote d’un amphithéâtre qui pouvait accueillir, selon les estimations, de 27 000 à 35 000 spectateurs, l’un des plus grands du monde romain. La même année, une révolte partie d’ici proclame empereur le proconsul Gordien, épisode bref mais célèbre de l’histoire romaine.',
-          'L’amphithéâtre, inscrit au patrimoine mondial de l’UNESCO depuis 1979, est l’un des mieux conservés au monde. Il surgit au milieu de la petite ville d’El Jem, entre les maisons basses et les oliveraies du Sahel, ce qui rend son apparition d’autant plus saisissante.',
+          'L’amphithéâtre est inscrit au patrimoine mondial de l’UNESCO depuis 1979, et l’UNESCO décrit le mur du podium, l’arène et les souterrains comme pratiquement intacts. Il surgit au milieu de la petite ville d’El Jem, entre les maisons basses et les oliveraies du Sahel, ce qui rend son apparition d’autant plus saisissante.',
           'Après la fin de l’Empire, l’édifice sert de forteresse. Selon la tradition, la reine berbère Kahena s’y serait retranchée face aux armées arabes à la fin du VIIe siècle. La brèche visible dans la façade date de la fin du XVIIe siècle, quand le bey fit tirer au canon sur des rebelles réfugiés à l’intérieur.',
         ],
         see: [
@@ -201,7 +201,7 @@ const GUIDES: Record<string, Record<Locale, PlaceGuide>> = {
       {
         intro: [
           'In the 3rd century, Thysdrus was a wealthy town that had grown rich on the olive oil trade. Around 238 AD it built an amphitheatre that could hold an estimated 27,000 to 35,000 spectators, one of the largest of the Roman world. That same year, a revolt that began here proclaimed the proconsul Gordian emperor, a brief but famous episode of Roman history.',
-          'The amphitheatre, a UNESCO World Heritage Site since 1979, is one of the best-preserved in the world. It rises in the middle of the small town of El Jem, among low houses and the olive groves of the Sahel, which makes the first sight of it all the more striking.',
+          'The amphitheatre has been a UNESCO World Heritage Site since 1979, and UNESCO describes its podium wall, arena and underground passages as practically intact. It rises in the middle of the small town of El Jem, among low houses and the olive groves of the Sahel, which makes the first sight of it all the more striking.',
           'After the fall of the empire the building served as a fortress. Tradition says the Berber queen Kahena held out here against the Arab armies at the end of the 7th century. The gap in the façade dates from the late 17th century, when the bey had cannon fired at rebels sheltering inside.',
         ],
         see: [
