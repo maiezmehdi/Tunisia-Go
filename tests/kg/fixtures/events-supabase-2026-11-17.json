@@ -1,0 +1,9 @@
+[
+ {"id": "db2f4ed4-22e2-4222-8c77-a2777a4426c6", "place_id": "carthage", "title_fr": "Festival international de Carthage", "published": true, "confirmed": false, "start_date": null, "end_date": null},
+ {"id": "f5f3a78f-28cb-408f-b476-31402e74dc19", "place_id": "douz", "title_fr": "Festival international du Sahara", "published": true, "confirmed": true, "start_date": "2026-12-19", "end_date": "2026-12-22"},
+ {"id": "d6919832-8087-4985-bc73-03c028d91795", "place_id": "el-jem", "title_fr": "Festival de musique symphonique d’El Jem", "published": true, "confirmed": false, "start_date": null, "end_date": null},
+ {"id": "772eb65d-1a59-4be7-898e-f2e375e07f9e", "place_id": "hammamet", "title_fr": "Festival international de Hammamet", "published": true, "confirmed": false, "start_date": null, "end_date": null},
+ {"id": "8218b9bb-e461-494e-a834-957285536381", "place_id": "medina-tunis", "title_fr": "Journées cinématographiques de Carthage", "published": true, "confirmed": true, "start_date": "2026-12-12", "end_date": "2026-12-19"},
+ {"id": "cff10753-9f64-4415-9c4d-afb2b6be37b0", "place_id": "medina-tunis", "title_fr": "Journées théâtrales de Carthage", "published": true, "confirmed": true, "start_date": "2026-11-21", "end_date": "2026-11-28"},
+ {"id": "6113510f-042b-486f-ace9-6086805d9e12", "place_id": "tabarka", "title_fr": "Tabarka Jazz Festival", "published": true, "confirmed": false, "start_date": null, "end_date": null}
+]

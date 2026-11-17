@@ -563,10 +563,11 @@ function Finale() {
 }
 
 function Footer({ photos }: { photos: Photo[] }) {
-  const c = useLanding().copy.footer;
+  const { locale, copy } = useLanding();
+  const c = copy.footer;
   const lp = useLocalePath();
   const link = 'text-cream/75 underline decoration-cream/20 underline-offset-4 transition hover:text-cream hover:decoration-cream';
-  const regions = [...PAGE_REGIONS].sort((a, b) => a.region.localeCompare(b.region, 'fr'));
+  const regions = [...PAGE_REGIONS].sort((a, b) => a.name[locale].localeCompare(b.name[locale], 'fr'));
   return (
     <footer className="bg-charcoal px-5 pb-10 text-cream/50 sm:px-10">
       <nav aria-label={c.plan} className="mx-auto max-w-6xl border-t border-cream/10 py-10 text-sm">
@@ -593,7 +594,7 @@ function Footer({ photos }: { photos: Photo[] }) {
           {regions.map((r) => (
             <li key={r.slug}>
               <a href={lp(regionPath(r.region))} className={link}>
-                {r.region}
+                {r.name[locale]}
               </a>
             </li>
           ))}

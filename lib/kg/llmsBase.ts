@@ -1,4 +1,5 @@
-# Tunisia Go
+/** Hand-written part of /llms.txt (formerly public/llms.txt), kept word for word. */
+export const LLMS_BASE = String.raw`# Tunisia Go
 
 > Guide indépendant de la Tunisie : lieux hors des sentiers battus, road trips jour par jour, carte interactive et conseils locaux. Site bilingue (français et anglais), gratuit, sans compte obligatoire.
 
@@ -24,3 +25,4 @@ Tunisia Go présente des lieux qui valent le détour (histoire, usages, cuisine,
 
 ## Plan du site
 - [Sitemap](https://www.tunisiagoo.com/sitemap.xml)
+`;

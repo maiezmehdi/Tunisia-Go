@@ -55,6 +55,7 @@ export interface Place {
   stayQuery: string;
   category: CategoryId;
   coords: LatLng;
+  /** UNESCO World Heritage mention. Must equal the published statuses of data/kg (checked by `npm run kg:check`). */
   unesco?: boolean;
   tagline: string;
   description: string;

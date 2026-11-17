@@ -922,7 +922,6 @@ export const PLACES: Place[] = [
     stayQuery: 'Medina of Tunis, Tunisia',
     category: 'souk',
     coords: [36.7985, 10.1716],
-    unesco: true,
     tagline: 'The perfumers’ souk beside the Zitouna',
     description:
       'A covered lane of tiny shops next to the Zitouna Mosque, selling essential oils, incense, henna and painted wedding chests. It is one of the oldest souks of the medina.',
@@ -994,7 +993,6 @@ export const PLACES: Place[] = [
     stayQuery: 'Kairouan, Tunisia',
     category: 'souk',
     coords: [35.6775, 10.0985],
-    unesco: true,
     tagline: 'Carpets and makroudh in the holy city',
     description:
       'The covered souks of the walled medina, known for knotted and woven carpets and for the bakeries of makroudh, the date-filled semolina cakes of Kairouan.',

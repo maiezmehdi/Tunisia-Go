@@ -2,6 +2,7 @@ import { regionGuides } from '@/data/regionGuides';
 import { LEXICON } from '@/data/lexicon';
 import { generate, type GeminiTurn } from '@/lib/gemini';
 import { getCatalog } from '@/lib/i18n/catalog';
+import { factsText } from '@/lib/kg/facts';
 import type { Locale } from '@/lib/i18n/config';
 
 import { tokenize } from './text';
@@ -12,6 +13,8 @@ interface Source {
   ref: string;
   title: string;
   text: string;
+  /** Published facts of the knowledge graph (places only), sent in full after the page text. */
+  facts?: string;
   /** Lower-cased tokens used for ranking. */
   tokens: Set<string>;
   titleTokens: Set<string>;
@@ -19,8 +22,15 @@ interface Source {
 
 const cache: Partial<Record<Locale, Source[]>> = {};
 
-function source(ref: string, title: string, text: string): Source {
-  return { ref, title, text, tokens: new Set(tokenize(`${title} ${text}`)), titleTokens: new Set(tokenize(title)) };
+function source(ref: string, title: string, text: string, facts?: string): Source {
+  return {
+    ref,
+    title,
+    text,
+    ...(facts && { facts }),
+    tokens: new Set(tokenize(`${title} ${text} ${facts ?? ''}`)),
+    titleTokens: new Set(tokenize(title)),
+  };
 }
 
 function sources(locale: Locale): Source[] {
@@ -33,6 +43,8 @@ function sources(locale: Locale): Source[] {
         `p:${p.id}`,
         `${p.name} (${p.region})`,
         [p.tagline, p.description, p.didYouKnow, p.visitDuration].filter(Boolean).join(' '),
+        // Published facts of the knowledge graph (established relations only, at most 5, with their source).
+        factsText(p.id, locale),
       ),
     );
   }
@@ -112,7 +124,9 @@ function overview(locale: Locale): { text: string; refs: Set<string> } {
 function system(locale: Locale, context: Source[], plan: string[] | undefined): string {
   const lang = locale === 'fr' ? 'French' : 'English';
   const docs = context.length
-    ? context.map((s) => `[${s.ref}] ${s.title}\n${s.text.slice(0, PER_SOURCE)}`).join('\n\n')
+    ? context
+        .map((s) => `[${s.ref}] ${s.title}\n${s.text.slice(0, PER_SOURCE)}${s.facts ? `\n${s.facts}` : ''}`)
+        .join('\n\n')
     : '(no detailed page matches this message)';
   const { placeById } = getCatalog(locale);
   const planNames = (plan ?? []).map((id) => placeById[id]?.name).filter(Boolean);
@@ -136,6 +150,11 @@ function system(locale: Locale, context: Source[], plan: string[] | undefined): 
   ]
     .filter((l, i, all) => l !== '' || all[i - 1] !== '')
     .join('\n');
+}
+
+/** The instructions and pages the model would receive for a question (no network): used by the tests. */
+export function promptFor(question: string, locale: Locale): string {
+  return system(locale, retrieve(question, locale, 8), undefined);
 }
 
 export async function answer(input: {

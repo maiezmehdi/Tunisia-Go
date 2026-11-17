@@ -1,3 +1,5 @@
+import { governorateBaseName, governorateByName } from '@/lib/kg/governorate';
+
 /**
  * Travel agencies approved by the ONTT, from its official directory: the south (read on 4 November 2026),
  * Tunis / Carthage coast (data/agencies-tunis.ts) and the other regions (data/agencies-regions.ts), November 2026.
@@ -1749,8 +1751,10 @@ const SOUTH_AGENCIES: Agency[] = [
 
 export const AGENCIES: Agency[] = [...SOUTH_AGENCIES, ...TUNIS_AGENCIES, ...REGION_AGENCIES];
 
+/** `governorate` may be named in French or in English (« Kébili », « Kebili »): it is resolved through data/kg. */
 export function agenciesFor(governorate: string): { region: AgencyRegion; agencies: Agency[] } | null {
-  const region = REGION_OF_GOVERNORATE[governorate];
+  const g = governorateByName(governorate);
+  const region = REGION_OF_GOVERNORATE[g ? governorateBaseName(g) : governorate];
   if (!region) return null;
   return { region, agencies: AGENCIES.filter((a) => a.region === region) };
 }
