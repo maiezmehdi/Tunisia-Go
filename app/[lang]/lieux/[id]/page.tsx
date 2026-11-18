@@ -9,6 +9,7 @@ import MadeBy from '@/components/MadeBy';
 import NearbyAgencies from '@/components/NearbyAgencies';
 import NearbyStays from '@/components/NearbyStays';
 import PlaceClose from '@/components/PlaceClose';
+import PlaceGallery from '@/components/PlaceGallery';
 import PlaceRating from '@/components/PlaceRating';
 import PlaceReport from '@/components/PlaceReport';
 import SeasonStrip from '@/components/SeasonStrip';
@@ -127,7 +128,6 @@ export default async function PlacePage({ params }: Params) {
   const rating = (await loadRatingStats())[place.id];
 
   const photos = withOverridePhotos(await loadPhotos([place]), overrides, { [place.id]: place.name })[place.id] ?? [];
-  const photo = photos[0];
   const itineraries = catalog.itineraries.filter((it) => it.stops.includes(place.id));
   // « À voir aussi »: the region's other places, then the closest places of the same kind, 3 to 6 links.
   const others = catalog.places.filter((p) => p.id !== place.id);
@@ -207,29 +207,8 @@ export default async function PlacePage({ params }: Params) {
         <p className="mt-5 max-w-2xl font-serif text-xl italic text-charcoal-700">{place.tagline}</p>
         <PlaceRating placeId={place.id} average={rating?.average ?? null} votes={rating?.votes ?? 0} />
 
-        {photo && (
-          <figure className="mt-8">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={photo.src}
-              alt={`${place.name}, ${place.region} · ${category.label}`}
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              width={photo.width}
-              height={photo.height}
-              className="max-h-[480px] w-full rounded-3xl object-cover"
-            />
-            <figcaption className="mt-2 text-xs text-charcoal-300">
-              {photo.sourceUrl ? (
-                <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" className="hover:text-charcoal">
-                  {photo.title} · {photo.author} · {photo.license}
-                </a>
-              ) : (
-                photo.author
-              )}
-            </figcaption>
-          </figure>
+        {photos.length > 0 && (
+          <PlaceGallery photos={photos} alt={`${place.name}, ${place.region} · ${category.label}`} />
         )}
 
         <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_320px] lg:gap-16">
