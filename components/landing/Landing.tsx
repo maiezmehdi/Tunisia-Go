@@ -199,8 +199,16 @@ function Hero({ slides }: { slides: { photo: Photo; placeName: string }[] }) {
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6, ease: EASE }}
+          className="mt-6 max-w-xl text-base font-medium text-cream sm:text-lg"
+        >
+          {c.intro}
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7, ease: EASE }}
-          className="mt-6 max-w-xl text-base text-cream/80 sm:text-lg"
+          className="mt-3 max-w-xl text-base text-cream/80 sm:text-lg"
         >
           {c.subtitle(catalog.places.length, catalog.itineraries.length)}
         </motion.p>
