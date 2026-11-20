@@ -146,6 +146,8 @@ export interface LandingCopy {
     eyebrow: string;
     titleLine1: string;
     titleLine2: string;
+    /** One clear line under the title: what Tunisia Go is. */
+    intro: string;
     subtitle: (spots: number, trips: number) => string;
     cta: string;
     readManifesto: string;
@@ -202,6 +204,7 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
       eyebrow: 'Guide indépendant · Tunisie',
       titleLine1: 'La Tunisie,',
       titleLine2: 'l’autre voyage.',
+      intro: 'Tunisia Go est un guide indépendant pour préparer votre voyage en Tunisie.',
       subtitle: (spots, trips) => `${spots} spots hors des sentiers battus, ${trips} grands road trips, zéro cliché.`,
       cta: 'Commencer l’exploration',
       readManifesto: 'Lire le manifeste',
@@ -261,6 +264,7 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
       eyebrow: 'Independent guide · Tunisia',
       titleLine1: 'Tunisia,',
       titleLine2: 'the other journey.',
+      intro: 'Tunisia Go is an independent guide to help you plan your trip to Tunisia.',
       subtitle: (spots, trips) =>
         `${spots} spots off the beaten track, ${trips} great road trips, not a single cliché.`,
       cta: 'Start exploring',
