@@ -1,6 +1,6 @@
 'use client';
 
-import { LinkedInIcon, TikTokIcon } from '@/components/ProIcons';
+import { InstagramIcon, LinkedInIcon, TikTokIcon } from '@/components/ProIcons';
 import { openConsent } from '@/lib/consent';
 import { useLocale, useLocalePath } from '@/lib/i18n/LocaleProvider';
 
@@ -57,6 +57,18 @@ export default function MadeBy({ tone = 'dark', className = '' }: { tone?: 'dark
         <li>
           <a href="mailto:contact@tunisiagoo.com" className={anchor}>
             {t.contact}
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.instagram.com/tunisiagoo/"
+            target="_blank"
+            rel="noopener noreferrer me"
+            aria-label="Instagram"
+            className={`${anchor} inline-flex items-center gap-1.5`}
+          >
+            <InstagramIcon className="h-3.5 w-3.5" />
+            Instagram
           </a>
         </li>
         <li>

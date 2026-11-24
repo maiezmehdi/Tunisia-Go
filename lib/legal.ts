@@ -20,7 +20,7 @@ export const LEGAL = {
     region?: string;
   },
   /** Official social profiles other than TikTok and LinkedIn (Instagram, Facebook), when they exist. */
-  extraProfiles: [] as string[],
+  extraProfiles: ['https://www.instagram.com/tunisiagoo/'] as string[],
   host: {
     name: 'Vercel Inc.',
     address: '440 N Barranca Ave #4133, Covina, CA 91723, États-Unis',
